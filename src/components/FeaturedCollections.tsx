@@ -102,8 +102,8 @@ function CardInner({ col, compact, large }: { col: (typeof collections)[0]; comp
           </p>
         )}
 
-        <div className="flex items-center gap-1.5 font-accent text-[8px] sm:text-[8.5px] tracking-[0.25em] uppercase text-white/95">
-          Explore <ArrowRight size={10} className="group-hover:translate-x-1.5 transition-transform duration-300" />
+          <div className="flex items-center gap-2 font-accent text-[8.5px] tracking-[0.25em] uppercase text-white/95">
+          Explore <ArrowRight size={11} className="group-hover:translate-x-1.5 transition-transform duration-300" />
         </div>
       </div>
     </Link>

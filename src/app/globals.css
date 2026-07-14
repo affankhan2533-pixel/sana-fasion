@@ -1049,6 +1049,27 @@ img {
   }
 }
 
+/* Premium luxury link underline grow animation */
+.underline-grow {
+  position: relative;
+}
+.underline-grow::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--accent-gold, #C8851A);
+  transform-origin: bottom right;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.underline-grow:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 /* ==================================================
    ACCESSIBILITY & UTILITIES
    ================================================== */

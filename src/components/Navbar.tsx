@@ -257,15 +257,15 @@ export default function Navbar() {
 
             {/* Book Appointment (Desktop only) */}
             <Link href="/contact" className="hidden lg:block">
-              <LuxuryButton variant="secondary" className="!h-[46px] !px-5 !rounded-[12px]">
+              <LuxuryButton variant="secondary" className="!h-[50px] !px-6 !rounded-[14px]">
                 Book Appointment
               </LuxuryButton>
             </Link>
 
-            {/* Hamburger — always visible */}
+            {/* Hamburger — hidden on desktop (lg:hidden) */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="group flex flex-col items-end gap-[5px] p-2 cursor-pointer"
+              className="group flex flex-col items-end gap-[5px] p-2 cursor-pointer lg:hidden"
               aria-label="Open navigation menu"
             >
               <span
@@ -285,117 +285,100 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ===== MOBILE SIDE DRAWER ===== */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <div className="fixed inset-0 z-[9998] flex justify-end">
-            {/* Backdrop */}
-            <motion.div
-              variants={overlayVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              onClick={closeDrawer}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            />
+      {/* ===== MOBILE SIDE DRAWER (Failsafe Tailwind transition) ===== */}
+      <div 
+        className={`fixed inset-0 z-[9998] transition-opacity duration-300 ease-in-out ${
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop overlay */}
+        <div 
+          onClick={closeDrawer}
+          className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+        />
 
-            {/* Drawer Panel */}
-            <motion.div
-              variants={drawerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="relative w-[85vw] max-w-[380px] h-full bg-[#FFFBF4] shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-[#E6C280]/20"
+        {/* Drawer Panel */}
+        <div 
+          className={`absolute top-0 right-0 w-[85vw] max-w-[360px] h-full bg-[#FFFBF4] shadow-2xl flex flex-col z-[9999] overflow-y-auto border-l border-[#E6C280]/20 transform transition-transform duration-300 ease-out ${
+            mobileOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Header: Logo + Close */}
+          <div className="flex justify-between items-center px-6 py-5 border-b border-[#E6C280]/15 flex-shrink-0">
+            <Link href="/" onClick={closeDrawer} className="flex items-center">
+              <div className="relative h-9 w-24">
+                <Image src="/Logo/image.png?v=3" alt="SANA Fashion House" fill className="object-contain object-left" unoptimized />
+              </div>
+            </Link>
+            <button
+              onClick={closeDrawer}
+              className="w-9 h-9 rounded-full flex items-center justify-center border border-accent-gold/20 hover:border-accent-gold hover:rotate-90 transition-all duration-500 cursor-pointer text-text-primary"
+              aria-label="Close menu"
             >
-              {/* Header: Logo + Close */}
-              <div className="flex justify-between items-center px-6 py-5 border-b border-[#E6C280]/15 flex-shrink-0">
-                <Link href="/" onClick={closeDrawer} className="flex items-center">
-                  <div className="relative h-9 w-24">
-                    <Image src="/Logo/image.png?v=3" alt="SANA Fashion House" fill className="object-contain object-left" unoptimized />
-                  </div>
-                </Link>
-                <button
+              <X size={15} />
+            </button>
+          </div>
+
+          {/* Nav Links */}
+          <nav className="flex flex-col gap-1 px-6 py-6 flex-grow">
+            {navLinks.map((l) => (
+              <div key={l.label}>
+                <Link
+                  href={l.href}
                   onClick={closeDrawer}
-                  className="w-9 h-9 rounded-full flex items-center justify-center border border-accent-gold/20 hover:border-accent-gold hover:rotate-90 transition-all duration-500 cursor-pointer text-text-primary"
-                  aria-label="Close menu"
+                  className="font-serif text-xl sm:text-2xl text-text-primary hover:text-accent-gold transition-all duration-300 flex items-center justify-between group py-3 pl-0 hover:pl-3 border-b border-[#E6C280]/10 last:border-0 border-l-0 hover:border-l-2 hover:border-accent-gold"
                 >
-                  <X size={15} />
-                </button>
+                  <span className="relative transition-transform duration-300 group-hover:translate-x-2">
+                    {l.label}
+                  </span>
+                  <ArrowRight
+                    size={16}
+                    className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-400 text-accent-gold"
+                  />
+                </Link>
+              </div>
+            ))}
+          </nav>
+
+          {/* Footer */}
+          <div className="px-6 py-6 border-t border-[#E6C280]/15 bg-cream-warm flex flex-col gap-5 flex-shrink-0">
+            <Link href="/contact" onClick={closeDrawer} className="w-full block">
+              <LuxuryButton variant="primary" className="w-full">
+                Book Appointment
+              </LuxuryButton>
+            </Link>
+
+            <div className="flex flex-col gap-3 text-xs font-body text-text-secondary">
+              <a
+                href="https://www.instagram.com/sana___fashion___01/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 hover:text-accent-gold transition-colors"
+              >
+                <InstagramIcon /> @sana___fashion___01
+              </a>
+
+              <a
+                href="https://wa.me/919022591620"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 hover:text-accent-gold transition-colors"
+              >
+                <Phone size={13} /> +91 90225 91620 (WhatsApp)
+              </a>
+
+              <div className="text-[10px] text-text-muted mt-1 leading-relaxed">
+                <span className="block text-[7.5px] font-accent tracking-wider text-accent-gold uppercase mb-1">Store Atelier Address</span>
+                Sana Fashion House, Heritage Boulevard, Mumbai, India
               </div>
 
-              {/* Nav Links */}
-              <nav className="flex flex-col gap-1 px-6 py-8 flex-grow">
-                {navLinks.map((l, i) => (
-                  <motion.div
-                    key={l.label}
-                    custom={i}
-                    variants={navItemVariants}
-                    initial="hidden"
-                    animate="visible"
-                  >
-                    <Link
-                      href={l.href}
-                      onClick={closeDrawer}
-                      className="font-serif text-2xl text-text-primary hover:text-accent-gold transition-colors duration-300 flex items-center justify-between group py-3 border-b border-[#E6C280]/10 last:border-0"
-                    >
-                      <span className="relative transition-transform duration-300 group-hover:translate-x-2">
-                        {l.label}
-                      </span>
-                      <ArrowRight
-                        size={16}
-                        className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-400 text-accent-gold"
-                      />
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-
-              {/* Footer */}
-              <motion.div
-                variants={footerVariants}
-                initial="hidden"
-                animate="visible"
-                className="px-6 py-6 border-t border-[#E6C280]/15 bg-cream-warm flex flex-col gap-5 flex-shrink-0"
-              >
-                <Link href="/contact" onClick={closeDrawer} className="w-full block">
-                  <LuxuryButton variant="primary" className="w-full">
-                    Book Appointment
-                  </LuxuryButton>
-                </Link>
-
-                <div className="flex flex-col gap-3 text-xs font-body text-text-secondary">
-                  <a
-                    href="https://www.instagram.com/sana___fashion___01/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 hover:text-accent-gold transition-colors"
-                  >
-                    <InstagramIcon /> @sana___fashion___01
-                  </a>
-
-                  <a
-                    href="https://wa.me/919022591620"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 hover:text-accent-gold transition-colors"
-                  >
-                    <Phone size={13} /> +91 90225 91620 (WhatsApp)
-                  </a>
-
-                  <div className="text-[10px] text-text-muted mt-1 leading-relaxed">
-                    <span className="block text-[7.5px] font-accent tracking-wider text-accent-gold uppercase mb-1">Store Atelier Address</span>
-                    Sana Fashion House, Heritage Boulevard, Mumbai, India
-                  </div>
-
-                  <p className="text-[9.5px] text-text-muted/60 mt-2 pt-3 border-t border-[#E6C280]/10">
-                    © 2026 Sana Atelier. Crafted with intent, worn with pride.
-                  </p>
-                </div>
-              </motion.div>
-            </motion.div>
+              <p className="text-[9.5px] text-text-muted/60 mt-2 pt-3 border-t border-[#E6C280]/10">
+                © 2026 Sana Atelier. Crafted with intent, worn with pride.
+              </p>
+            </div>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      </div>
 
       {/* ===== FULLSCREEN SEARCH OVERLAY ===== */}
       <AnimatePresence>

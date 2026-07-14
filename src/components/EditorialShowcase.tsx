@@ -85,8 +85,8 @@ function CardInner({ ed, large }: { ed: (typeof editorials)[0]; large?: boolean 
         <h3 className="font-display font-light text-white mb-2 sm:mb-4 tracking-wide leading-tight text-xs sm:text-xl">
           {ed.title}
         </h3>
-        <div className="flex items-center gap-1.5 font-accent text-[8px] tracking-[0.25em] uppercase text-white/95 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
-          Explore <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform duration-300" />
+        <div className="flex items-center gap-2 font-accent text-[8.5px] tracking-[0.25em] uppercase text-white/95 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-[600ms] ease-[cubic-bezier(0.25,1,0.5,1)]">
+          Explore <ArrowRight size={11} className="group-hover:translate-x-1.5 transition-transform duration-300" />
         </div>
       </div>
     </Link>

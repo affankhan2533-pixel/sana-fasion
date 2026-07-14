@@ -149,7 +149,7 @@ export default function BestSellers() {
                 </div>
                 <div className="mt-1.5 w-full pt-1.5 border-t border-accent-gold/10">
                   <Link href="/collections" className="w-full block">
-                    <div className="w-full justify-start text-[8px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 cursor-pointer">
+                    <div className="w-full justify-start text-[8px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 transition-colors duration-300 hover:text-text-primary cursor-pointer">
                       View Collection <ArrowRight size={9} />
                     </div>
                   </Link>
@@ -185,7 +185,7 @@ export default function BestSellers() {
                     <div className="absolute inset-3 border border-[#E6C280]/40 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-10" />
                     {p.badge && (
                       <div className="absolute top-3.5 left-3.5 z-10">
-                        <span className="font-accent text-[7.5px] tracking-[0.15em] uppercase px-2 py-0.5 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
+                        <span className="font-accent text-[7.5px] tracking-[0.15em] uppercase px-2.5 py-0.5 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
                       </div>
                     )}
                     <button
@@ -208,7 +208,7 @@ export default function BestSellers() {
                 </div>
                 <div className="mt-2 w-full pt-2 border-t border-accent-gold/10">
                   <Link href="/collections" className="w-full block">
-                    <div className="w-full justify-start text-[9.5px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 cursor-pointer">
+                    <div className="w-full justify-start text-[9.5px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 transition-colors duration-300 hover:text-text-primary cursor-pointer">
                       View Collection <ArrowRight size={10} />
                     </div>
                   </Link>
