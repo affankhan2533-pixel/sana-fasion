@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Sparkles, Crown, Scissors } from "lucide-react";
 import { gsap } from "gsap";
@@ -26,9 +26,20 @@ const highlights = [
 
 export default function DressSpotlight() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+
+    // Skip GSAP animations on mobile to prevent blank content
+    if (isMobile) return;
 
     const ctx = gsap.context(() => {
       // 1. Image reveal
@@ -91,7 +102,7 @@ export default function DressSpotlight() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   return (
     <section ref={sectionRef} className="section py-16 sm:py-24 md:py-32 relative overflow-hidden bg-[#FFF5E6]">

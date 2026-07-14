@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -54,7 +54,17 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return; // Skip mouse parallax on mobile
     const handleMouseMove = (e: MouseEvent) => {
       // Calculate responsive offsets (max 15px shift)
       const x = (e.clientX / window.innerWidth - 0.5) * 15;
@@ -64,7 +74,7 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [isMobile]);
 
 
   const animateIn = () => {
@@ -86,18 +96,20 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
     }
 
     // Continuous slow zoom for the active slide background
-    gsap.fromTo(`.hero-bg-img-${current}`,
-      { scale: 1.18 },
-      { scale: 1.03, duration: 8.5, ease: "power2.out" }
-    );
+    if (!isMobile) {
+      gsap.fromTo(`.hero-bg-img-${current}`,
+        { scale: 1.18 },
+        { scale: 1.03, duration: 8.5, ease: "power2.out" }
+      );
+    }
 
     tl.to(labelRef.current, { opacity: 1, y: 0, duration: 0.8 });
     if (titleElements && titleElements.length > 0) {
       tl.to(titleElements, {
         opacity: 1,
         y: 0,
-        duration: 1.2,
-        stagger: 0.18,
+        duration: isMobile ? 0.6 : 1.2,
+        stagger: isMobile ? 0.1 : 0.18,
       }, "-=0.6");
     }
     tl.to(subRef.current, { opacity: 1, y: 0, duration: 0.8 }, "-=0.5");
@@ -154,13 +166,16 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
           key={i}
           className="absolute inset-0 hero-bg-wrapper"
           style={{ y: i === current ? bgY : "0%", zIndex: i === current ? 1 : 0 }}
-          initial={{ clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)" }}
+          initial={false}
           animate={{ 
-            clipPath: i === current 
-              ? "polygon(0 0, 100% 0, 100% 100%, 0 100%)" 
-              : "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)"
+            opacity: i === current ? 1 : 0,
+            clipPath: !isMobile
+              ? (i === current 
+                  ? "polygon(0 0, 100% 0, 100% 100%, 0 100%)" 
+                  : "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)")
+              : undefined
           }}
-          transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: isMobile ? 0.6 : 1.5, ease: [0.76, 0, 0.24, 1] }}
         >
           <div className="relative w-full h-full overflow-hidden">
             <motion.div
@@ -304,7 +319,7 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
       </motion.div>
 
       {/* Luxury scroll indicator */}
-      <div className="absolute bottom-12 right-8 sm:right-16 z-20 flex flex-col items-center gap-3 hidden sm:flex">
+      <div className="absolute bottom-12 right-8 sm:right-16 z-20 flex-col items-center gap-3 hidden sm:flex">
         <span 
           className="font-accent text-[8px] tracking-[0.35em] uppercase text-white/50" 
           style={{ writingMode: "vertical-rl" }}

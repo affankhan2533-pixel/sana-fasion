@@ -1040,11 +1040,7 @@ img {
 }
 
 /* Responsive grid fallbacks */
-@media (max-width: 640px) {
-  .grid-cols-2 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-}
+/* Note: Do NOT override .grid-cols-2 globally — FeaturedCollections uses a 2-col mobile grid intentionally */
 
 /* Typography line-length cap on wide screens */
 @media (min-width: 1400px) {

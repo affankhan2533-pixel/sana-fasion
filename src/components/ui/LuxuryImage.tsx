@@ -53,10 +53,9 @@ export const LuxuryImage: React.FC<LuxuryImageProps> = ({
     <div className={`${imgContainerClass} ${className}`}>
       <motion.div
         className={ratioClass}
-        animate={reveal ? {
-          clipPath: loaded ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)"
-        } : {}}
-        transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+        initial={reveal ? { opacity: 0 } : {}}
+        animate={reveal ? { opacity: loaded ? 1 : 0 } : {}}
+        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <motion.div
           className="w-full h-full relative"

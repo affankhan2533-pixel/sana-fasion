@@ -11,6 +11,15 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
+    // Disable Lenis on mobile — it intercepts native touch scroll events
+    // and prevents GSAP ScrollTrigger from firing, causing blank sections
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      // On mobile, just use native scroll; ScrollTrigger works fine without Lenis
+      ScrollTrigger.refresh();
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -18,7 +27,7 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1,
-      touchMultiplier: 1.5,
+      touchMultiplier: 2,
     });
 
     lenisRef.current = lenis;

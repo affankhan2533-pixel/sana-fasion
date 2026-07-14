@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -46,15 +46,14 @@ const collections = [
 ];
 
 const cardReveal = {
-  hidden: { clipPath: "inset(100% 0% 0% 0%)", opacity: 0.8, y: 30 },
+  hidden: { opacity: 0, y: 24 },
   visible: (i: number) => ({
-    clipPath: "inset(0% 0% 0% 0%)",
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1.2,
-      delay: i * 0.15,
-      ease: [0.76, 0, 0.24, 1] as [number, number, number, number],
+      duration: 0.8,
+      delay: i * 0.12,
+      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
     },
   }),
 };
@@ -116,7 +115,7 @@ function CollectionCard({ col, index, compact, large }: { col: (typeof collectio
       custom={index}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-20px" }}
       variants={cardReveal}
       className="w-full h-full relative group overflow-hidden bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.06)] border border-[#E6C280]/20 rounded-[2px]"
     >
