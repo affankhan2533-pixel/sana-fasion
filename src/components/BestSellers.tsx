@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -107,22 +107,18 @@ export default function BestSellers() {
           </div>
         </div>
 
-        {/* Responsive Grid - 2 cols on mobile/tablet, 4 cols on desktop */}
+        {/* Responsive Grid */}
         <div className="best-sellers-grid-wrapper w-full">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full items-stretch">
+
+          {/* ===== MOBILE Grid (< lg) — NO animation, always visible ===== */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden w-full items-stretch">
             {products.map((p, idx) => (
-              <motion.div
+              <div
                 key={p.id}
-                custom={idx}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-40px" }}
-                variants={cardReveal}
-                className="best-sellers-card group relative flex flex-col justify-between w-full h-full bg-[#FFFBF4] border border-accent-gold/15 p-4 sm:p-5 transition-all duration-500 hover:shadow-luxury hover:border-accent-gold/45 rounded-[2px]"
+                className="best-sellers-card group relative flex flex-col justify-between w-full h-full bg-[#FFFBF4] border border-accent-gold/15 p-3 sm:p-5 transition-all duration-500 hover:shadow-luxury hover:border-accent-gold/45 rounded-[2px]"
               >
                 <div className="flex flex-col h-full">
-                  {/* Image wrapper */}
-                  <div className="best-sellers-image-wrapper relative overflow-hidden mb-4 aspect-[3/4] w-full border border-accent-gold/10 shadow-sm rounded-[2px]">
+                  <div className="best-sellers-image-wrapper relative overflow-hidden mb-3 aspect-[3/4] w-full border border-accent-gold/10 shadow-sm rounded-[2px]">
                     <div className="absolute inset-0 w-full h-full">
                       <Image
                         src={p.image}
@@ -133,70 +129,86 @@ export default function BestSellers() {
                         priority={idx === 0}
                       />
                     </div>
-
-                    {/* Champagne Gold Frame overlay */}
-                    <div className="absolute inset-3 border border-[#E6C280]/40 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-10" />
-
-                    {/* Badge */}
                     {p.badge && (
-                      <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 z-10">
+                      <div className="absolute top-2 left-2 z-10">
+                        <span className="font-accent text-[7px] tracking-[0.15em] uppercase px-2 py-0.5 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
+                      </div>
+                    )}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
+                      className="absolute top-2 right-2 z-20 w-6 h-6 rounded-full flex items-center justify-center border border-accent-gold/15 bg-white/90 transition-all duration-300 hover:bg-white cursor-pointer"
+                    >
+                      <Heart className="w-3 h-3" fill={wishlist.includes(p.id) ? "var(--gold)" : "none"} color={wishlist.includes(p.id) ? "var(--gold)" : "var(--ink)"} />
+                    </button>
+                  </div>
+                  <div className="flex flex-col flex-grow">
+                    <span className="font-accent text-[8px] tracking-[0.18em] uppercase text-accent-gold/85 block mb-1">{p.category}</span>
+                    <h3 className="font-serif font-light text-sm text-text-primary mb-1 truncate leading-tight">{p.name}</h3>
+                    {p.craftsmanship && <span className="text-[9px] tracking-wide text-text-muted font-body italic mb-2">{p.craftsmanship}</span>}
+                  </div>
+                </div>
+                <div className="mt-1.5 w-full pt-1.5 border-t border-accent-gold/10">
+                  <Link href="/collections" className="w-full block">
+                    <div className="w-full justify-start text-[8px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 cursor-pointer">
+                      View Collection <ArrowRight size={9} />
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ===== DESKTOP Grid (lg+) — with animations ===== */}
+          <div className="hidden lg:grid grid-cols-4 gap-6 w-full items-stretch">
+            {products.map((p, idx) => (
+              <motion.div
+                key={p.id}
+                custom={idx}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "0px" }}
+                variants={cardReveal}
+                className="best-sellers-card group relative flex flex-col justify-between w-full h-full bg-[#FFFBF4] border border-accent-gold/15 p-5 transition-all duration-500 hover:shadow-luxury hover:border-accent-gold/45 rounded-[2px]"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="best-sellers-image-wrapper relative overflow-hidden mb-4 aspect-[3/4] w-full border border-accent-gold/10 shadow-sm rounded-[2px]">
+                    <div className="absolute inset-0 w-full h-full">
+                      <Image
+                        src={p.image}
+                        alt={p.name}
+                        fill
+                        className="object-cover object-top filter brightness-[0.95] transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
+                        sizes="22vw"
+                        priority={idx === 0}
+                      />
+                    </div>
+                    <div className="absolute inset-3 border border-[#E6C280]/40 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-10" />
+                    {p.badge && (
+                      <div className="absolute top-3.5 left-3.5 z-10">
                         <span className="font-accent text-[7.5px] tracking-[0.15em] uppercase px-2 py-0.5 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
                       </div>
                     )}
-
-                    {/* Wishlist Button */}
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleWish(p.id);
-                      }}
-                      className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border border-accent-gold/15 bg-white/90 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 hover:bg-white cursor-pointer"
+                      onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
+                      className="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full flex items-center justify-center border border-accent-gold/15 bg-white/90 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white cursor-pointer"
                     >
-                      <Heart
-                        className="w-3 h-3"
-                        fill={wishlist.includes(p.id) ? "var(--gold)" : "none"}
-                        color={wishlist.includes(p.id) ? "var(--gold)" : "var(--ink)"}
-                      />
+                      <Heart className="w-3 h-3" fill={wishlist.includes(p.id) ? "var(--gold)" : "none"} color={wishlist.includes(p.id) ? "var(--gold)" : "var(--ink)"} />
                     </button>
-
-                    {/* Quick view button overlay */}
-                    <div 
-                      className="absolute bottom-0 inset-x-0 h-10 sm:h-12 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-10 translate-y-2 group-hover:translate-y-0"
-                    >
-                      <button
-                        onClick={() => setQuickView(p)}
-                        className="flex items-center gap-1.5 font-accent text-[8.5px] sm:text-[9.5px] tracking-[0.22em] uppercase text-white hover:text-accent-gold-light transition-colors cursor-pointer"
-                      >
+                    <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-10 translate-y-2 group-hover:translate-y-0">
+                      <button onClick={() => setQuickView(p)} className="flex items-center gap-1.5 font-accent text-[9.5px] tracking-[0.22em] uppercase text-white hover:text-accent-gold-light transition-colors cursor-pointer">
                         <Eye size={11} /> Quick View
                       </button>
                     </div>
                   </div>
-
-                  {/* Info */}
                   <div className="flex flex-col flex-grow">
-                    {/* Collection Label */}
-                    <span className="font-accent text-[8.5px] tracking-[0.18em] uppercase text-accent-gold/85 block mb-1.5">
-                      {p.category}
-                    </span>
-
-                    {/* Product Title */}
-                    <h3 className="font-serif font-light text-base sm:text-lg md:text-xl text-text-primary mb-1.5 transition-transform duration-500 group-hover:-translate-y-0.5 truncate leading-tight">
-                      {p.name}
-                    </h3>
-
-                    {/* Craftsmanship tag */}
-                    {p.craftsmanship && (
-                      <span className="text-[10px] tracking-wide text-text-muted font-body italic mb-3">
-                        {p.craftsmanship}
-                      </span>
-                    )}
+                    <span className="font-accent text-[8.5px] tracking-[0.18em] uppercase text-accent-gold/85 block mb-1.5">{p.category}</span>
+                    <h3 className="font-serif font-light text-xl text-text-primary mb-1.5 transition-transform duration-500 group-hover:-translate-y-0.5 truncate leading-tight">{p.name}</h3>
+                    {p.craftsmanship && <span className="text-[10px] tracking-wide text-text-muted font-body italic mb-3">{p.craftsmanship}</span>}
                   </div>
                 </div>
-
-                {/* Bottom CTA (Always occupies space so no gaps or layout height changes occur) */}
                 <div className="mt-2 w-full pt-2 border-t border-accent-gold/10">
                   <Link href="/collections" className="w-full block">
-                    <div className="w-full justify-start text-[8.5px] sm:text-[9.5px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 transition-colors duration-300 hover:text-text-primary cursor-pointer">
+                    <div className="w-full justify-start text-[9.5px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 cursor-pointer">
                       View Collection <ArrowRight size={10} />
                     </div>
                   </Link>
@@ -204,8 +216,10 @@ export default function BestSellers() {
               </motion.div>
             ))}
           </div>
+
         </div>
       </div>
+
 
       {/* Quick View Modal */}
       <AnimatePresence>

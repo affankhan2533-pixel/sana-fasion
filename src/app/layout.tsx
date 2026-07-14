@@ -5,6 +5,12 @@ import Footer from "@/components/Footer";
 import LenisProvider from "@/components/LenisProvider";
 import ScrollProgress from "@/components/ScrollProgress";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://sanafashion.in"),
   title: {
