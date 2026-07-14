@@ -180,16 +180,16 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
+          {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center gap-10">
             {navLinks.map((l) => (
               <Link
                 key={l.label}
                 href={l.href}
-                className="underline-grow font-accent tracking-[0.08em] uppercase transition-colors duration-[250ms] hover:opacity-85"
+                className="underline-grow font-accent tracking-[0.1em] uppercase transition-colors duration-[250ms] hover:opacity-85"
                 style={{
                   color: (scrolled || isLightPage) ? "var(--text-primary)" : "#fff",
-                  fontSize: "15px",
+                  fontSize: "17px",
                   fontWeight: 500,
                   textShadow: (scrolled || isLightPage) ? "none" : "0 1px 3px rgba(0,0,0,0.35)",
                 }}
@@ -320,19 +320,19 @@ export default function Navbar() {
           </div>
 
           {/* Nav Links */}
-          <nav className="flex flex-col gap-1 px-6 py-6 flex-grow">
+          <nav className="flex flex-col gap-1 px-6 py-6 flex-grow justify-center">
             {navLinks.map((l) => (
               <div key={l.label}>
                 <Link
                   href={l.href}
                   onClick={closeDrawer}
-                  className="font-serif text-xl sm:text-2xl text-text-primary hover:text-accent-gold transition-all duration-300 flex items-center justify-between group py-3 pl-0 hover:pl-3 border-b border-[#E6C280]/10 last:border-0 border-l-0 hover:border-l-2 hover:border-accent-gold"
+                  className="font-serif text-2xl sm:text-3xl text-text-primary hover:text-accent-gold transition-all duration-300 flex items-center justify-between group py-4 pl-0 hover:pl-3 border-b border-[#E6C280]/10 last:border-0 border-l-0 hover:border-l-2 hover:border-accent-gold"
                 >
                   <span className="relative transition-transform duration-300 group-hover:translate-x-2">
                     {l.label}
                   </span>
                   <ArrowRight
-                    size={16}
+                    size={20}
                     className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-400 text-accent-gold"
                   />
                 </Link>
@@ -343,7 +343,7 @@ export default function Navbar() {
           {/* Footer */}
           <div className="px-6 py-6 border-t border-[#E6C280]/15 bg-cream-warm flex flex-col gap-5 flex-shrink-0">
             <Link href="/contact" onClick={closeDrawer} className="w-full block">
-              <LuxuryButton variant="primary" className="w-full">
+              <LuxuryButton variant="primary" className="w-full !h-[56px] !text-[16px] !rounded-[16px]">
                 Book Appointment
               </LuxuryButton>
             </Link>
