@@ -156,7 +156,7 @@ export default function Navbar() {
       <nav
         className="fixed top-0 left-0 right-0 z-[100] transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] flex items-center"
         style={{
-          height: scrolled ? "64px" : "76px",
+          height: scrolled ? "80px" : "96px",
           background: (scrolled || isLightPage)
             ? "rgba(255, 251, 244, 0.94)"
             : "linear-gradient(to bottom, rgba(10,5,2,0.6) 0%, rgba(10,5,2,0.0) 100%)",
@@ -165,7 +165,7 @@ export default function Navbar() {
           borderBottom: (scrolled || isLightPage) ? "1px solid rgba(200,133,26,0.18)" : "1px solid transparent",
         }}
       >
-        <div className="mx-auto px-4 sm:px-8 lg:px-12 flex items-center justify-between w-full max-w-[1400px]">
+        <div className="editorial-container flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0">
             <div className="relative h-[44px] w-[120px] lg:h-[56px] lg:w-[155px] transition-all duration-[250ms]">
@@ -200,7 +200,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
             {/* Ambient Player */}
             <button
               onClick={togglePlay}

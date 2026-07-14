@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState } from "react";
 import Image from "next/image";
@@ -37,44 +37,46 @@ export default function InstagramGallery() {
   const next = () => setLightbox(i => (i !== null ? (i + 1) % images.length : 0));
 
   return (
-    <section className="section py-16 sm:py-24 relative overflow-hidden bg-[#FFFBF4]">
+    <section className="section-spacing relative overflow-hidden bg-[#FFFBF4]">
       {/* Subtle top border divider */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-accent-gold/15 to-transparent" />
 
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-[1200px]">
+      <div className="editorial-container">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-10 sm:mb-14 flex flex-col sm:flex-row sm:items-end justify-between gap-5 border-b border-accent-gold/10 pb-6 sm:pb-8"
+          className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-accent-gold/10 pb-6 md:pb-8"
         >
-          <div>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 mb-1">
               <InstagramIcon size={14} color="var(--gold)" />
-              <span className="font-accent text-[10px] tracking-[0.22em] uppercase text-gold">@sana___fashion___01</span>
+              <span className="eyebrow-text text-gold">@sana___fashion___01</span>
             </div>
-            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-text-primary tracking-tight leading-[1.1]">
-              Follow Our <span className="italic font-normal text-gold font-serif">Story</span>
+            <h2 className="section-title-text">
+              Follow Our <span className="italic font-normal text-gold">Story</span>
             </h2>
           </div>
-          <a
-            href="https://www.instagram.com/sana___fashion___01/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 font-accent text-[10px] tracking-[0.2em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors border-b border-accent-gold/40 pb-1 cursor-pointer"
+          <div className="pb-1.5">
+            <a
+              href="https://www.instagram.com/sana___fashion___01/"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <InstagramIcon size={12} color="currentColor" /> Follow Us
-            </motion.button>
-          </a>
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 font-accent text-[15px] tracking-[0.2em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors border-b border-accent-gold/45 pb-1 cursor-pointer"
+              >
+                <InstagramIcon size={13} color="currentColor" /> Follow Us
+              </motion.button>
+            </a>
+          </div>
         </motion.div>
 
-        {/* Uniform responsive grid (replacing uneven masonry) */}
-        <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full">
+        {/* Uniform responsive 4-col grid */}
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full">
           {images.map((img, i) => (
             <motion.div
               key={i}
@@ -84,91 +86,81 @@ export default function InstagramGallery() {
               className="group relative overflow-hidden cursor-pointer rounded-[2px] shadow-sm border border-accent-gold/10"
               onClick={() => setLightbox(i)}
             >
-              <div className="relative overflow-hidden aspect-[4/5] w-full bg-cream-warm">
+              <div className="relative overflow-hidden aspect-[3/4] w-full bg-cream-warm">
                 <Image
                   src={img.src}
                   alt={img.alt}
                   fill
                   className="object-cover object-top filter brightness-[0.92] transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
-                  sizes="(max-width: 640px) 45vw, 22vw"
+                  sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 22vw"
                 />
                 
                 {/* Champagne Gold Frame overlay */}
                 <div className="absolute inset-3 border border-[#E6C280]/40 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-10" />
 
                 {/* Hover Instagram icon overlay */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity duration-300"
-                  style={{ background: "rgba(28, 14, 5, 0.65)" }}
-                >
-                  <InstagramIcon size={20} color="#E6C280" />
-                  <span className="font-accent text-[8.5px] tracking-[0.25em] uppercase text-[#E6C280]">View Gallery</span>
-                </motion.div>
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-20">
+                  <InstagramIcon size={24} color="#FFFBF4" />
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Lightbox */}
+      {/* Lightbox Modal */}
       <AnimatePresence>
         {lightbox !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="lightbox"
+            className="lightbox z-50 p-4"
             onClick={() => setLightbox(null)}
           >
-            {/* Close */}
-            <button className="absolute top-5 right-5 z-50 w-10 h-10 flex items-center justify-center" style={{ background: "rgba(255,248,240,0.1)" }} onClick={() => setLightbox(null)}>
-              <X size={20} color="white" />
-            </button>
-
-            {/* Prev */}
+            {/* Close Button */}
             <button
-              className="absolute left-3 sm:left-8 z-50 w-10 h-10 flex items-center justify-center"
-              style={{ background: "rgba(255,248,240,0.1)" }}
-              onClick={e => { e.stopPropagation(); prev(); }}
+              onClick={() => setLightbox(null)}
+              className="absolute top-4 right-4 z-50 w-10 h-10 rounded-full flex items-center justify-center bg-black/40 hover:bg-black/60 transition-colors text-white cursor-pointer"
+              aria-label="Close Lightbox"
             >
-              <ChevronLeft size={22} color="white" />
+              <X size={18} />
             </button>
 
-            {/* Image */}
+            {/* Prev Button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); prev(); }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center bg-black/40 hover:bg-black/60 transition-colors text-white cursor-pointer"
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); next(); }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center bg-black/40 hover:bg-black/60 transition-colors text-white cursor-pointer"
+              aria-label="Next image"
+            >
+              <ChevronRight size={20} />
+            </button>
+
+            {/* Image Box */}
             <motion.div
-              key={lightbox}
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.92 }}
-              transition={{ duration: 0.35 }}
-              onClick={e => e.stopPropagation()}
-              className="relative"
-              style={{ width: "min(580px,92vw)", height: "min(680px,80svh)" }}
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="relative w-full max-w-lg aspect-[3/4] rounded-[2px] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
               <Image
                 src={images[lightbox].src}
                 alt={images[lightbox].alt}
                 fill
-                className="object-contain"
-                sizes="600px"
+                className="object-cover object-top"
+                sizes="(max-width: 768px) 100vw, 600px"
               />
             </motion.div>
-
-            {/* Next */}
-            <button
-              className="absolute right-3 sm:right-8 z-50 w-10 h-10 flex items-center justify-center"
-              style={{ background: "rgba(255,248,240,0.1)" }}
-              onClick={e => { e.stopPropagation(); next(); }}
-            >
-              <ChevronRight size={22} color="white" />
-            </button>
-
-            {/* Counter */}
-            <div className="absolute bottom-6 font-accent text-[9px] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.45)" }}>
-              {lightbox + 1} / {images.length}
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

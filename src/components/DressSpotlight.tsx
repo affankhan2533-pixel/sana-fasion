@@ -105,12 +105,12 @@ export default function DressSpotlight() {
   }, [isMobile]);
 
   return (
-    <section ref={sectionRef} className="section py-16 sm:py-24 md:py-32 relative overflow-hidden bg-[#FFF5E6]">
+    <section ref={sectionRef} className="section-spacing relative overflow-hidden bg-[#FFF5E6]">
       {/* Subtle top border divider */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-accent-gold/20 to-transparent" />
 
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-[1200px]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <div className="editorial-container">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Right Column (Garment Image - First on Mobile, Right on Desktop) */}
           <div className="lg:col-span-7 order-first lg:order-last flex justify-center w-full">
@@ -129,15 +129,15 @@ export default function DressSpotlight() {
 
           {/* Left Column (Details Text - Second on Mobile, Left on Desktop) */}
           <div className="lg:col-span-5 flex flex-col justify-center w-full">
-            <span className="spotlight-fade-up font-accent text-[10px] tracking-[0.25em] uppercase text-gold block mb-3">
+            <span className="spotlight-fade-up eyebrow-text text-gold mb-4">
               Atelier Craftsmanship
             </span>
             
-            <h2 className="spotlight-fade-up font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-text-primary tracking-tight leading-[1.1] mb-5">
-              Interactive <span className="italic font-normal text-gold font-serif">Details</span>
+            <h2 className="spotlight-fade-up section-title-text mb-6">
+              Interactive <span className="italic font-normal text-gold">Details</span>
             </h2>
             
-            <p className="spotlight-fade-up font-body text-xs sm:text-sm text-text-muted leading-relaxed mb-8">
+            <p className="spotlight-fade-up body-text-standard text-text-muted mb-8">
               A dissection of our signature heritage pieces, highlighting the generational artistry and craftsmanship details behind every thread of SANA couture.
             </p>
 
@@ -148,16 +148,16 @@ export default function DressSpotlight() {
                 return (
                   <div
                     key={idx}
-                    className="spotlight-card group w-full bg-[#FFFBF4] border border-[#E6C280]/20 p-4 sm:p-5 flex gap-4 items-start rounded-[2px] transition-all duration-500 hover:shadow-luxury hover:border-[#E6C280]/60 hover:-translate-y-0.5"
+                    className="spotlight-card group w-full bg-[#FFFBF4] border border-[#E6C280]/20 p-5 flex gap-4 items-start rounded-[2px] transition-all duration-500 hover:shadow-luxury hover:border-[#E6C280]/60 hover:-translate-y-0.5"
                   >
                     <div className="w-9 h-9 rounded-full bg-[#FFF5E6] flex items-center justify-center text-accent-gold flex-shrink-0 group-hover:bg-[#E6C280] group-hover:text-[#121213] transition-colors duration-300">
                       <IconComponent size={16} />
                     </div>
                     <div>
-                      <h3 className="font-serif text-base sm:text-lg text-text-primary font-medium mb-1">
+                      <h3 className="font-serif text-lg text-text-primary font-medium mb-1">
                         {item.title}
                       </h3>
-                      <p className="font-body text-xs sm:text-sm text-text-muted leading-relaxed">
+                      <p className="font-body text-[14px] text-text-muted leading-relaxed">
                         {item.desc}
                       </p>
                     </div>
@@ -172,5 +172,3 @@ export default function DressSpotlight() {
     </section>
   );
 }
-
-

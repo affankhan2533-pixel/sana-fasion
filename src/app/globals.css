@@ -1305,13 +1305,89 @@ textarea:focus-visible,
   animation: text-reveal var(--transition-duration-slow) var(--ease-luxury) forwards;
 }
 
-.hover-lift {
-  transition: transform var(--transition-duration-normal) var(--ease-luxury),
-              box-shadow var(--transition-duration-normal) var(--ease-luxury);
-}
-
 .hover-lift:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lift);
 }
+
+/* ==================================================
+   LUXURY EDITORIAL GRID Refactoring classes
+   ================================================== */
+
+.editorial-container {
+  max-width: 1440px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+@media (min-width: 768px) {
+  .editorial-container {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .editorial-container {
+    padding-left: 80px !important;
+    padding-right: 80px !important;
+  }
+}
+
+.section-spacing {
+  padding-top: 72px !important;
+  padding-bottom: 72px !important;
+}
+
+@media (min-width: 768px) {
+  .section-spacing {
+    padding-top: 100px !important;
+    padding-bottom: 100px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-spacing {
+    padding-top: 160px !important;
+    padding-bottom: 160px !important;
+  }
+}
+
+.eyebrow-text {
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.25em !important;
+  font-weight: 500 !important;
+  display: block !important;
+}
+
+.section-title-text {
+  font-family: var(--font-serif) !important;
+  font-weight: 300 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.015em !important;
+  font-size: 38px !important;
+}
+
+@media (min-width: 768px) {
+  .section-title-text {
+    font-size: 52px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-title-text {
+    font-size: 64px !important;
+  }
+}
+
+.body-text-standard {
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  font-family: var(--font-body) !important;
+}
+
 

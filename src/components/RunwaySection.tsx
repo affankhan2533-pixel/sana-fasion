@@ -195,7 +195,7 @@ export default function RunwaySection() {
   return (
     <div 
       ref={containerRef} 
-      className="relative py-16 sm:py-20 md:py-24 overflow-hidden w-full bg-[#FFFBF4]"
+      className="relative section-spacing overflow-hidden w-full bg-[#FFFBF4]"
     >
       {/* CSS Pulse & Gradient animations for premium details */}
       <style>{`
@@ -236,18 +236,18 @@ export default function RunwaySection() {
       `}</style>
 
       {/* Section Title */}
-      <div className="container mx-auto px-6 sm:px-12 lg:px-24 mb-16 md:mb-20 text-center">
-        <span className="label block mb-3 text-gold tracking-[0.3em] uppercase text-[10px] font-accent">
+      <div className="editorial-container mb-12 md:mb-16 text-center">
+        <span className="eyebrow-text text-gold mb-4">
           — The Atelier Journey
         </span>
-        <h2 className="heading-xl text-text-primary text-4xl sm:text-5xl lg:text-6xl font-light font-display">
-          The Journey of a <em className="text-gold font-serif italic font-medium">Thread</em>
+        <h2 className="section-title-text text-text-primary">
+          The Journey of a <span className="italic font-normal text-gold">Thread</span>
         </h2>
         <div className="divider-line mx-auto mt-4 w-20 h-[1.5px]" style={{ background: "linear-gradient(90deg, transparent, var(--gold), transparent)" }} />
       </div>
 
       {/* Timeline container */}
-      <div className="container mx-auto px-4 sm:px-8 lg:px-16 relative timeline-items-wrapper max-w-[1100px]">
+      <div className="editorial-container relative timeline-items-wrapper max-w-[1320px]">
         
         {/* Background static line - Desktop center */}
         <div className="absolute top-16 bottom-16 left-1/2 w-[2px] transform -translate-x-1/2 pointer-events-none hidden md:block timeline-line-static will-change-transform" />

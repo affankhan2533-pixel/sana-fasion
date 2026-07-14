@@ -83,143 +83,105 @@ export default function BestSellers() {
     setWishlist(w => w.includes(id) ? w.filter(i => i !== id) : [...w, id]);
 
   return (
-    <section className="section py-16 sm:py-24 md:py-32 relative overflow-hidden bg-[#FFF5E6]">
+    <section className="section-spacing relative overflow-hidden bg-[#FFF5E6]">
       {/* Subtle gold line ornament background */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-accent-gold/20 to-transparent" />
 
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-[1200px]">
-        {/* Header */}
-        <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-accent-gold/10 pb-6 sm:pb-8">
-          <div>
-            <span className="font-accent text-[10px] tracking-[0.25em] uppercase text-gold block mb-3">
-              — Editorial Selection
-            </span>
-            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-text-primary tracking-tight leading-[1.1]">
-              Featured Atelier <span className="italic font-normal text-gold font-serif">Pieces</span>
+      <div className="editorial-container">
+        {/* Header — Baseline aligned */}
+        <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-accent-gold/10 pb-6 md:pb-8">
+          <div className="flex flex-col gap-4">
+            <span className="eyebrow-text text-gold">— Editorial Selection</span>
+            <h2 className="section-title-text">
+              Featured Atelier <span className="italic font-normal text-gold">Pieces</span>
             </h2>
           </div>
-          <div className="hidden md:block">
+          <div className="pb-1.5">
             <Link href="/collections">
-              <button className="flex items-center gap-2 font-accent text-[10px] tracking-[0.2em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors border-b border-accent-gold/40 pb-1 cursor-pointer">
+              <button className="flex items-center gap-2 font-accent text-[15px] tracking-[0.2em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors border-b border-accent-gold/45 pb-1 cursor-pointer whitespace-nowrap">
                 View All Collections <ArrowRight size={12} />
               </button>
             </Link>
           </div>
         </div>
 
-        {/* Responsive Grid */}
-        <div className="best-sellers-grid-wrapper w-full">
+        {/* Grid Layout — 4 columns desktop / 2 tablet / 1 mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full items-stretch">
+          {products.map((p, idx) => (
+            <motion.div
+              key={p.id}
+              custom={idx}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "0px" }}
+              variants={cardReveal}
+              className="best-sellers-card group relative flex flex-col justify-between w-full h-full bg-[#FFFBF4] border border-accent-gold/15 p-6 sm:p-8 transition-all duration-500 hover:shadow-luxury hover:border-accent-gold/45 rounded-[2px]"
+            >
+              <div className="flex flex-col h-full">
+                {/* 3:4 aspect ratio image wrapper */}
+                <div className="best-sellers-image-wrapper relative overflow-hidden mb-6 aspect-[3/4] w-full border border-accent-gold/10 shadow-sm rounded-[2px]">
+                  <div className="absolute inset-0 w-full h-full">
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      fill
+                      className="object-cover object-top filter brightness-[0.95] transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
+                      sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 22vw"
+                      priority={idx === 0}
+                    />
+                  </div>
 
-          {/* ===== MOBILE Grid (< lg) — NO animation, always visible ===== */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden w-full items-stretch">
-            {products.map((p, idx) => (
-              <div
-                key={p.id}
-                className="best-sellers-card group relative flex flex-col justify-between w-full h-full bg-[#FFFBF4] border border-accent-gold/15 p-3 sm:p-5 transition-all duration-500 hover:shadow-luxury hover:border-accent-gold/45 rounded-[2px]"
-              >
-                <div className="flex flex-col h-full">
-                  <div className="best-sellers-image-wrapper relative overflow-hidden mb-3 aspect-[3/4] w-full border border-accent-gold/10 shadow-sm rounded-[2px]">
-                    <div className="absolute inset-0 w-full h-full">
-                      <Image
-                        src={p.image}
-                        alt={p.name}
-                        fill
-                        className="object-cover object-top filter brightness-[0.95] transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
-                        sizes="(max-width: 768px) 45vw, 22vw"
-                        priority={idx === 0}
-                      />
+                  {/* Gold interior outline overlay */}
+                  <div className="absolute inset-3 border border-[#E6C280]/40 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-10" />
+
+                  {/* Badge */}
+                  {p.badge && (
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="font-accent text-[8px] tracking-[0.15em] uppercase px-2.5 py-1 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
                     </div>
-                    {p.badge && (
-                      <div className="absolute top-2 left-2 z-10">
-                        <span className="font-accent text-[7px] tracking-[0.15em] uppercase px-2 py-0.5 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
-                      </div>
-                    )}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
-                      className="absolute top-2 right-2 z-20 w-6 h-6 rounded-full flex items-center justify-center border border-accent-gold/15 bg-white/90 transition-all duration-300 hover:bg-white cursor-pointer"
-                    >
-                      <Heart className="w-3 h-3" fill={wishlist.includes(p.id) ? "var(--gold)" : "none"} color={wishlist.includes(p.id) ? "var(--gold)" : "var(--ink)"} />
+                  )}
+
+                  {/* Wishlist Button */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
+                    className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center border border-accent-gold/15 bg-white/90 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white cursor-pointer"
+                    aria-label="Add to wishlist"
+                  >
+                    <Heart className="w-3.5 h-3.5" fill={wishlist.includes(p.id) ? "var(--gold)" : "none"} color={wishlist.includes(p.id) ? "var(--gold)" : "var(--ink)"} />
+                  </button>
+
+                  {/* Quick view button overlay */}
+                  <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-10 translate-y-2 group-hover:translate-y-0">
+                    <button onClick={() => setQuickView(p)} className="flex items-center gap-1.5 font-accent text-[10px] tracking-[0.22em] uppercase text-white hover:text-accent-gold-light transition-colors cursor-pointer">
+                      <Eye size={12} /> Quick View
                     </button>
                   </div>
-                  <div className="flex flex-col flex-grow">
-                    <span className="font-accent text-[8px] tracking-[0.18em] uppercase text-accent-gold/85 block mb-1">{p.category}</span>
-                    <h3 className="font-serif font-light text-sm text-text-primary mb-1 truncate leading-tight">{p.name}</h3>
-                    {p.craftsmanship && <span className="text-[9px] tracking-wide text-text-muted font-body italic mb-2">{p.craftsmanship}</span>}
-                  </div>
                 </div>
-                <div className="mt-1.5 w-full pt-1.5 border-t border-accent-gold/10">
-                  <Link href="/collections" className="w-full block">
-                    <div className="w-full justify-start text-[8px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 transition-colors duration-300 hover:text-text-primary cursor-pointer">
-                      View Collection <ArrowRight size={9} />
-                    </div>
-                  </Link>
+
+                {/* Info block */}
+                <div className="flex flex-col flex-grow">
+                  <span className="font-accent text-[10px] tracking-[0.18em] uppercase text-accent-gold/90 block mb-1.5">{p.category}</span>
+                  <h3 className="font-serif font-light text-xl sm:text-2xl text-text-primary mb-2 transition-transform duration-500 group-hover:-translate-y-0.5 leading-tight">{p.name}</h3>
+                  {p.craftsmanship && <span className="text-[12px] tracking-wide text-text-muted font-body italic block mb-4">{p.craftsmanship}</span>}
                 </div>
               </div>
-            ))}
-          </div>
 
-          {/* ===== DESKTOP Grid (lg+) — with animations ===== */}
-          <div className="hidden lg:grid grid-cols-4 gap-6 w-full items-stretch">
-            {products.map((p, idx) => (
-              <motion.div
-                key={p.id}
-                custom={idx}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "0px" }}
-                variants={cardReveal}
-                className="best-sellers-card group relative flex flex-col justify-between w-full h-full bg-[#FFFBF4] border border-accent-gold/15 p-5 transition-all duration-500 hover:shadow-luxury hover:border-accent-gold/45 rounded-[2px]"
-              >
-                <div className="flex flex-col h-full">
-                  <div className="best-sellers-image-wrapper relative overflow-hidden mb-4 aspect-[3/4] w-full border border-accent-gold/10 shadow-sm rounded-[2px]">
-                    <div className="absolute inset-0 w-full h-full">
-                      <Image
-                        src={p.image}
-                        alt={p.name}
-                        fill
-                        className="object-cover object-top filter brightness-[0.95] transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
-                        sizes="22vw"
-                        priority={idx === 0}
-                      />
-                    </div>
-                    <div className="absolute inset-3 border border-[#E6C280]/40 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-10" />
-                    {p.badge && (
-                      <div className="absolute top-3.5 left-3.5 z-10">
-                        <span className="font-accent text-[7.5px] tracking-[0.15em] uppercase px-2.5 py-0.5 bg-[#8B1A3A] text-white rounded-[1px] shadow-sm">{p.badge}</span>
-                      </div>
-                    )}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
-                      className="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full flex items-center justify-center border border-accent-gold/15 bg-white/90 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white cursor-pointer"
-                    >
-                      <Heart className="w-3 h-3" fill={wishlist.includes(p.id) ? "var(--gold)" : "none"} color={wishlist.includes(p.id) ? "var(--gold)" : "var(--ink)"} />
-                    </button>
-                    <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-10 translate-y-2 group-hover:translate-y-0">
-                      <button onClick={() => setQuickView(p)} className="flex items-center gap-1.5 font-accent text-[9.5px] tracking-[0.22em] uppercase text-white hover:text-accent-gold-light transition-colors cursor-pointer">
-                        <Eye size={11} /> Quick View
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex flex-col flex-grow">
-                    <span className="font-accent text-[8.5px] tracking-[0.18em] uppercase text-accent-gold/85 block mb-1.5">{p.category}</span>
-                    <h3 className="font-serif font-light text-xl text-text-primary mb-1.5 transition-transform duration-500 group-hover:-translate-y-0.5 truncate leading-tight">{p.name}</h3>
-                    {p.craftsmanship && <span className="text-[10px] tracking-wide text-text-muted font-body italic mb-3">{p.craftsmanship}</span>}
-                  </div>
+              {/* Price & CTA */}
+              <div className="mt-4 w-full pt-4 border-t border-accent-gold/10 flex flex-col gap-3">
+                <div className="flex items-baseline justify-between">
+                  <span className="font-accent text-[15px] font-medium text-text-primary">₹{p.price.toLocaleString("en-IN")}</span>
+                  <span className="font-accent text-[12px] text-text-muted line-through">₹{p.original.toLocaleString("en-IN")}</span>
                 </div>
-                <div className="mt-2 w-full pt-2 border-t border-accent-gold/10">
-                  <Link href="/collections" className="w-full block">
-                    <div className="w-full justify-start text-[9.5px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 transition-colors duration-300 hover:text-text-primary cursor-pointer">
-                      View Collection <ArrowRight size={10} />
-                    </div>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
+                <Link href="/collections" className="w-full block">
+                  <div className="w-full justify-start text-[11px] font-accent tracking-[0.2em] uppercase text-accent-gold flex items-center gap-1.5 transition-colors duration-300 hover:text-text-primary cursor-pointer">
+                    View Collection <ArrowRight size={11} />
+                  </div>
+                </Link>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
-
 
       {/* Quick View Modal */}
       <AnimatePresence>
@@ -310,4 +272,3 @@ export default function BestSellers() {
     </section>
   );
 }
-

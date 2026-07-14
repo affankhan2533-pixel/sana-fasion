@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
@@ -54,24 +54,24 @@ export default function Testimonials() {
   const t = testimonials[current];
 
   return (
-    <section ref={containerRef} className="section py-16 sm:py-24 md:py-32 relative overflow-hidden bg-[#FFFBF4]">
+    <section ref={containerRef} className="section-spacing relative overflow-hidden bg-[#FFFBF4]">
       {/* Subtle top border divider */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-accent-gold/25 to-transparent" />
 
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-[1100px]">
-        {/* Section Heading (Always on top, centered on mobile, left on desktop) */}
+      <div className="editorial-container">
+        {/* Section Heading — Center on mobile, left on desktop */}
         <div className="mb-12 md:mb-16 text-center lg:text-left max-w-xl mx-auto lg:mx-0">
-          <span className="font-accent text-[10px] tracking-[0.25em] uppercase text-gold block mb-3">— Client Stories</span>
-          <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-text-primary tracking-tight leading-[1.1] mb-4">
-            Stories of <span className="italic font-normal text-gold font-serif">Elegance</span>
+          <span className="eyebrow-text text-gold mb-4">— Client Stories</span>
+          <h2 className="section-title-text mb-4">
+            Stories of <span className="italic font-normal text-gold">Elegance</span>
           </h2>
-          <p className="font-body text-xs sm:text-sm text-text-muted leading-relaxed">
+          <p className="body-text-standard text-text-muted">
             Discover how SANA couture is styled and worn by our brides and clients around the world to celebrate their most cherished moments.
           </p>
         </div>
 
         {/* Two-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Right Column: Garment/Client Image (First on Mobile, Right on Desktop) */}
           <div className="lg:col-span-6 lg:col-start-7 order-first lg:order-last flex justify-center w-full">
@@ -124,7 +124,7 @@ export default function Testimonials() {
                   {/* Author detail */}
                   <div className="flex flex-col">
                     <span className="font-serif text-base sm:text-lg text-text-primary font-medium">{t.name}</span>
-                    <span className="font-accent text-[9px] tracking-[0.18em] uppercase text-text-muted mt-1">
+                    <span className="font-accent text-[11px] tracking-[0.18em] uppercase text-text-muted mt-1">
                       {t.role} · {t.location} · {t.occasion}
                     </span>
                   </div>
