@@ -227,7 +227,7 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
       </div>
 
       {/* Decorative High-Fashion Frame Lines */}
-      <div className="absolute top-24 bottom-16 left-6 right-6 border border-[rgba(200,133,26,0.18)] z-20 pointer-events-none hidden md:block">
+      <div className="absolute top-24 bottom-10 left-6 right-6 border border-[rgba(200,133,26,0.18)] z-10 pointer-events-none hidden md:block">
         <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-[var(--gold-light)]"></div>
         <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[var(--gold-light)]"></div>
         <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-[var(--gold-light)]"></div>
@@ -237,7 +237,7 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
       {/* Hero Content Panel */}
       <motion.div
         style={{ y: textY, opacity }}
-        className="relative z-20 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-24 max-w-[1400px] mx-auto w-full hero-content-inner"
+        className="relative z-20 h-full flex flex-col justify-center editorial-container hero-content-inner"
       >
         {/* Label */}
         <span 
@@ -290,7 +290,7 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
             </LuxuryButton>
           </Link>
           <Link href="/contact">
-            <LuxuryButton variant="secondary">
+            <LuxuryButton variant="secondary" themeType="dark">
               Book Atelier Consult
             </LuxuryButton>
           </Link>

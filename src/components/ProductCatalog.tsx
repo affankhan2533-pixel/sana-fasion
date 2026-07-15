@@ -630,10 +630,15 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           justify-content: center;
           gap: 5px;
           text-decoration: none;
-          transition: background 0.25s ease;
+          transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
           white-space: nowrap;
           flex-shrink: 0;
           overflow: hidden;
+        }
+        .card-btn-primary:hover {
+          background: #C8851A;
+          box-shadow: 0 4px 12px rgba(200, 133, 26, 0.25);
+          transform: translateY(-1px);
         }
         .card-btn-wa {
           width: 40px;
@@ -646,7 +651,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           justify-content: center;
           gap: 6px;
           text-decoration: none;
-          transition: background 0.25s ease;
+          transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
           flex-shrink: 0;
           font-family: 'Josefin Sans', sans-serif;
           font-size: 10px;
@@ -654,6 +659,11 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           text-transform: uppercase;
           font-weight: 700;
           white-space: nowrap;
+        }
+        .card-btn-wa:hover {
+          background: #123C21;
+          box-shadow: 0 4px 12px rgba(27, 94, 53, 0.25);
+          transform: translateY(-1px);
         }
         .card-btn-wa-text { display: none; }
 
@@ -711,9 +721,9 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background:"#FFFFFF",
-        borderRadius:"20px",
-        border:"1px solid #EAE3D8",
+        background:"#FFFBF7",
+        borderRadius:"2px",
+        border:"1px solid rgba(200, 133, 26, 0.15)",
         overflow:"hidden",
         display:"flex",
         flexDirection:"column",
@@ -723,7 +733,7 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
       }}
     >
       {/* ── Image ── */}
-      <div style={{ position:"relative", aspectRatio:"3/4", overflow:"hidden", background:"#F5EFE6", borderRadius:"20px 20px 0 0", flexShrink:0 }}>
+      <div style={{ position:"relative", aspectRatio:"3/4", overflow:"hidden", background:"#F5EFE6", borderRadius:"2px 2px 0 0", flexShrink:0 }}>
         <Image
           src={p.thumbnail}
           alt={p.title}
@@ -764,17 +774,19 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
               initial={{ opacity:0, y:8 }}
               animate={{ opacity:1, y:0 }}
               exit={{ opacity:0, y:8 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ duration:0.18 }}
               onClick={e => { e.preventDefault(); onQuickView(); }}
               style={{
                 position:"absolute", bottom:"12px", left:"50%", transform:"translateX(-50%)",
                 height:"36px", padding:"0 16px", borderRadius:"999px",
                 background:"rgba(255,255,255,0.95)", border:"1px solid #E0D8CC",
-                display:"none", alignItems:"center", gap:"6px",
+                display:"flex", alignItems:"center", gap:"6px",
                 fontFamily:"'Josefin Sans', sans-serif", fontSize:"10px",
                 letterSpacing:"0.12em", textTransform:"uppercase", fontWeight:700,
                 color:"#1A0F0A", cursor:"pointer", zIndex:3, whiteSpace:"nowrap",
-                backdropFilter:"blur(8px)"
+                backdropFilter:"blur(8px)",
+                boxShadow:"0 4px 12px rgba(26, 15, 10, 0.15)"
               }}
               className="qv-btn"
               aria-label="Quick View"

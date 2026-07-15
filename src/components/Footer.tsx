@@ -82,7 +82,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-radial-at-t from-[#1C1C1E] via-transparent to-transparent opacity-40 pointer-events-none" />
       
       {/* Main Spacious Editorial Layout */}
-      <div className="py-10 sm:py-20 md:py-28 max-w-[1400px] mx-auto px-5 sm:px-12 md:px-16 relative z-10">
+      <div className="py-10 sm:py-20 md:py-28 editorial-container relative z-10">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -253,9 +253,9 @@ export default function Footer() {
             {/* Book Appointment CTA Button */}
             <div className="mb-5 lg:mb-10 w-full">
               <Link href="/contact" className="w-full block">
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", width:"100%", height:"44px", borderRadius:"10px", background:"#C8851A", color:"#FFFFFF", fontFamily:"'Josefin Sans', sans-serif", fontSize:"11px", letterSpacing:"0.15em", textTransform:"uppercase", fontWeight:700, cursor:"pointer", textDecoration:"none" }}>
-                  Book Appointment →
-                </div>
+                <LuxuryButton variant="primary" className="w-full !h-[44px]">
+                  Book Appointment
+                </LuxuryButton>
               </Link>
             </div>
 
@@ -312,7 +312,7 @@ export default function Footer() {
 
       {/* Bottom visually separated copyright bar */}
       <div className="border-t border-[#E6C280]/10 bg-[#0e0e10] py-5 lg:py-8 relative z-10">
-        <div className="max-w-[1400px] mx-auto px-6 sm:px-12 md:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="editorial-container flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="font-accent text-[9px] tracking-[0.18em] text-[#FFFBF4]/40">
             © {new Date().getFullYear()} SANA FASHION HOUSE. ALL RIGHTS RESERVED.
           </p>

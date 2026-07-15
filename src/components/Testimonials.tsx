@@ -59,14 +59,15 @@ export default function Testimonials() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-accent-gold/25 to-transparent" />
 
       <div className="editorial-container">
-        {/* Section Heading — Center on mobile, left on desktop */}
-        <div className="mb-12 md:mb-16 text-center lg:text-left max-w-xl mx-auto lg:mx-0">
-          <span className="eyebrow-text text-gold mb-4">— Client Stories</span>
+        {/* Section Heading — Centered Classy Layout */}
+        <div className="mb-12 md:mb-16 flex flex-col items-center text-center max-w-3xl mx-auto">
+          <span className="eyebrow-text text-gold mb-3">— Client Stories</span>
           <h2 className="section-title-text mb-4">
             Stories of <span className="italic font-normal text-gold">Elegance</span>
           </h2>
-          <p className="body-text-standard text-text-muted">
-            Discover how SANA couture is styled and worn by our brides and clients around the world to celebrate their most cherished moments.
+          <div className="w-12 h-[1px] bg-accent-gold/45 my-4" />
+          <p className="font-serif italic text-base md:text-lg text-text-muted leading-relaxed max-w-2xl">
+            &ldquo;Discover how SANA couture is styled and worn by our brides and clients around the world to celebrate their most cherished moments.&rdquo;
           </p>
         </div>
 

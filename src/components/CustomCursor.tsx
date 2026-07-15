@@ -19,11 +19,13 @@ export default function CustomCursor() {
       }
     };
 
-    const onEnter = () => {
-      if (ringRef.current) ringRef.current.classList.add("hovering");
-    };
-    const onLeave = () => {
-      if (ringRef.current) ringRef.current.classList.remove("hovering");
+    const onMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.closest("a") || target.closest("button") || target.closest("[data-hover]"))) {
+        ringRef.current?.classList.add("hovering");
+      } else {
+        ringRef.current?.classList.remove("hovering");
+      }
     };
 
     let raf: number;
@@ -39,19 +41,12 @@ export default function CustomCursor() {
     animate();
 
     window.addEventListener("mousemove", onMove, { passive: true });
-    const els = document.querySelectorAll("a, button, [data-hover]");
-    els.forEach(el => {
-      el.addEventListener("mouseenter", onEnter);
-      el.addEventListener("mouseleave", onLeave);
-    });
+    window.addEventListener("mouseover", onMouseOver, { passive: true });
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
-      els.forEach(el => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", onLeave);
-      });
+      window.removeEventListener("mouseover", onMouseOver);
     };
   }, []);
 

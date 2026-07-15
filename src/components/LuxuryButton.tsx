@@ -7,12 +7,14 @@ import { ArrowRight } from "lucide-react";
 interface LuxuryButtonProps extends HTMLMotionProps<"button"> {
   variant?: "primary" | "secondary";
   showArrow?: boolean;
+  themeType?: "light" | "dark";
   children: React.ReactNode;
 }
 
 export default function LuxuryButton({
   variant = "primary",
   showArrow = false,
+  themeType = "light",
   children,
   className = "",
   type = "button",
@@ -33,7 +35,9 @@ export default function LuxuryButton({
         transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer
         ${isPrimary 
           ? "bg-gradient-to-r from-[#E6C280] to-[#DFBA73] text-[#121213] shadow-md hover:shadow-[0_8px_20px_rgba(230,194,128,0.35)] hover:brightness-105 border border-transparent"
-          : "bg-transparent text-[#E6C280] border border-[#E6C280]/60 backdrop-blur-[10px] hover:bg-[#E6C280] hover:text-[#121213] hover:border-transparent hover:shadow-[0_8px_20px_rgba(230,194,128,0.25)]"
+          : themeType === "dark"
+            ? "bg-transparent text-[#E6C280] border border-[#E6C280]/60 backdrop-blur-[10px] hover:bg-[#E6C280] hover:text-[#121213] hover:border-transparent hover:shadow-[0_8px_20px_rgba(230,194,128,0.25)]"
+            : "bg-transparent text-[#1C0E05] border border-[#C8851A]/40 backdrop-blur-[10px] hover:bg-[#C8851A] hover:text-[#FFFBF4] hover:border-transparent hover:shadow-[0_8px_20px_rgba(200,133,26,0.15)]"
         }
         ${className}
       `}

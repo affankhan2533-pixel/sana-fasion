@@ -61,7 +61,7 @@ const cardReveal = {
 // Premium Card Inner (Standard 3:4 aspect ratio, luxury fonts & hover zoom)
 function CardInner({ col }: { col: (typeof collections)[0] }) {
   return (
-    <Link href={col.href} className="block relative w-full h-full group">
+    <Link href={col.href} className="block relative w-full group">
       {/* 3:4 Aspect Ratio Image Box */}
       <div className="relative w-full aspect-[3/4] overflow-hidden rounded-[2px]">
         <Image
@@ -87,7 +87,7 @@ function CardInner({ col }: { col: (typeof collections)[0] }) {
       </div>
 
       {/* Text Info */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20 text-white flex flex-col justify-end">
+      <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 z-20 text-white flex flex-col justify-end">
         <span className="font-serif italic text-[11px] sm:text-[13px] tracking-wide text-[#E6C280]/90 block mb-1">
           {col.sub}
         </span>
@@ -139,7 +139,7 @@ export default function FeaturedCollections() {
               whileInView="visible"
               viewport={{ once: true, margin: "0px" }}
               variants={cardReveal}
-              className="relative w-full h-full bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.05)] border border-[#E6C280]/20 rounded-[2px]"
+              className="relative w-full bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.05)] border border-[#E6C280]/20 rounded-[2px]"
             >
               <CardInner col={col} />
             </motion.div>

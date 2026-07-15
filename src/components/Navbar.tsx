@@ -257,7 +257,11 @@ export default function Navbar() {
 
             {/* Book Appointment (Desktop only) */}
             <Link href="/contact" className="hidden lg:block">
-              <LuxuryButton variant="secondary" className="!h-[50px] !px-6 !rounded-[14px]">
+              <LuxuryButton 
+                variant="secondary" 
+                themeType={(scrolled || isLightPage) ? "light" : "dark"}
+                className="!h-[50px] !px-6 !rounded-[14px]"
+              >
                 Book Appointment
               </LuxuryButton>
             </Link>

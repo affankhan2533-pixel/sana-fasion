@@ -52,7 +52,7 @@ const cardReveal = {
 // Premium Card Inner (Standard 3:4 aspect ratio, luxury fonts & hover zoom)
 function CardInner({ ed }: { ed: (typeof editorials)[0] }) {
   return (
-    <Link href={ed.href} className="block relative w-full h-full group">
+    <Link href={ed.href} className="block relative w-full group">
       {/* 3:4 Aspect Ratio Image Box */}
       <div className="relative w-full aspect-[3/4] overflow-hidden rounded-[2px]">
         <Image
@@ -78,7 +78,7 @@ function CardInner({ ed }: { ed: (typeof editorials)[0] }) {
       </div>
 
       {/* Text Info */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20 text-white flex flex-col justify-end">
+      <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 z-20 text-white flex flex-col justify-end">
         <span className="font-serif italic text-[11px] sm:text-[13px] tracking-wide text-[#E6C280]/90 block mb-1">
           {ed.sub}
         </span>
@@ -98,19 +98,20 @@ export default function EditorialShowcase() {
   return (
     <section className="section-spacing relative overflow-hidden" style={{ background: "var(--parchment)" }}>
       <div className="editorial-container">
-        {/* Header — Horizontal baseline alignment */}
-        <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="flex flex-col gap-4">
-            <span className="eyebrow-text text-gold">— Editorial Gallery</span>
-            <h2 className="section-title-text">
-              The Season&apos;s <span className="italic font-normal text-gold">Finest Looks</span>
-            </h2>
-          </div>
-          <div className="md:max-w-md md:border-l border-accent-gold/25 md:pl-6 py-1.5">
-            <p className="font-body text-[16px] text-text-muted leading-relaxed">
-              A curated edit of this season&apos;s most coveted pieces, styled for the modern Indian woman. Generational craftsmanship reimagined for contemporary statements.
-            </p>
-          </div>
+        {/* Centered Editorial Gallery Header */}
+        <div className="mb-16 flex flex-col items-center text-center max-w-3xl mx-auto">
+          <span className="eyebrow-text text-gold mb-3">— Editorial Gallery</span>
+          <h2 className="section-title-text mb-4">
+            The Season&apos;s <span className="italic font-normal text-gold">Finest Looks</span>
+          </h2>
+          <div className="w-12 h-[1px] bg-accent-gold/45 my-4" />
+          <p className="font-serif italic text-base md:text-lg text-text-muted leading-relaxed max-w-2xl mb-4">
+            &ldquo;A curated edit of this season&apos;s most coveted pieces, styled for the modern Indian woman. Generational craftsmanship reimagined for contemporary statements.&rdquo;
+          </p>
+          <Link href="/collections" className="group/link inline-flex items-center gap-1.5 font-accent text-[10.5px] tracking-[0.2em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors font-semibold mt-2 cursor-pointer">
+            Explore Lookbooks
+            <ArrowRight size={11} className="group-hover/link:translate-x-1.5 transition-transform duration-300" />
+          </Link>
         </div>
 
         {/* Grid Layout — 4 columns desktop / 2 tablet / 1 mobile */}
@@ -123,7 +124,7 @@ export default function EditorialShowcase() {
               whileInView="visible"
               viewport={{ once: true, margin: "0px" }}
               variants={cardReveal}
-              className="relative w-full h-full bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.05)] border border-[#E6C280]/20 rounded-[2px]"
+              className="relative w-full bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.05)] border border-[#E6C280]/20 rounded-[2px]"
             >
               <CardInner ed={ed} />
             </motion.div>

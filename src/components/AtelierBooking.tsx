@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import CustomLuxuryButton from "@/components/LuxuryButton";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -911,30 +912,15 @@ function LuxuryButton({
   dark: boolean;
 }) {
   return (
-    <button
+    <CustomLuxuryButton
+      variant={dark ? "primary" : "secondary"}
+      themeType="light"
       onClick={onClick}
       disabled={disabled}
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 10,
-        padding: "15px 36px",
-        borderRadius: 100,
-        background: disabled ? "rgba(200,165,106,0.2)" : dark ? "#1A1A1A" : "#C8A56A",
-        color: disabled ? "#9B8B7A" : "#fff",
-        fontFamily: "Inter", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase",
-        border: "none", cursor: disabled ? "not-allowed" : "pointer",
-        transition: "all 0.35s cubic-bezier(0.76,0,0.24,1)",
-        boxShadow: disabled ? "none" : dark ? "0 8px 32px rgba(26,26,26,0.3)" : "0 8px 32px rgba(200,165,106,0.35)",
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) {
-          gsap.to(e.currentTarget, { scale: 1.03, duration: 0.3, ease: "power2.out" });
-        }
-      }}
-      onMouseLeave={(e) => {
-        gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" });
-      }}
+      className="!h-[50px] !px-8 !rounded-[14px]"
     >
-      {label} {icon}
-    </button>
+      <span>{label}</span>
+      {icon}
+    </CustomLuxuryButton>
   );
 }
