@@ -105,8 +105,8 @@ export default function BestSellers() {
           </div>
         </div>
 
-        {/* Grid Layout — 4 columns desktop / 2 tablet / 1 mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 w-full items-start">
+        {/* Mobile: Horizontal scroll, Desktop: Grid Layout */}
+        <div className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 w-full items-start snap-x snap-mandatory scrollbar-hide pb-6 -mx-6 px-6 md:mx-0 md:px-0">
           {products.map((p, idx) => (
             <motion.div
               key={p.id}
@@ -115,7 +115,7 @@ export default function BestSellers() {
               whileInView="visible"
               viewport={{ once: true, margin: "0px" }}
               variants={cardReveal}
-              className="best-sellers-card group relative flex flex-col w-full bg-[#FFFBF4] border border-[#E6C280]/18 hover:border-[#C8851A]/35 transition-all duration-700 hover:shadow-[0_8px_40px_rgba(28,14,5,0.12)] hover:-translate-y-1 rounded-[2px] overflow-hidden"
+              className="best-sellers-card group relative flex flex-col w-[82vw] md:w-full flex-shrink-0 snap-start bg-[#FFFBF4] border border-[#E6C280]/18 hover:border-[#C8851A]/35 transition-all duration-700 hover:shadow-[0_8px_40px_rgba(28,14,5,0.12)] hover:-translate-y-1 rounded-[2px] overflow-hidden"
             >
               {/* ── Image Zone (75–80% of card) ───────────── */}
               <div className="relative overflow-hidden aspect-[3/4] w-full flex-shrink-0">

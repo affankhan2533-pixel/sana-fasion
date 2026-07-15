@@ -75,15 +75,15 @@ export default function InstagramGallery() {
           </div>
         </motion.div>
 
-        {/* Uniform responsive 4-col grid */}
-        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full">
+        {/* Mobile: Horizontal scroll, Desktop: Uniform responsive 4-col grid */}
+        <div ref={ref} className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full snap-x snap-mandatory scrollbar-hide pb-6 -mx-6 px-6 md:mx-0 md:px-0">
           {images.map((img, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 25 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: i * 0.05 }}
-              className="group relative overflow-hidden cursor-pointer rounded-[2px] shadow-sm border border-accent-gold/10"
+              className="group relative overflow-hidden cursor-pointer w-[68vw] md:w-full flex-shrink-0 snap-start rounded-[2px] shadow-sm border border-accent-gold/10"
               onClick={() => setLightbox(i)}
             >
               <div className="relative overflow-hidden aspect-[3/4] w-full bg-cream-warm">

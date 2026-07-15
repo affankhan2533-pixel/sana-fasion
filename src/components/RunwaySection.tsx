@@ -36,7 +36,7 @@ const runwayPanels = [
     title: "The Keepsake Box",
     italic: "Delivered in royal custody",
     desc: "Your garment arrives tucked inside a velvet-lined heritage wooden chest, preserving its structure for generations.",
-    image: "/images/models/festive-collection.jpg",
+    image: "/images/models/bridal/ivory-pearl-wedding-sharara-gallery-0.jpg",
     number: "04",
   },
 ];

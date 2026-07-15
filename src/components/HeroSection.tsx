@@ -160,6 +160,84 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
       className="relative overflow-hidden w-full" 
       style={{ height: "100vh", minHeight: "600px", background: "var(--parchment)" }}
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        .hero-btn-primary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 52px;
+          padding: 0 40px;
+          border-radius: 9999px;
+          font-family: var(--font-accent), sans-serif;
+          font-size: 15px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          background-color: #E6C280;
+          color: #1C0E05;
+          border: 1px solid transparent;
+          transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(28, 14, 5, 0.08);
+          outline: none;
+        }
+        .hero-btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 52px;
+          padding: 0 40px;
+          border-radius: 9999px;
+          font-family: var(--font-accent), sans-serif;
+          font-size: 15px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          background-color: transparent;
+          color: #E6C280;
+          border: 1px solid #E6C280;
+          transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+          cursor: pointer;
+          outline: none;
+        }
+        .hero-btn-arrow {
+          margin-left: 10px;
+          display: inline-flex;
+          align-items: center;
+          transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        
+        /* Desktop styles override */
+        @media (min-width: 768px) {
+          .hero-btn-primary {
+            height: 56px;
+            font-size: 16px;
+            padding: 0 48px;
+          }
+          .hero-btn-secondary {
+            height: 56px;
+            font-size: 16px;
+            padding: 0 48px;
+          }
+        }
+        
+        /* Hover states */
+        .hero-btn-primary:hover {
+          background-color: #D4B26F;
+          transform: translateY(-2px);
+          box-shadow: 0 12px 30px rgba(28, 14, 5, 0.25);
+        }
+        .hero-btn-primary:hover .hero-btn-arrow {
+          transform: translateX(6px);
+        }
+        
+        .hero-btn-secondary:hover {
+          background-color: #E6C280;
+          color: #1C0E05;
+          transform: translateY(-2px);
+          box-shadow: 0 12px 30px rgba(230, 194, 128, 0.3);
+        }
+      `}} />
       {/* Immersive slide backgrounds using dynamic clip-path reveals */}
       {slides.map((sl, i) => (
         <motion.div
@@ -283,16 +361,23 @@ export default function HeroSection({ isLoaded = true }: HeroSectionProps) {
         </p>
 
         {/* Action Buttons - Animated Independently */}
-        <div ref={ctaRef} className="flex flex-wrap gap-4 sm:gap-5" style={{ opacity: 0 }}>
-          <Link href="/collections">
-            <LuxuryButton variant="primary" showArrow>
+        <div 
+          ref={ctaRef} 
+          className="flex flex-col md:flex-row gap-4 md:gap-6 w-full md:w-auto" 
+          style={{ opacity: 0 }}
+        >
+          <Link href="/collections" className="w-full md:w-auto">
+            <button className="hero-btn-primary w-full md:w-auto">
               Explore Collections
-            </LuxuryButton>
+              <span className="hero-btn-arrow">
+                <ArrowRight size={16} />
+              </span>
+            </button>
           </Link>
-          <Link href="/contact">
-            <LuxuryButton variant="secondary" themeType="dark">
-              Book Atelier Consult
-            </LuxuryButton>
+          <Link href="/contact" className="w-full md:w-auto">
+            <button className="hero-btn-secondary w-full md:w-auto">
+              Book Atelier Consultation
+            </button>
           </Link>
         </div>
 

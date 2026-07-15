@@ -129,8 +129,8 @@ export default function FeaturedCollections() {
           </div>
         </div>
 
-        {/* Grid Layout — 4 columns desktop / 2 tablet / 1 mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full">
+        {/* Mobile: Horizontal scroll, Desktop: Grid Layout */}
+        <div className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full snap-x snap-mandatory scrollbar-hide pb-6 -mx-6 px-6 md:mx-0 md:px-0">
           {collections.map((col, i) => (
             <motion.div
               key={col.title}
@@ -139,7 +139,7 @@ export default function FeaturedCollections() {
               whileInView="visible"
               viewport={{ once: true, margin: "0px" }}
               variants={cardReveal}
-              className="relative w-full bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.05)] border border-[#E6C280]/20 rounded-[2px]"
+              className="relative w-[82vw] md:w-full flex-shrink-0 snap-start bg-cream-warm shadow-[0_8px_30px_rgba(28,14,5,0.05)] border border-[#E6C280]/20 rounded-[2px]"
             >
               <CardInner col={col} />
             </motion.div>
