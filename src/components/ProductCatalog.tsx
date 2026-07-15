@@ -330,14 +330,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
                 exit={{ opacity:0 }}
                 transition={{ duration:0.3 }}
               >
-                {/* Grid CSS via inline style for clean, conflict-free grid */}
-                <div style={{
-                  display:"grid",
-                  gridTemplateColumns:"repeat(2, 1fr)",
-                  gap:"16px"
-                }}
-                  className="sm-grid-2 md-grid-3 lg-grid-4"
-                >
+                <div className="catalog-products-grid sm-grid-2 md-grid-3 lg-grid-4">
                   {paginated.map((p, idx) => (
                     <ProductCard
                       key={p.id}
@@ -392,46 +385,45 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
               animate={{ opacity:1, scale:1, y:0 }}
               exit={{ opacity:0, scale:0.94, y:20 }}
               transition={{ duration:0.3, ease:[0.16,1,0.3,1] }}
-              style={{ position:"relative", width:"100%", maxWidth:"860px", background:"#FAFAF7", borderRadius:"24px", overflow:"hidden", display:"flex", flexDirection:"column", maxHeight:"90svh", border:"1px solid #E0D8CC", boxShadow:"0 40px 100px rgba(26,15,10,0.22)" }}
+              className="qv-modal-wrapper"
             >
               {/* Close */}
-              <button onClick={() => setQuickView(null)}
-                style={{ position:"absolute", top:"16px", right:"16px", width:"36px", height:"36px", borderRadius:"50%", background:"rgba(255,255,255,0.9)", border:"1px solid #E0D8CC", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", zIndex:10, color:"#1A0F0A" }}
-              >
+              <button onClick={() => setQuickView(null)} className="qv-modal-close-btn">
                 <X size={15} />
               </button>
 
-              <div style={{ display:"flex", flexDirection:"row", flex:1, overflow:"hidden" }}>
+              <div className="qv-modal-inner">
                 {/* Image */}
-                <div style={{ flex:"0 0 45%", position:"relative", background:"#F5EFE6" }}>
-                  <Image src={quickView.thumbnail} alt={quickView.title} fill className="object-cover object-top" sizes="45vw" />
+                <div className="qv-modal-image-wrap">
+                  <Image src={quickView.thumbnail} alt={quickView.title} fill className="object-cover object-top" sizes="(max-width: 767px) 100vw, 45vw" />
                 </div>
 
                 {/* Details */}
-                <div style={{ flex:1, overflowY:"auto", padding:"40px 32px" }}>
-                  <span style={{ fontFamily:"'Josefin Sans', sans-serif", fontSize:"11px", letterSpacing:"0.15em", textTransform:"uppercase", color:"#C8851A", fontWeight:700 }}>
+                <div className="qv-modal-details-wrap">
+                  <span className="qv-modal-code" style={{ fontFamily:"'Josefin Sans', sans-serif", fontSize:"11px", letterSpacing:"0.15em", textTransform:"uppercase", color:"#C8851A", fontWeight:700 }}>
                     {quickView.productCode}
                   </span>
-                  <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(22px, 3vw, 30px)", fontWeight:300, color:"#1A0F0A", margin:"8px 0 4px", lineHeight:1.2 }}>
+                  <h2 className="qv-modal-title" style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(22px, 3vw, 30px)", fontWeight:300, color:"#1A0F0A", margin:"8px 0 4px", lineHeight:1.2 }}>
                     {quickView.title}
                   </h2>
-                  <p style={{ fontFamily:"'Josefin Sans', sans-serif", fontSize:"11px", letterSpacing:"0.12em", textTransform:"uppercase", color:"#9A8070", marginBottom:"20px" }}>
+                  <p className="qv-modal-category" style={{ fontFamily:"'Josefin Sans', sans-serif", fontSize:"11px", letterSpacing:"0.12em", textTransform:"uppercase", color:"#9A8070", marginBottom:"20px" }}>
                     {quickView.category}
                   </p>
 
-                  <div style={{ borderTop:"1px solid #E8E0D0", borderBottom:"1px solid #E8E0D0", padding:"16px 0", marginBottom:"20px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
+                  <div className="qv-modal-specs" style={{ borderTop:"1px solid #E8E0D0", borderBottom:"1px solid #E8E0D0", padding:"16px 0", marginBottom:"20px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
                     <DetailRow label="Fabric" value={quickView.fabric} />
                     <DetailRow label="Colour" value={quickView.color} />
                     <DetailRow label="Collection" value={quickView.collection} />
                     <DetailRow label="Availability" value={quickView.availability ? "In Stock" : "Coming Soon"} />
                   </div>
 
-                  <p style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(24px, 3vw, 32px)", fontWeight:400, color:"#1A0F0A", marginBottom:"24px" }}>
+                  <p className="qv-modal-price" style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(24px, 3vw, 32px)", fontWeight:400, color:"#1A0F0A", marginBottom:"24px" }}>
                     ₹{quickView.price.toLocaleString("en-IN")}
                   </p>
 
-                  <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
+                  <div className="qv-modal-btns">
                     <Link href={`/products/${quickView.slug}`}
+                      className="qv-btn-primary"
                       style={{ height:"52px", borderRadius:"12px", background:"#1A0F0A", color:"#FFFFFF", fontFamily:"'Josefin Sans', sans-serif", fontSize:"12px", letterSpacing:"0.15em", textTransform:"uppercase", fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", textDecoration:"none", transition:"background 0.25s" }}
                       onClick={() => setQuickView(null)}
                     >
@@ -439,6 +431,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
                     </Link>
                     <a href={`https://wa.me/919022591620?text=Hi! I want to enquire about "${quickView.title}" (${quickView.productCode}).`}
                       target="_blank" rel="noopener noreferrer"
+                      className="qv-btn-wa"
                       style={{ height:"52px", borderRadius:"12px", background:"#1B5E35", color:"#FFFFFF", fontFamily:"'Josefin Sans', sans-serif", fontSize:"12px", letterSpacing:"0.15em", textTransform:"uppercase", fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", textDecoration:"none" }}
                     >
                       <MessageCircle size={14} /> WhatsApp Enquiry
@@ -604,6 +597,11 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         }
 
         /* ─ Grid columns ─ */
+        .catalog-products-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
         @media(min-width:640px)  { .sm-grid-2 { grid-template-columns:repeat(2,1fr) !important; gap:20px !important; } }
         @media(min-width:900px)  { .md-grid-3 { grid-template-columns:repeat(3,1fr) !important; gap:24px !important; } }
         @media(min-width:1200px) { .lg-grid-4 { grid-template-columns:repeat(4,1fr) !important; gap:28px !important; } }
@@ -612,11 +610,15 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         .card-btn-row {
           display: flex;
           flex-direction: row;
-          gap: 6px;
+          gap: 12px;
         }
+        @media(min-width:600px) {
+          .card-btn-row { gap: 6px; }
+        }
+
         .card-btn-primary {
           flex: 1;
-          height: 40px;
+          height: 48px;
           border-radius: 10px;
           background: #1A0F0A;
           color: #FFFFFF;
@@ -635,14 +637,18 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           flex-shrink: 0;
           overflow: hidden;
         }
+        @media(min-width:600px) {
+          .card-btn-primary { height: 40px; }
+        }
         .card-btn-primary:hover {
           background: #C8851A;
           box-shadow: 0 4px 12px rgba(200, 133, 26, 0.25);
           transform: translateY(-1px);
         }
+
         .card-btn-wa {
-          width: 40px;
-          height: 40px;
+          width: 48px;
+          height: 48px;
           border-radius: 10px;
           background: #1B5E35;
           color: #FFFFFF;
@@ -660,6 +666,9 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           font-weight: 700;
           white-space: nowrap;
         }
+        @media(min-width:600px) {
+          .card-btn-wa { width: 40px; height: 40px; }
+        }
         .card-btn-wa:hover {
           background: #123C21;
           box-shadow: 0 4px 12px rgba(27, 94, 53, 0.25);
@@ -668,7 +677,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         .card-btn-wa-text { display: none; }
 
         /* ─ Card metadata ─ */
-        .card-meta { padding: 12px 12px 14px; }
+        .card-meta { padding: 16px 16px 18px; }
         @media(min-width:600px) { .card-meta { padding: 16px 16px 18px; } }
 
         /* ─ Card name font ─ */
@@ -693,12 +702,149 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           font-weight: 500;
           color: #1A0F0A;
           margin-bottom: 10px;
+          white-space: nowrap;
         }
         @media(min-width:600px) { .card-price { font-size: clamp(18px,2.2vw,22px); margin-bottom: 12px; } }
 
         /* Scrollbar */
         *::-webkit-scrollbar { display:none; }
         * { scrollbar-width:none; }
+
+        /* ─── Quick View Modal Mobile Responsiveness ─── */
+        .qv-modal-wrapper {
+          position: relative;
+          width: 100%;
+          max-width: 860px;
+          background: #FAFAF7;
+          border-radius: 24px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          max-height: 90vh;
+          border: 1px solid #E0D8CC;
+          box-shadow: 0 40px 100px rgba(26,15,10,0.22);
+        }
+        
+        .qv-modal-inner {
+          display: flex;
+          flex-direction: row;
+          flex: 1;
+          overflow: hidden;
+        }
+
+        .qv-modal-image-wrap {
+          flex: 0 0 45%;
+          position: relative;
+          background: #F5EFE6;
+        }
+
+        .qv-modal-details-wrap {
+          flex: 1;
+          overflow-y: auto;
+          padding: 40px 32px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .qv-modal-close-btn {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid #E0D8CC;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 50;
+          color: #1A0F0A;
+          transition: all 0.2s ease;
+        }
+
+        @media (max-width: 767px) {
+          .qv-modal-wrapper {
+            width: 93vw !important;
+            max-width: 93vw !important;
+            max-height: 90vh !important;
+            border-radius: 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+
+          .qv-modal-inner {
+            flex-direction: column !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+          }
+
+          .qv-modal-image-wrap {
+            width: 100% !important;
+            aspect-ratio: 4/5 !important;
+            flex: none !important;
+            height: auto !important;
+          }
+
+          .qv-modal-details-wrap {
+            padding: 20px !important;
+            flex: none !important;
+            overflow: visible !important;
+          }
+
+          .qv-modal-close-btn {
+            position: absolute !important;
+            top: 16px !important;
+            right: 16px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+          }
+
+          /* Ordering layout: Title -> Price -> Specs -> Buttons */
+          .qv-modal-code { order: 1 !important; margin-bottom: 2px !important; font-size: 13px !important; }
+          .qv-modal-title { order: 2 !important; margin: 4px 0 2px !important; font-size: 30px !important; line-height: 1.15 !important; }
+          .qv-modal-category { order: 3 !important; margin-bottom: 16px !important; font-size: 13px !important; }
+          
+          .qv-modal-price { 
+            order: 4 !important; 
+            margin-bottom: 20px !important; 
+            font-size: 36px !important; 
+            line-height: 1.1 !important;
+          }
+          
+          .qv-modal-specs { 
+            order: 5 !important; 
+            margin-bottom: 24px !important; 
+            padding: 16px 0 !important;
+            gap: 16px !important;
+          }
+          
+          .qv-modal-btns { 
+            order: 6 !important; 
+            gap: 12px !important;
+          }
+
+          .qv-btn-primary {
+            height: 48px !important;
+            font-size: 12px !important;
+            border-radius: 10px !important;
+          }
+
+          .qv-btn-wa {
+            height: 48px !important;
+            font-size: 12px !important;
+            border-radius: 10px !important;
+          }
+
+          .qv-detail-label {
+            font-size: 13px !important;
+            margin-bottom: 4px !important;
+          }
+
+          .qv-detail-value {
+            font-size: 15px !important;
+          }
+        }
       `}</style>
     </>
   );
@@ -806,7 +952,7 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
 
         {/* Name */}
         <h3 className="card-name">
-          {p.title}
+          {p.title.length > 30 ? p.title.slice(0, 28) + "..." : p.title}
         </h3>
 
         {/* Collection + Fabric */}
