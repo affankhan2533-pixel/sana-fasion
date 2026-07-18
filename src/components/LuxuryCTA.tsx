@@ -66,7 +66,7 @@ export default function LuxuryCTA() {
           </motion.span>
           <motion.h2
             variants={up}
-            className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white mb-8 mx-auto font-light leading-tight"
+            className="font-serif text-4xl sm:text-6xl lg:text-7xl text-white mb-8 mx-auto font-light leading-tight"
             style={{ maxWidth: "900px" }}
           >
             Designed to Make Every <br className="hidden sm:inline" /><span className="italic font-light text-[#E6C280]">Occasion Unforgettable</span>
@@ -80,12 +80,12 @@ export default function LuxuryCTA() {
           </motion.p>
           <motion.div variants={up} className="flex flex-col sm:flex-row gap-5 justify-center items-center">
             <Link href="#contact-form">
-              <LuxuryButton variant="primary" showArrow className="!h-14 !rounded-full !px-8">
+              <LuxuryButton variant="primary" showArrow>
                 Book Private Consultation
               </LuxuryButton>
             </Link>
             <a href="https://www.instagram.com/sana___fashion___01/" target="_blank" rel="noopener noreferrer">
-              <LuxuryButton variant="secondary" className="!h-14 !rounded-full !px-8 !border-[#FFF5E6]/40 !text-[#FFF5E6] hover:!bg-[#FFF5E6] hover:!text-[#121213]">
+              <LuxuryButton variant="secondary" className="!border-[#FFF5E6]/40 !text-[#FFF5E6] hover:!bg-[#FFF5E6] hover:!text-[#121213]">
                 View on Instagram
               </LuxuryButton>
             </a>
@@ -211,7 +211,7 @@ export default function LuxuryCTA() {
                   <LuxuryButton
                     type="submit"
                     variant="primary"
-                    className="w-full !h-14 !rounded-full mt-2"
+                    className="w-full mt-2"
                     disabled={loading}
                   >
                     {loading ? "Sending…" : "Send Inquiry"}

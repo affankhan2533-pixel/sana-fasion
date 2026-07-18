@@ -633,7 +633,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         .card-btn-primary {
           flex: 1;
           height: 40px;
-          border-radius: 6px;
+          border-radius: 10px;
           background: #1A0F0A;
           color: #FFFFFF;
           font-family: 'Josefin Sans', sans-serif;
@@ -663,7 +663,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         .card-btn-wa {
           width: 40px;
           height: 40px;
-          border-radius: 6px;
+          border-radius: 10px;
           background: #1B5E35;
           color: #FFFFFF;
           display: flex;
@@ -982,13 +982,14 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
         overflow:"hidden",
         display:"flex",
         flexDirection:"column",
-        transition:"box-shadow 250ms cubic-bezier(0.22,1,0.36,1), transform 250ms cubic-bezier(0.22,1,0.36,1)",
-        boxShadow: hovered ? "var(--shadow-lift)" : "var(--shadow-card)",
-        transform: hovered ? "translateY(-4px)" : "translateY(0)"
+        transition:"box-shadow 350ms cubic-bezier(0.22,1,0.36,1), transform 350ms cubic-bezier(0.22,1,0.36,1), border-color 350ms ease",
+        boxShadow: hovered ? "0 24px 64px rgba(28, 14, 5, 0.18)" : "var(--shadow-card)",
+        transform: hovered ? "translateY(-8px)" : "translateY(0)",
+        borderColor: hovered ? "rgba(200, 133, 26, 0.35)" : "rgba(200, 133, 26, 0.15)"
       }}
     >
       {/* ── Image ── */}
-      <Link href={`/products/${p.slug}`} style={{ display:"block", position:"relative", aspectRatio:"3/4", overflow:"hidden", background:"#F5EFE6", borderRadius:"2px 2px 0 0", flexShrink:0 }}>
+      <Link href={`/products/${p.slug}`} style={{ display:"block", position:"relative", aspectRatio:"4/5", overflow:"hidden", background:"#F5EFE6", borderRadius:"2px 2px 0 0", flexShrink:0 }}>
         <Image
           src={p.thumbnail}
           alt={p.title}
@@ -1062,14 +1063,14 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
 
           {/* Name */}
           <h3 className="card-name">
-            {p.title.length > 30 ? p.title.slice(0, 28) + "..." : p.title}
+            {p.title}
           </h3>
 
           {/* Collection + Fabric */}
-          <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"1px" }}>
+          <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"1px", minHeight:"16px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
             {p.collection}
           </p>
-          <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"8px" }}>
+          <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"8px", minHeight:"16px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
             {p.fabric}
           </p>
 

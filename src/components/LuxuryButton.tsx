@@ -31,7 +31,7 @@ export default function LuxuryButton({
         group
         relative inline-flex items-center justify-center gap-2.5 
         font-accent text-[14px] md:text-[15px] tracking-[0.12em] uppercase font-medium
-        h-[52px] md:h-[56px] px-6 md:px-8 rounded-full overflow-hidden
+        h-[52px] px-6 md:px-8 rounded-[12px] overflow-hidden
         transition-all duration-[400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] cursor-pointer
         ${isPrimary 
           ? "bg-[#E6C280] text-[#121213] shadow-[0_4px_12px_rgba(230,194,128,0.15)] hover:shadow-[0_8px_25px_rgba(230,194,128,0.35)] border border-transparent"

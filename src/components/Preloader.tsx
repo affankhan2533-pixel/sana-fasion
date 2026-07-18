@@ -47,8 +47,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
     // Subtle scale in of the logo
     gsap.fromTo(".preloader-logo",
-      { letterSpacing: "0.2em", opacity: 0, scale: 0.96 },
-      { letterSpacing: "0.45em", opacity: 1, scale: 1, duration: 1.8, ease: "power3.out" }
+      { letterSpacing: "0.15em", opacity: 0, scale: 0.96 },
+      { letterSpacing: "0.28em", opacity: 1, scale: 1, duration: 1.8, ease: "power3.out" }
     );
 
     return () => {
@@ -66,10 +66,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       <div className="flex flex-col items-center text-center">
         {/* Monogram / Title */}
         <h1 
-          className="preloader-logo font-display text-4xl sm:text-5xl font-light text-white tracking-[0.45em] mb-4"
+          className="preloader-logo font-display text-3xl sm:text-5xl font-light text-white tracking-[0.28em] mb-4"
           style={{ color: "var(--cream)" }}
         >
-          SANA
+          SANA FASHION
         </h1>
         
         {/* Atelier subtitle */}

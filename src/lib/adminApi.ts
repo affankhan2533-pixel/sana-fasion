@@ -30,6 +30,7 @@ api.interceptors.response.use(
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
 export const getDashboardStats = () => api.get('/dashboard/stats').then(r => r.data);
+export const changePassword = (data: unknown) => api.put('/auth/change-password', data).then(r => r.data);
 
 // ── Products ─────────────────────────────────────────────────────────────────
 export const getAdminProducts = (params?: Record<string, unknown>) =>
@@ -67,6 +68,8 @@ export const getInquiries = (params?: Record<string, unknown>) =>
   api.get('/inquiries', { params }).then(r => r.data);
 export const updateInquiry = (id: string, data: unknown) =>
   api.put(`/inquiries/${id}`, data).then(r => r.data);
+export const deleteInquiry = (id: string) =>
+  api.delete(`/inquiries/${id}`).then(r => r.data);
 
 // ── CMS ───────────────────────────────────────────────────────────────────────
 export const getCmsSections = () => api.get('/admin/cms').then(r => r.data);

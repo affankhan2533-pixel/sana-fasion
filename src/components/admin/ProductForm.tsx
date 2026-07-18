@@ -1,39 +1,31 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Loader2, Plus, Trash, Sparkles, Image as ImageIcon, Check, Upload, HelpCircle, RefreshCw, Star } from 'lucide-react';
-import { generateProductContent, uploadMedia, getCollections } from '@/lib/adminApi';
+import {
+  Plus, Trash, Image as ImageIcon, Upload, ArrowRight, ArrowLeft, Camera, Image as GalleryIcon, Eye, Tag, FileText, IndianRupee, Sparkles, Layers, Loader2, Package
+} from 'lucide-react';
+import { uploadMedia } from '@/lib/adminApi';
 import { useAdminStore } from '@/lib/adminStore';
 import { useRouter } from 'next/navigation';
+
+// Design System components
+import Button from '@/design-system/components/Button';
+import Input, { Textarea, Dropdown } from '@/design-system/components/Input';
+import Card from '@/design-system/components/Card';
+import Stepper from '@/design-system/components/Stepper';
+import Badge from '@/design-system/components/Badge';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   price: z.number().min(0, 'Price must be positive'),
-  salePrice: z.number().optional().nullable(),
-  sku: z.string().optional(),
-  productCode: z.string().optional(),
   category: z.string().min(1, 'Category is required'),
-  subcategory: z.string().optional(),
-  collection: z.string().optional().nullable(),
-  fabric: z.string().optional(),
-  occasion: z.string().optional(),
-  embroidery: z.string().optional(),
-  workType: z.string().optional(),
-  stock: z.number().min(0, 'Stock must be positive'),
   description: z.string().min(1, 'Description is required'),
-  story: z.string().optional(),
-  careInstructions: z.string().optional(),
-  shippingInfo: z.string().optional(),
-  returnPolicy: z.string().optional(),
-  seoTitle: z.string().optional(),
-  seoDescription: z.string().optional(),
-  status: z.string().default('draft'),
-  tags: z.array(z.string()).default([]),
+  stock: z.number().min(0, 'Stock must be positive'),
+  stockStatus: z.string().default('in_stock'),
   featured: z.boolean().default(false),
-  newArrival: z.boolean().default(false),
-  bestSeller: z.boolean().default(false),
+  status: z.string().default('draft'),
 });
 
 interface ProductFormProps {
@@ -41,117 +33,147 @@ interface ProductFormProps {
   onSubmit: (data: any) => Promise<void>;
 }
 
+// Client-side image compressor (converts to high-quality JPEG and downscales to max 1200px)
+const compressImage = (file: File): Promise<File> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        const MAX_WIDTH = 1200;
+        if (width > MAX_WIDTH) {
+          height = Math.round((height * MAX_WIDTH) / width);
+          width = MAX_WIDTH;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            } else {
+              resolve(file);
+            }
+          },
+          'image/jpeg',
+          0.85 // 85% high quality compression
+        );
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 export default function ProductForm({ initialData, onSubmit }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [collections, setCollections] = useState<any[]>([]);
   const { addToast } = useAdminStore();
 
-  // Tab State
-  const [activeTab, setActiveTab] = useState('general');
+  // Multi-step state: 1, 2, 3, 4
+  const [step, setStep] = useState(1);
 
   // Images state
   const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [uploading, setUploading] = useState(false);
 
-  // AI assistant status
-  const [generatingAI, setGeneratingAI] = useState(false);
+  // Draft/Publish state helper
+  const [submitStatus, setSubmitStatus] = useState(initialData?.status || 'draft');
 
-  // Variant manager
-  const [variants, setVariants] = useState<any[]>(initialData?.variants || []);
-  const [newVarColor, setNewVarColor] = useState('');
-  const [newVarSize, setNewVarSize] = useState('');
-  const [newVarStock, setNewVarStock] = useState(1);
-  const [newVarPrice, setNewVarPrice] = useState<number | ''>('');
-
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, watch, trigger, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: initialData?.name || '',
       price: initialData?.price || 0,
-      salePrice: initialData?.salePrice || null,
-      sku: initialData?.sku || '',
-      productCode: initialData?.productCode || '',
-      category: initialData?.category || 'Wedding Collection',
-      subcategory: initialData?.subcategory || '',
-      collection: initialData?.collection?._id || initialData?.collection || '',
-      fabric: initialData?.fabric || '',
-      occasion: initialData?.occasion || '',
-      embroidery: initialData?.embroidery || '',
-      workType: initialData?.workType || '',
-      stock: initialData?.stock || 0,
+      category: initialData?.category || 'Bridal',
       description: initialData?.description || '',
-      story: initialData?.story || '',
-      careInstructions: initialData?.careInstructions || '',
-      shippingInfo: initialData?.shippingInfo || '',
-      returnPolicy: initialData?.returnPolicy || '',
-      seoTitle: initialData?.seoTitle || '',
-      seoDescription: initialData?.seoDescription || '',
-      status: initialData?.status || 'draft',
-      tags: initialData?.tags || [],
+      stock: initialData?.stock || 10,
+      stockStatus: initialData?.stockStatus || 'in_stock',
       featured: initialData?.featured || false,
-      newArrival: initialData?.newArrival || false,
-      bestSeller: initialData?.bestSeller || false,
+      status: initialData?.status || 'draft',
     },
   });
 
   const formValues = watch();
 
-  useEffect(() => {
-    getCollections()
-      .then((data) => setCollections(data.collections || []))
-      .catch((err) => console.error(err));
-  }, []);
-
-  // AI Content Generator
-  const handleAIAssistant = async () => {
-    const name = formValues.name;
-    const fabric = formValues.fabric;
-    const category = formValues.category;
-    const occasion = formValues.occasion;
-
-    if (!name) {
-      addToast({ type: 'warning', message: 'Please enter a product name first.' });
-      return;
-    }
-
-    setGeneratingAI(true);
-    try {
-      const data = await generateProductContent({ name, fabric, category, occasion });
-      if (data.success && data.generated) {
-        const { description, story, seoTitle, seoDescription, tags } = data.generated;
-        setValue('description', description);
-        setValue('story', story);
-        setValue('seoTitle', seoTitle);
-        setValue('seoDescription', seoDescription);
-        setValue('tags', tags);
-        addToast({ type: 'success', message: '✨ Luxury details generated with AI!' });
+  const handleNextStep = async () => {
+    // Validate current step fields before progressing
+    if (step === 1) {
+      const isValid = await trigger(['name', 'category']);
+      if (!isValid) return;
+    } else if (step === 2) {
+      if (images.length === 0) {
+        addToast({ type: 'warning', message: 'Please upload at least one image.' });
+        return;
       }
-    } catch {
-      addToast({ type: 'error', message: 'AI generation failed.' });
-    } finally {
-      setGeneratingAI(false);
+    } else if (step === 3) {
+      const isValid = await trigger(['price', 'description', 'stock', 'stockStatus']);
+      if (!isValid) return;
     }
+    setStep(s => s + 1);
   };
 
-  // Image upload
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePrevStep = () => {
+    setStep(s => Math.max(s - 1, 1));
+  };
+
+  // Natively support Camera & Gallery upload via Native Browser APIs
+  const handleImageSelection = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
     setUploading(true);
     const files = Array.from(e.target.files);
     const fd = new FormData();
-    files.forEach((f) => fd.append('files', f));
-    fd.append('folder', 'products');
 
     try {
+      // Compress each image file on client side first
+      const compressedFiles = await Promise.all(files.map(f => compressImage(f)));
+      compressedFiles.forEach(f => fd.append('files', f));
+      fd.append('folder', 'products');
+
       const res = await uploadMedia(fd);
       if (res.success && res.assets) {
         const uploadedUrls = res.assets.map((a: any) => a.url);
         setImages([...images, ...uploadedUrls]);
-        addToast({ type: 'success', message: 'Images uploaded successfully.' });
+        addToast({ type: 'success', message: `${uploadedUrls.length} images compressed and uploaded!` });
+      }
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', message: 'Failed to upload images.' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleReplaceImage = async (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    setUploading(true);
+    const fd = new FormData();
+    try {
+      const compressed = await compressImage(e.target.files[0]);
+      fd.append('files', compressed);
+      fd.append('folder', 'products');
+
+      const res = await uploadMedia(fd);
+      if (res.success && res.assets?.[0]) {
+        const list = [...images];
+        list[idx] = res.assets[0].url;
+        setImages(list);
+        addToast({ type: 'success', message: 'Image replaced.' });
       }
     } catch {
-      addToast({ type: 'error', message: 'Image upload failed.' });
+      addToast({ type: 'error', message: 'Failed to replace image.' });
     } finally {
       setUploading(false);
     }
@@ -161,447 +183,450 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
     setImages(images.filter((_, i) => i !== idx));
   };
 
-  // Variant helper
-  const addVariant = () => {
-    if (!newVarSize && !newVarColor) {
-      addToast({ type: 'warning', message: 'Please specify color or size.' });
-      return;
-    }
-    const label = [newVarColor, newVarSize].filter(Boolean).join(' / ');
-    const newVariant = {
-      label,
-      color: newVarColor,
-      size: newVarSize,
-      stock: newVarStock,
-      price: newVarPrice || null,
-      sku: `${formValues.sku || 'VAR'}-${label.replace(/\s+/g, '')}`,
-    };
-    setVariants([...variants, newVariant]);
-    setNewVarColor('');
-    setNewVarSize('');
-    setNewVarStock(1);
-    setNewVarPrice('');
-  };
-
-  const removeVariant = (idx: number) => {
-    setVariants(variants.filter((_, i) => i !== idx));
+  const moveImage = (idx: number, direction: 'left' | 'right') => {
+    const list = [...images];
+    const targetIdx = direction === 'left' ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= list.length) return;
+    const temp = list[idx];
+    list[idx] = list[targetIdx];
+    list[targetIdx] = temp;
+    setImages(list);
   };
 
   const handleFormSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const payload = { ...data, images, variants };
+      const payload = {
+        ...data,
+        images,
+        status: submitStatus,
+      };
       await onSubmit(payload);
     } catch {
-      addToast({ type: 'error', message: 'Failed to save product.' });
+      addToast({ type: 'error', message: 'Failed to save product listing.' });
     } finally {
       setLoading(false);
     }
   };
 
-  const formTabs = [
-    { id: 'general', label: 'Basic Info' },
-    { id: 'images', label: 'Photos & Videos' },
-    { id: 'pricing', label: 'Pricing & Stock' },
-    { id: 'categories', label: 'Categorization' },
-    { id: 'variants', label: 'Variants & Specs' },
-    { id: 'seo', label: 'SEO & Search' },
-    { id: 'shipping', label: 'Shipping & Returns' },
+  const categories = [
+    'Bridal', 'Festive', 'Designer Suits', 'Cotton', 'Premium',
+    'Printed', 'Rayon', 'Lawn', 'Embroidery', 'New Arrivals', 'Best Sellers'
   ];
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8 max-w-full mx-auto">
-      
-      {/* Tab Segment Controls */}
-      <div className="flex overflow-x-auto border-b border-[#E8E2D9] pb-px scrollbar-none gap-2 bg-white p-2 rounded-xl border">
-        {formTabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2.5 rounded-lg text-[13px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === tab.id
-                ? 'bg-[#C8851A] text-white'
-                : 'text-[#6B5E4C] hover:bg-gray-50'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+    <div className="w-full">
+      {/* Stepper Header */}
+      <Card className="mb-6 bg-white p-5 border border-[#E6C280]/15 shadow-sm rounded-[12px]">
+        <Stepper currentStep={step} steps={['Basic', 'Images', 'Pricing', 'Publish']} />
+      </Card>
 
-      {/* 12-Column Responsive Layout Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         
-        {/* Left Column (8 cols): Tab Content */}
-        <div className="lg:col-span-8 space-y-6">
-          
-          {/* General Tab */}
-          {activeTab === 'general' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm animate-fade-in">
-              <div className="flex justify-between items-center pb-2 border-b border-[#F0EDE8]">
-                <h2 className="text-[16px] font-bold text-[#1C1008]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                  Basic Information & Story
-                </h2>
-                <button
-                  type="button"
-                  onClick={handleAIAssistant}
-                  disabled={generatingAI}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#C8851A] bg-[rgba(200,133,26,0.06)] px-3 py-2 rounded-full border border-[rgba(200,133,26,0.15)] hover:bg-[rgba(200,133,26,0.12)] transition-colors cursor-pointer"
-                >
-                  {generatingAI ? (
-                    <><RefreshCw size={12} className="animate-spin" /> Generating...</>
-                  ) : (
-                    <><Sparkles size={12} /> ✨ Generate with AI</>
-                  )}
-                </button>
+        {/* ================= STEP 1: Basic details & Category ================= */}
+        {step === 1 && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Basic Info Section */}
+            <Card className="space-y-4 border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-2">
+                <FileText size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Basic Information
+                </h3>
               </div>
-
-              <div>
-                <label className="admin-label">Product Name</label>
-                <input type="text" className="admin-input" {...register('name')} placeholder="e.g. Royal Crimson Bridal Lehenga" />
-                {errors.name && <p className="text-[11px] text-red-500 mt-1">{errors.name.message as string}</p>}
-              </div>
-
-              <div>
-                <label className="admin-label">Product Description</label>
-                <textarea rows={4} className="admin-input py-3 resize-y min-h-[100px]" {...register('description')} placeholder="Describe the garment details, texture, drape..." />
-                {errors.description && <p className="text-[11px] text-red-500 mt-1">{errors.description.message as string}</p>}
-              </div>
-
-              <div>
-                <label className="admin-label">Atelier Brand Story (Heritage/Craftsmanship)</label>
-                <textarea rows={3} className="admin-input py-3 resize-y" {...register('story')} placeholder="The tale behind the design, artisans involved..." />
-              </div>
-
-              <div>
-                <label className="admin-label">Care & Textile Maintenance Instructions</label>
-                <textarea rows={2} className="admin-input py-3 resize-y" {...register('careInstructions')} placeholder="e.g. Dry clean only, store in muslin sleeve..." />
-              </div>
-            </div>
-          )}
-
-          {/* Photos & Videos Tab */}
-          {activeTab === 'images' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm animate-fade-in">
-              <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Photos & Videos
-              </h2>
               
-              {/* Media gallery grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {images.map((img, i) => (
-                  <div key={i} className="relative aspect-[3/4] rounded-xl overflow-hidden border border-[#E8E2D9] group bg-gray-50">
-                    <img src={img} alt="Product image" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(i)}
-                      className="absolute top-2 right-2 bg-black/75 text-white p-1.5 rounded-full hover:bg-black transition-colors cursor-pointer"
-                    >
-                      <Trash size={12} />
-                    </button>
-                    <div className="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded uppercase font-semibold">
-                      {i === 0 ? 'Cover' : `Slide ${i}`}
-                    </div>
-                  </div>
-                ))}
+              <Input
+                label="Product / Garment Name"
+                icon={<Tag size={16} />}
+                error={errors.name?.message as string}
+                {...register('name')}
+              />
+            </Card>
 
-                {/* Upload block */}
-                <label className="aspect-[3/4] rounded-xl border-2 border-dashed border-[#E8E2D9] hover:border-[#C8851A] transition-colors flex flex-col items-center justify-center cursor-pointer p-4 text-center bg-[#FAFAF8]">
-                  {uploading ? (
-                    <><Loader2 size={24} className="animate-spin text-[#C8851A] mb-2" /> Uploading...</>
-                  ) : (
-                    <>
-                      <Upload size={24} className="text-[#9B8E7E] mb-2" />
-                      <span className="text-[11px] font-semibold text-[#6B5E4C] uppercase tracking-wider">Upload files</span>
-                      <span className="text-[9px] text-[#9B8E7E] mt-1">PNG, JPG up to 10MB</span>
-                    </>
-                  )}
-                  <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="hidden" />
+            {/* Category Selection Section */}
+            <Card className="space-y-5 border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-2">
+                <Layers size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Category & Silhouette
+                </h3>
+              </div>
+
+              <Dropdown
+                label="Primary Category"
+                options={categories.map(c => ({ value: c, label: c }))}
+                error={errors.category?.message as string}
+                {...register('category')}
+              />
+
+              <div className="space-y-2 pt-1">
+                <label className="block text-[10px] font-bold text-[#6B5E4C] uppercase tracking-wider">Quick Category Select</label>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((cat) => {
+                    const selected = formValues.category === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setValue('category', cat)}
+                        className={`h-10 px-5 rounded-[8px] text-[11px] font-bold border transition-all cursor-pointer active:scale-95 ${
+                          selected
+                            ? 'bg-[#C8851A] text-white border-[#C8851A] shadow-sm'
+                            : 'bg-white border-[#E8E2D9] text-[#6B5E4C] hover:bg-gray-50'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* ================= STEP 2: Images upload ================= */}
+        {step === 2 && (
+          <div className="space-y-6 animate-fade-in">
+            <Card className="space-y-5 border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-2">
+                <ImageIcon size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Apparel Images
+                </h3>
+              </div>
+
+              {/* Upload Selectors Grid */}
+              <div className="grid grid-cols-3 gap-3">
+                {/* Camera */}
+                <label className="h-24 rounded-[12px] border border-dashed border-[#E6C280]/30 flex flex-col items-center justify-center cursor-pointer bg-[#FAF6F0] active:scale-95 transition-all">
+                  <Camera size={20} className="text-[#C8851A] mb-1" />
+                  <span className="text-[9px] font-bold text-[#6B5E4C] uppercase tracking-wider">Camera</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleImageSelection}
+                    className="hidden"
+                  />
+                </label>
+
+                {/* Gallery */}
+                <label className="h-24 rounded-[12px] border border-dashed border-[#E6C280]/30 flex flex-col items-center justify-center cursor-pointer bg-[#FAF6F0] active:scale-95 transition-all">
+                  <GalleryIcon size={20} className="text-[#C8851A] mb-1" />
+                  <span className="text-[9px] font-bold text-[#6B5E4C] uppercase tracking-wider">Gallery</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageSelection}
+                    className="hidden"
+                  />
+                </label>
+
+                {/* Files */}
+                <label className="h-24 rounded-[12px] border border-dashed border-[#E6C280]/30 flex flex-col items-center justify-center cursor-pointer bg-[#FAF6F0] active:scale-95 transition-all">
+                  <Upload size={20} className="text-[#C8851A] mb-1" />
+                  <span className="text-[9px] font-bold text-[#6B5E4C] uppercase tracking-wider">Files</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageSelection}
+                    className="hidden"
+                  />
                 </label>
               </div>
-            </div>
-          )}
 
-          {/* Pricing & Stock Tab */}
-          {activeTab === 'pricing' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm animate-fade-in">
-              <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Pricing & Inventory
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="admin-label">Retail Price (INR ₹)</label>
-                  <input
-                    type="number"
-                    className="admin-input"
-                    {...register('price', { valueAsNumber: true })}
-                    placeholder="85000"
-                  />
-                  {errors.price && <p className="text-[11px] text-red-500 mt-1">{errors.price.message as string}</p>}
+              {uploading && (
+                <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-[#9B8E7E] font-medium">
+                  <Loader2 className="animate-spin text-[#C8851A]" size={16} />
+                  Compressing and uploading assets...
                 </div>
-                <div>
-                  <label className="admin-label">Sale/Offer Price (INR ₹)</label>
-                  <input
-                    type="number"
-                    className="admin-input"
-                    {...register('salePrice', { valueAsNumber: true })}
-                    placeholder="e.g. 78000 (optional)"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div>
-                  <label className="admin-label">SKU Reference</label>
-                  <input type="text" className="admin-input" {...register('sku')} placeholder="BR-LEH-001" />
-                </div>
-                <div>
-                  <label className="admin-label">Product Code</label>
-                  <input type="text" className="admin-input" {...register('productCode')} placeholder="SANA-2026-09" />
-                </div>
-                <div>
-                  <label className="admin-label">Total Inventory Stock</label>
-                  <input
-                    type="number"
-                    className="admin-input"
-                    {...register('stock', { valueAsNumber: true })}
-                  />
-                  {errors.stock && <p className="text-[11px] text-red-500 mt-1">{errors.stock.message as string}</p>}
-                </div>
-              </div>
-            </div>
-          )}
+              )}
 
-          {/* Categorization Tab */}
-          {activeTab === 'categories' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm animate-fade-in">
-              <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Categorization & Tags
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="admin-label">Design Category</label>
-                  <select className="admin-select" {...register('category')}>
-                    <option value="Wedding Collection">Wedding Collection</option>
-                    <option value="Festive Collection">Festive Collection</option>
-                    <option value="Designer Suits">Designer Suits</option>
-                    <option value="New Arrivals">New Arrivals</option>
-                    <option value="Best Sellers">Best Sellers</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="admin-label">Luxury Collection Bind</label>
-                  <select className="admin-select" {...register('collection')}>
-                    <option value="">None (Independent Product)</option>
-                    {collections.map((col) => (
-                      <option key={col._id} value={col._id}>{col.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="admin-label">Tags (Comma-separated search keywords)</label>
-                <input
-                  type="text"
-                  placeholder="silk, embroidery, bride, lehenga"
-                  className="admin-input"
-                  value={formValues.tags?.join(', ')}
-                  onChange={(e) => setValue('tags', e.target.value.split(',').map(t => t.trim()).filter(Boolean))}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Variants & Specs Tab */}
-          {activeTab === 'variants' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-6 shadow-sm animate-fade-in">
-              <div>
-                <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                  Fabric & Occasion Attributes
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <label className="admin-label">Fabric / Textile Type</label>
-                    <input type="text" className="admin-input" {...register('fabric')} placeholder="e.g. Banarasi Raw Silk" />
-                  </div>
-                  <div>
-                    <label className="admin-label">Occasion Suitability</label>
-                    <input type="text" className="admin-input" {...register('occasion')} placeholder="e.g. Bridal Sangeet, Reception" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <label className="admin-label">Embroidery Type</label>
-                    <input type="text" className="admin-input" {...register('embroidery')} placeholder="e.g. Zardozi, Gota Patti" />
-                  </div>
-                  <div>
-                    <label className="admin-label">Craftsmanship Work Type</label>
-                    <input type="text" className="admin-input" {...register('workType')} placeholder="e.g. Handcrafted, Machine" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Variant manager */}
-              <div className="border-t border-[#F0EDE8] pt-4 space-y-4">
-                <h3 className="text-[14px] font-semibold text-[#1C1008]">Product Variants (Colors & Sizes)</h3>
-                
-                <div className="bg-[#FAFAF8] border border-[#E8E2D9] rounded-xl p-4 grid grid-cols-2 sm:grid-cols-5 gap-3 items-end">
-                  <div>
-                    <label className="admin-label">Color</label>
-                    <input type="text" value={newVarColor} onChange={e => setNewVarColor(e.target.value)} placeholder="e.g. Crimson" className="admin-input h-10" />
-                  </div>
-                  <div>
-                    <label className="admin-label">Size</label>
-                    <input type="text" value={newVarSize} onChange={e => setNewVarSize(e.target.value)} placeholder="e.g. XL" className="admin-input h-10" />
-                  </div>
-                  <div>
-                    <label className="admin-label">Stock</label>
-                    <input type="number" value={newVarStock} onChange={e => setNewVarStock(Number(e.target.value))} className="admin-input h-10" />
-                  </div>
-                  <div>
-                    <label className="admin-label">Price (override)</label>
-                    <input type="number" value={newVarPrice} onChange={e => setNewVarPrice(e.target.value ? Number(e.target.value) : '')} placeholder="Use main" className="admin-input h-10" />
-                  </div>
-                  <button type="button" onClick={addVariant} className="btn-secondary h-10 justify-center text-[12px] font-semibold cursor-pointer">
-                    <Plus size={14} /> Add Variant
-                  </button>
-                </div>
-
-                {variants.length > 0 ? (
-                  <div className="border border-[#E8E2D9] rounded-xl overflow-hidden divide-y divide-[#F0EDE8]">
-                    {variants.map((v, i) => (
-                      <div key={i} className="p-3 bg-white flex justify-between items-center text-[12.5px]">
-                        <div>
-                          <span className="font-semibold text-[#1C1008]">{v.label}</span>
-                          <span className="text-[#9B8E7E] ml-2">• Stock: {v.stock}</span>
-                          {v.price && <span className="text-[#C8851A] ml-2">• Price: ₹{v.price}</span>}
+              {/* Uploaded Images List */}
+              {images.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <label className="block text-[10px] font-bold text-[#6B5E4C] uppercase tracking-wider">Image Sequence (Drag/Reorder)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {images.map((url, idx) => (
+                      <div
+                        key={url}
+                        className="bg-[#FAFAF8] border border-[#E6C280]/20 rounded-[12px] p-3 flex gap-3 relative"
+                      >
+                        <div className="w-16 h-20 rounded-lg bg-gray-50 border border-[#E6C280]/15 overflow-hidden flex-shrink-0 relative">
+                          <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover object-top" />
+                          <span className="absolute top-1 left-1 bg-black/60 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                            #{idx + 1}
+                          </span>
                         </div>
-                        <button type="button" onClick={() => removeVariant(i)} className="text-red-600 hover:text-red-800 p-1 cursor-pointer">
-                          <Trash size={14} />
-                        </button>
+
+                        <div className="flex-1 flex flex-col justify-between py-0.5">
+                          <div>
+                            <p className="text-[11px] font-bold text-[#1C1008] font-serif truncate">garment_asset_{idx + 1}.jpg</p>
+                            <p className="text-[9px] text-[#9B8E7E] uppercase font-semibold">Active thumbnail</p>
+                          </div>
+
+                          {/* Reordering & control icons */}
+                          <div className="flex gap-2">
+                            {idx > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => moveImage(idx, 'left')}
+                                className="w-7 h-7 rounded-[6px] bg-white border border-[#E8E2D9] text-[#6B5E4C] flex items-center justify-center cursor-pointer active:scale-90 transition-transform"
+                                title="Move up"
+                              >
+                                <ArrowLeft size={12} />
+                              </button>
+                            )}
+                            {idx < images.length - 1 && (
+                              <button
+                                type="button"
+                                onClick={() => moveImage(idx, 'right')}
+                                className="w-7 h-7 rounded-[6px] bg-white border border-[#E8E2D9] text-[#6B5E4C] flex items-center justify-center cursor-pointer active:scale-90 transition-transform"
+                                title="Move down"
+                              >
+                                <ArrowRight size={12} />
+                              </button>
+                            )}
+                            
+                            <label className="w-7 h-7 rounded-[6px] bg-white border border-[#E8E2D9] text-[#6B5E4C] flex items-center justify-center cursor-pointer active:scale-90 transition-transform" title="Replace file">
+                              <Sparkles size={11} className="text-[#C8851A]" />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleReplaceImage(idx, e)}
+                                className="hidden"
+                              />
+                            </label>
+
+                            <button
+                              type="button"
+                              onClick={() => removeImage(idx)}
+                              className="w-7 h-7 rounded-[6px] bg-white border border-red-100 text-red-600 flex items-center justify-center cursor-pointer active:scale-90 transition-transform hover:bg-red-50"
+                              title="Delete"
+                            >
+                              <Trash size={12} />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-[12px] text-[#9B8E7E] italic">No active variants added. Listing will sell as a single unified item.</p>
-                )}
+                </div>
+              )}
+            </Card>
+          </div>
+        )}
+
+        {/* ================= STEP 3: Pricing, Stock, Description ================= */}
+        {step === 3 && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Pricing Section */}
+            <Card className="space-y-4 border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-2">
+                <IndianRupee size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Pricing Information
+                </h3>
               </div>
-            </div>
+              
+              <Input
+                label="Price (INR ₹)"
+                type="number"
+                error={errors.price?.message as string}
+                {...register('price', { valueAsNumber: true })}
+              />
+            </Card>
+
+            {/* Stock Section */}
+            <Card className="space-y-5 border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-2">
+                <Package size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Stock Inventory
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input
+                  label="Stock Count"
+                  type="number"
+                  error={errors.stock?.message as string}
+                  {...register('stock', { valueAsNumber: true })}
+                />
+                <Dropdown
+                  label="Inventory Status"
+                  options={[
+                    { value: 'in_stock', label: 'In Stock' },
+                    { value: 'out_of_stock', label: 'Out of Stock' }
+                  ]}
+                  error={errors.stockStatus?.message as string}
+                  {...register('stockStatus')}
+                />
+              </div>
+
+              <div className="flex items-center gap-2.5 pt-2">
+                <input
+                  type="checkbox"
+                  id="featured"
+                  className="w-4 h-4 text-[#C8851A] rounded border-[#E8E2D9] focus:ring-[#C8851A] cursor-pointer"
+                  {...register('featured')}
+                />
+                <label htmlFor="featured" className="text-[11px] font-bold text-[#6B5E4C] uppercase tracking-wider select-none cursor-pointer">
+                  Highlight this product as Featured collection
+                </label>
+              </div>
+            </Card>
+
+            {/* Description Section */}
+            <Card className="space-y-4 border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-2">
+                <FileText size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Description Details
+                </h3>
+              </div>
+
+              <Textarea
+                label="Product Narrative & Care Instructions"
+                error={errors.description?.message as string}
+                {...register('description')}
+              />
+            </Card>
+          </div>
+        )}
+
+        {/* ================= STEP 4: Live Preview & Publish ================= */}
+        {step === 4 && (
+          <div className="space-y-6 animate-fade-in">
+            <Card className="border border-[#E6C280]/15 shadow-sm rounded-[12px] p-6">
+              <div className="flex items-center gap-2 border-b border-[#FAF6F0] pb-3 mb-4">
+                <Eye size={18} className="text-[#C8851A]" />
+                <h3 className="text-[16px] font-bold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Design Check & Live Preview
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                {/* Visual Card representation */}
+                <div className="border border-[#E6C280]/15 rounded-[12px] overflow-hidden bg-[#FAFAF8] shadow-sm max-w-sm mx-auto w-full">
+                  <div className="aspect-[4/5] bg-gray-100 relative overflow-hidden">
+                    {images[0] ? (
+                      <img src={images[0]} alt="Thumbnail" className="w-full h-full object-cover object-top" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">No Image</div>
+                    )}
+                    
+                    <div className="absolute bottom-3 left-3 flex gap-1.5 z-10">
+                      <Badge type={formValues.stock === 0 ? 'out_of_stock' : 'in_stock'} />
+                      {formValues.featured && <Badge type="featured" />}
+                    </div>
+                    <div className="absolute top-3 right-3 z-10">
+                      <Badge type={submitStatus as any} />
+                    </div>
+                  </div>
+                  <div className="p-4 space-y-1 bg-white">
+                    <div className="flex justify-between items-baseline gap-2">
+                      <h4 className="text-[16px] font-bold text-[#1C1008] font-serif truncate" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        {formValues.name || 'Untitled Garment'}
+                      </h4>
+                      <span className="text-[15px] font-bold text-[#C8851A]">
+                        ₹{formValues.price?.toLocaleString('en-IN') || '0'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-[#9B8E7E] uppercase font-bold tracking-wider">{formValues.category}</p>
+                  </div>
+                </div>
+
+                {/* Listing metadata summary */}
+                <div className="space-y-4 py-2">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9B8E7E] block">Product Description</span>
+                    <p className="text-[13px] text-[#6B5E4C] leading-relaxed whitespace-pre-line mt-1">
+                      {formValues.description || 'No description provided.'}
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 border-t border-[#FAF6F0] pt-4">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9B8E7E] block">Primary Category</span>
+                      <span className="text-[13px] text-[#1C1008] font-semibold block mt-0.5">{formValues.category}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9B8E7E] block">Stock Inventory</span>
+                      <span className="text-[13px] text-[#1C1008] font-semibold block mt-0.5">{formValues.stock} units</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* ================= BUTTON ACTION FOOTERS (Global Component system: 52px tall, 12px rounded-xl) ================= */}
+        <div className="flex gap-3 pt-4 mt-4">
+          {step > 1 && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handlePrevStep}
+              icon={<ArrowLeft size={14} />}
+              className="w-32"
+            >
+              Back
+            </Button>
           )}
 
-          {/* SEO & Search Tab */}
-          {activeTab === 'seo' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm animate-fade-in">
-              <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Google Search Engine Listing (SEO)
-              </h2>
-              <div>
-                <label className="admin-label">Meta Search Title</label>
-                <input type="text" className="admin-input" {...register('seoTitle')} placeholder="e.g. Royal Crimson Bridal Lehenga | SANA Fashion" />
-              </div>
-              <div>
-                <label className="admin-label">Meta Search Description</label>
-                <textarea rows={3} className="admin-input py-3 resize-y" {...register('seoDescription')} placeholder="Brief preview text that appears under the Google link page listing..." />
-              </div>
+          {step < 4 ? (
+            <Button
+              type="button"
+              variant="primary"
+              onClick={handleNextStep}
+              icon={<ArrowRight size={14} />}
+              className="flex-1"
+            >
+              Continue
+            </Button>
+          ) : (
+            <div className="flex-1 flex flex-col sm:flex-row gap-3">
+              <Button
+                type="submit"
+                variant="secondary"
+                onClick={() => setSubmitStatus('draft')}
+                loading={loading && submitStatus === 'draft'}
+                className="flex-1"
+              >
+                Save Draft
+              </Button>
+
+              <Button
+                type="submit"
+                variant="primary"
+                onClick={() => setSubmitStatus('published')}
+                loading={loading && submitStatus === 'published'}
+                className="flex-1"
+              >
+                Publish Live
+              </Button>
             </div>
           )}
-
-          {/* Shipping & Returns Tab */}
-          {activeTab === 'shipping' && (
-            <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm animate-fade-in">
-              <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Shipping & Delivery Specifications
-              </h2>
-              <div>
-                <label className="admin-label">Shipping dispatch timing info</label>
-                <textarea rows={2} className="admin-input py-3 resize-y" {...register('shippingInfo')} placeholder="e.g. Dispatched in 3-4 weeks due to hand embroidery craft..." />
-              </div>
-              <div>
-                <label className="admin-label">Return/Exchange Policy details</label>
-                <textarea rows={2} className="admin-input py-3 resize-y" {...register('returnPolicy')} placeholder="e.g. Made-to-order garments are non-returnable..." />
-              </div>
-            </div>
-          )}
-
         </div>
 
-        {/* Right Column (4 cols): Status, flags & publish triggers */}
-        <div className="lg:col-span-4 space-y-6">
-          
-          {/* Status Settings Card */}
-          <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-4 shadow-sm">
-            <h3 className="text-[14px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2">Status & Visibility</h3>
-            
-            <div>
-              <label className="admin-label">Publishing status</label>
-              <select className="admin-select" {...register('status')}>
-                <option value="draft">Draft (Hidden)</option>
-                <option value="published">Published (Visible)</option>
-                <option value="archived">Archived</option>
-              </select>
-            </div>
-
-            <div className="pt-2 border-t border-[#F0EDE8] space-y-3">
-              <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C]">Display Settings</label>
-              
-              <label className="flex items-center gap-2 text-[13px] text-[#6B5E4C] cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formValues.featured}
-                  onChange={(e) => setValue('featured', e.target.checked)}
-                  className="rounded border-[#E8E2D9] text-[#C8851A] focus:ring-[#C8851A]"
-                />
-                Feature in home gallery
-              </label>
-
-              <label className="flex items-center gap-2 text-[13px] text-[#6B5E4C] cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formValues.newArrival}
-                  onChange={(e) => setValue('newArrival', e.target.checked)}
-                  className="rounded border-[#E8E2D9] text-[#C8851A] focus:ring-[#C8851A]"
-                />
-                Mark as New Arrival
-              </label>
-
-              <label className="flex items-center gap-2 text-[13px] text-[#6B5E4C] cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formValues.bestSeller}
-                  onChange={(e) => setValue('bestSeller', e.target.checked)}
-                  className="rounded border-[#E8E2D9] text-[#C8851A] focus:ring-[#C8851A]"
-                />
-                Mark as Bestseller
-              </label>
-            </div>
-          </div>
-
-          {/* Form Actions */}
-          <div className="bg-white border border-[#E8E2D9] rounded-[20px] p-6 space-y-3 shadow-sm">
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full h-12 justify-center font-semibold text-[13px] tracking-widest uppercase cursor-pointer"
-            >
-              {loading ? (
-                <><Loader2 size={16} className="animate-spin" /> Saving changes...</>
-              ) : (
-                'Save Garment'
-              )}
-            </button>
+        {step === 1 && (
+          <div className="text-center pt-2">
             <button
               type="button"
               onClick={() => router.push('/admin/products')}
-              className="btn-secondary w-full h-12 justify-center font-medium text-[13px] cursor-pointer"
+              className="text-[12px] font-bold text-[#9B8E7E] uppercase tracking-wider hover:text-[#1C1008] transition-colors cursor-pointer"
             >
-              Discard & Exit
+              Cancel & Exit Form
             </button>
           </div>
+        )}
 
-        </div>
-
-      </div>
-
-    </form>
+      </form>
+    </div>
   );
 }

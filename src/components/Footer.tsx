@@ -145,7 +145,7 @@ export default function Footer() {
           {/* Column 2: Collections (2 Cols Desktop, Accordion Mobile) */}
           {/* Desktop Link Grid */}
           <div className="hidden lg:block lg:col-span-2">
-            <h4 className="font-serif text-xl tracking-[0.25em] uppercase text-[#E6C280] mb-8 lg:mb-10">Collections</h4>
+            <h4 className="font-accent text-[10px] tracking-[0.28em] uppercase text-[#E6C280] mb-8 lg:mb-10">Collections</h4>
             <ul className="flex flex-col gap-4">
               {collectionsLinks.map((l) => (
                 <li key={l.label}>
@@ -197,7 +197,7 @@ export default function Footer() {
           {/* Column 3: Customer Care (2 Cols Desktop, Accordion Mobile) */}
           {/* Desktop Link Grid */}
           <div className="hidden lg:block lg:col-span-2">
-            <h4 className="font-serif text-xl tracking-[0.25em] uppercase text-[#E6C280] mb-8 lg:mb-10">Customer Care</h4>
+            <h4 className="font-accent text-[10px] tracking-[0.28em] uppercase text-[#E6C280] mb-8 lg:mb-10">Customer Care</h4>
             <ul className="flex flex-col gap-4">
               {customerCareLinks.map((l) => (
                 <li key={l.label}>
@@ -248,12 +248,12 @@ export default function Footer() {
 
           {/* Column 4: Newsletter & CTA Services (4 Cols) */}
           <div className="lg:col-span-4 flex flex-col items-start w-full">
-            <h4 className="font-serif text-xl tracking-[0.25em] uppercase text-[#E6C280] mb-6 lg:mb-10">Atelier Services</h4>
+            <h4 className="font-accent text-[10px] tracking-[0.28em] uppercase text-[#E6C280] mb-6 lg:mb-10">Atelier Services</h4>
             
             {/* Book Appointment CTA Button */}
             <div className="mb-8 lg:mb-12 w-full">
               <Link href="/contact" className="w-full block">
-                <LuxuryButton variant="primary" className="w-full !h-14 !rounded-full">
+                <LuxuryButton variant="primary" className="w-full">
                   Book Appointment
                 </LuxuryButton>
               </Link>
@@ -266,7 +266,7 @@ export default function Footer() {
                 Join the SANA inner circle for invitations to private flagship previews and collection launches.
               </p>
               
-              <form onSubmit={handleSubscribe} className="w-full flex flex-col sm:flex-row gap-4">
+              <form onSubmit={handleSubscribe} className="w-full flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-grow w-full">
                   <input
                     type="email"
@@ -274,10 +274,10 @@ export default function Footer() {
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#1A1A1B] text-[#FFFBF4] text-sm font-body placeholder-[#FFFBF4]/30 focus:outline-none border border-[#E6C280]/20 focus:border-[#E6C280] focus:ring-2 focus:ring-[#E6C280]/20 rounded-full px-7 h-14 transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="w-full bg-[#1A1A1B] text-[#FFFBF4] text-sm font-body placeholder-[#FFFBF4]/30 focus:outline-none border border-[#E6C280]/20 focus:border-[#E6C280] focus:ring-2 focus:ring-[#E6C280]/20 rounded-[12px] px-6 h-[52px] transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
                   />
                 </div>
-                <LuxuryButton type="submit" variant="primary" className="whitespace-nowrap !h-14 !rounded-full !px-8">
+                <LuxuryButton type="submit" variant="primary" className="whitespace-nowrap">
                   Subscribe
                 </LuxuryButton>
               </form>

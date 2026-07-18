@@ -125,16 +125,16 @@ export default function BestSellers() {
       <div className="editorial-container">
         {/* Header — Baseline aligned */}
         <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-accent-gold/10 pb-6 md:pb-8">
-          <div className="flex flex-col gap-4">
-            <span className="eyebrow-text text-gold">— Editorial Selection</span>
+          <div className="flex flex-col gap-3">
+            <span className="font-accent text-[10px] tracking-[0.28em] uppercase text-gold block">— Editorial Selection</span>
             <h2 className="section-title-text">
               Featured Atelier <span className="italic font-normal text-gold">Pieces</span>
             </h2>
           </div>
-          <div className="pb-1.5">
+          <div className="pb-0.5">
             <Link href="/collections">
-              <button className="flex items-center gap-2 font-accent text-[15px] tracking-[0.2em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors border-b border-accent-gold/45 pb-1 cursor-pointer whitespace-nowrap">
-                View All Collections <ArrowRight size={12} />
+              <button className="flex items-center gap-2 font-accent text-[11px] tracking-[0.22em] uppercase text-[#C8851A] hover:text-[#9A5F0A] transition-colors border-b border-accent-gold/40 pb-1 cursor-pointer whitespace-nowrap">
+                View All Collections <ArrowRight size={11} />
               </button>
             </Link>
           </div>
@@ -150,20 +150,20 @@ export default function BestSellers() {
               whileInView="visible"
               viewport={{ once: true, margin: "0px" }}
               variants={cardReveal}
-              className="best-sellers-card group relative flex flex-col w-[82vw] md:w-full flex-shrink-0 snap-start bg-[#FFFBF4] border border-[#E6C280]/18 hover:border-[#C8851A]/35 transition-all duration-700 hover:shadow-[0_8px_40px_rgba(28,14,5,0.12)] hover:-translate-y-1 rounded-[2px] overflow-hidden"
+              className="pc-card group w-[82vw] md:w-full flex-shrink-0 snap-start"
             >
-              {/* ── Image Zone (75–80% of card) ───────────── */}
-              <div className="relative overflow-hidden aspect-[3/4] w-full flex-shrink-0">
+              {/* ── Image Zone (4:5 ratio) ───────────── */}
+              <div className="pc-img-wrap">
                 <Image
                   src={p.image}
                   alt={p.name}
                   fill
-                  className="object-cover object-top transition-transform duration-[1400ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.04]"
+                  className="object-cover object-top transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.05]"
                   sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 22vw"
                   priority={idx === 0}
                 />
 
-                {/* Subtle dark gradient at base of image for readability */}
+                {/* Subtle dark gradient at base of image */}
                 <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
 
                 {/* Gold inset outline on hover */}
@@ -202,15 +202,15 @@ export default function BestSellers() {
                 </div>
               </div>
 
-              {/* Info block */}
-              <div className="p-5 flex flex-col flex-grow">
-                <span className="font-accent text-[10px] tracking-[0.18em] uppercase text-[#C8851A] mb-1.5 block">{p.category}</span>
-                <h3 className="font-serif font-light text-lg sm:text-xl text-text-primary mb-2 group-hover:text-[#C8851A] transition-colors duration-300 leading-snug">{p.name}</h3>
-                {p.craftsmanship && <span className="text-[11px] tracking-wide text-text-muted font-body italic block mb-3">{p.craftsmanship}</span>}
+              {/* Info block — uses global design system classes */}
+              <div className="pc-meta">
+                <span className="pc-category">{p.category}</span>
+                <h3 className="pc-name">{p.name}</h3>
+                {p.craftsmanship && <span className="pc-subtitle">{p.craftsmanship}</span>}
                 
-                <div className="flex items-baseline gap-3 pt-2 mt-auto border-t border-[#E6C280]/15">
-                  <span className="font-serif text-base font-semibold text-text-primary">₹{p.price.toLocaleString("en-IN")}</span>
-                  <span className="font-serif text-xs text-[#9A8070] line-through">₹{p.original.toLocaleString("en-IN")}</span>
+                <div className="pc-price-row">
+                  <span className="pc-price">₹{p.price.toLocaleString("en-IN")}</span>
+                  <span className="pc-price-original">₹{p.original.toLocaleString("en-IN")}</span>
                 </div>
               </div>
             </motion.div>

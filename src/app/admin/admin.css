@@ -109,27 +109,26 @@
 
   /* ── Buttons ────────────────────────────────────────────────── */
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-[8px] text-[13px] font-semibold text-white transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[12px] text-[13px] font-bold text-white transition-all duration-200 cursor-pointer active:scale-95 shadow-sm;
     background: #C8851A;
   }
-  .btn-primary:hover { background: #A86D14; }
-  .btn-primary:disabled { @apply opacity-50 cursor-not-allowed; }
+  .btn-primary:hover { background: #B07414; }
+  .btn-primary:disabled { @apply opacity-50 cursor-not-allowed active:scale-100; }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-[8px] text-[13px] font-medium text-[#6B5E4C] bg-white border border-[#E8E2D9] transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[12px] text-[13px] font-bold text-[#C8851A] bg-[#FCFAF7] border border-[#C8851A]/50 transition-all duration-200 cursor-pointer active:scale-95;
   }
-  .btn-secondary:hover { @apply border-[#C8851A] text-[#C8851A] bg-[rgba(200,133,26,0.04)]; }
+  .btn-secondary:hover { @apply border-[#C8851A] bg-[rgba(200,133,26,0.04)] text-[#B07414]; }
 
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-3 py-2 rounded-[8px] text-[13px] font-medium text-[#6B5E4C] transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-[12px] text-[13px] font-semibold text-[#6B5E4C] transition-all duration-200 cursor-pointer active:scale-95;
   }
   .btn-ghost:hover { @apply bg-[rgba(200,133,26,0.06)] text-[#1C1008]; }
 
   .btn-danger {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-[8px] text-[13px] font-medium text-white transition-all duration-200 cursor-pointer;
-    background: #DC2626;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[12px] text-[13px] font-bold text-[#EF4444] bg-white border border-[#EF4444] transition-all duration-200 cursor-pointer active:scale-95;
   }
-  .btn-danger:hover { background: #B91C1C; }
+  .btn-danger:hover { @apply bg-[#FEF2F2] text-[#DC2626] border-[#DC2626]; }
 
   /* ── Form inputs ─────────────────────────────────────────────── */
   .admin-input {
@@ -232,4 +231,58 @@
 
   /* ── Skeleton ────────────────────────────────────────────────── */
   .skeleton { @apply bg-[#F0EDE8] rounded animate-pulse; }
+
+  /* ── Mobile-First UI Custom Components ───────────────────────── */
+  
+  /* Bottom Sheet Overlay */
+  .bottom-sheet-overlay {
+    @apply fixed inset-0 bg-black/40 z-[9990] backdrop-blur-[1px];
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Apple-style Bottom Sheet */
+  .bottom-sheet {
+    @apply fixed bottom-0 inset-x-0 bg-white rounded-t-[28px] border-t border-[#E8E2D9] z-[9991] max-h-[85vh] overflow-y-auto pb-10;
+    box-shadow: 0 -8px 32px rgba(28, 16, 8, 0.08);
+    animation: slideUpMobile 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bottom-sheet-handle {
+    @apply w-10 h-1 bg-[#E8E2D9] rounded-full mx-auto my-3;
+  }
+
+  /* WhatsApp Style Thread Rows */
+  .whatsapp-row {
+    @apply flex items-center justify-between p-3 border-b border-[#FAF6F0] active:bg-[#FAF6F0] transition-colors cursor-pointer;
+  }
+
+  .whatsapp-avatar {
+    @apply w-10 h-10 rounded-full flex items-center justify-center font-bold text-[13px] text-white flex-shrink-0;
+  }
+
+  /* Scrollable filters pill */
+  .scroll-pills {
+    @apply flex gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4;
+  }
+
+  /* Reorder Image Thumbnails Buttons */
+  .reorder-arrow-btn {
+    @apply w-7 h-7 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center active:scale-90 transition-transform;
+  }
+
+  /* Floating Action Button (FAB) */
+  .fab-btn {
+    @apply fixed bottom-20 right-5 w-14 h-14 rounded-full bg-[#C8851A] active:bg-[#A86D14] text-white flex items-center justify-center shadow-lg active:scale-95 transition-all z-40;
+    box-shadow: 0 8px 24px rgba(200, 133, 26, 0.3);
+  }
+
+  .fab-btn:hover {
+    box-shadow: 0 12px 32px rgba(200, 133, 26, 0.45);
+  }
 }
+
+@keyframes slideUpMobile {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+

@@ -1,142 +1,219 @@
 'use client';
-import { useState } from 'react';
-import { Settings, Save, AlertCircle, Sparkles, MapPin, Phone, Mail, MessageSquare } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings, Save, Lock, LogOut, Loader2, Globe, ShieldCheck } from 'lucide-react';
 import { useAdminStore } from '@/lib/adminStore';
+import { changePassword } from '@/lib/adminApi';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
-  const [address, setAddress] = useState('Sana Fashion Atelier, Mumbai, India');
-  const [phone, setPhone] = useState('+91 90225 91620');
-  const [email, setEmail] = useState('hello@sanafashion.in');
-  const [insta, setInsta] = useState('https://www.instagram.com/sana___fashion___01/');
-  const [whatsapp, setWhatsapp] = useState('+91 90225 91620');
-  const [copyright, setCopyright] = useState('© 2026 Sana Fashion. All rights reserved.');
-  
-  const [saving, setSaving] = useState(false);
-  const { addToast } = useAdminStore();
+  const router = useRouter();
+  const { addToast, clearAuth } = useAdminStore();
 
-  const handleSave = (e: React.FormEvent) => {
+  // Brand configurations
+  const [websiteName, setWebsiteName] = useState('SANA Fashion');
+  const [logoUrl, setLogoUrl] = useState('/images/logo.png');
+  const [whatsapp, setWhatsapp] = useState('+91 90225 91620');
+  const [email, setEmail] = useState('hello@sanafashion.in');
+  const [savingBrand, setSavingBrand] = useState(false);
+
+  // Change Password state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPass, setChangingPass] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setWebsiteName(localStorage.getItem('brand_name') || 'SANA Fashion');
+      setLogoUrl(localStorage.getItem('brand_logo') || '/images/logo.png');
+      setWhatsapp(localStorage.getItem('brand_whatsapp') || '+91 90225 91620');
+      setEmail(localStorage.getItem('brand_email') || 'hello@sanafashion.in');
+    }
+  }, []);
+
+  const handleSaveBrand = (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
+    setSavingBrand(true);
     setTimeout(() => {
-      setSaving(false);
+      localStorage.setItem('brand_name', websiteName);
+      localStorage.setItem('brand_logo', logoUrl);
+      localStorage.setItem('brand_whatsapp', whatsapp);
+      localStorage.setItem('brand_email', email);
+      setSavingBrand(false);
       addToast({ type: 'success', message: 'Brand settings updated successfully!' });
-    }, 800);
+    }, 600);
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword) {
+      addToast({ type: 'warning', message: 'Please fill in all password fields.' });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      addToast({ type: 'error', message: 'New passwords do not match.' });
+      return;
+    }
+
+    setChangingPass(true);
+    try {
+      await changePassword({ currentPassword, newPassword });
+      addToast({ type: 'success', message: 'Password changed successfully!' });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Failed to change password.';
+      addToast({ type: 'error', message: msg });
+    } finally {
+      setChangingPass(false);
+    }
+  };
+
+  const handleLogout = () => {
+    clearAuth();
+    router.push('/admin/login');
+    addToast({ type: 'success', message: 'Logged out successfully.' });
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Brand Studio Settings</h1>
-          <p className="page-subtitle">Configure contact links, address coordinates, and social handles.</p>
-        </div>
+    <div className="max-w-md mx-auto space-y-6 animate-fade-in font-sans p-1 md:py-8">
+      
+      {/* Title */}
+      <div className="border-b border-[#E6C280]/20 pb-4">
+        <h1 className="text-[28px] font-semibold text-[#1C1008] font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+          Settings
+        </h1>
+        <p className="text-[12px] text-[#9B8E7E]">Configure brand coordinates & credentials</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <form onSubmit={handleSave} className="admin-card p-6 space-y-4">
-            <h2 className="text-[15px] font-semibold text-[#1C1008] border-b border-[#F0EDE8] pb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-              Atelier Coordinates & Contacts
-            </h2>
+      {/* 1. Website Branding Card */}
+      <form onSubmit={handleSaveBrand} className="bg-white border border-[#E6C280]/20 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2 font-serif flex items-center gap-1.5" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+          <Globe size={16} className="text-[#C8851A]" />
+          Website Branding
+        </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="admin-label flex items-center gap-1.5">
-                  <Phone size={12} /> Contact Hot-line
-                </label>
-                <input
-                  type="text"
-                  className="admin-input"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="admin-label flex items-center gap-1.5">
-                  <Mail size={12} /> Public Contact Email
-                </label>
-                <input
-                  type="email"
-                  className="admin-input"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="admin-label flex items-center gap-1.5">
-                  <MessageSquare size={12} /> WhatsApp Helpline
-                </label>
-                <input
-                  type="text"
-                  className="admin-input"
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="admin-label flex items-center gap-1.5">
-                  <Settings size={12} /> Instagram Handle URL
-                </label>
-                <input
-                  type="text"
-                  className="admin-input"
-                  value={insta}
-                  onChange={(e) => setInsta(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="admin-label flex items-center gap-1.5">
-                <MapPin size={12} /> Physical Atelier Address
-              </label>
-              <textarea
-                rows={2}
-                className="admin-textarea"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="admin-label">Copyright notice text</label>
-              <input
-                type="text"
-                className="admin-input"
-                value={copyright}
-                onChange={(e) => setCopyright(e.target.value)}
-              />
-            </div>
-
-            <div className="pt-2">
-              <button type="submit" disabled={saving} className="btn-primary">
-                {saving ? 'Saving...' : 'Save Brand Settings'}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* Right Info card */}
+        {/* Website Name */}
         <div>
-          <div className="admin-card p-5 space-y-4">
-            <h2 className="text-[15px] font-semibold text-[#1C1008]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-              Atelier Coordinates Info
-            </h2>
-            <div className="bg-[#FAFAF8] p-4 rounded-lg border border-[#E8E2D9] text-[12px] text-[#6B5E4C] space-y-3">
-              <p>
-                Configure active contact links to ensure WhatsApp shortcuts, Instagram follow icons, and maps location widgets align cleanly.
-              </p>
-              <div className="flex gap-2 text-amber-700 font-semibold items-center text-[11px]">
-                <Sparkles size={14} /> Global changes update immediately.
-              </div>
-            </div>
-          </div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">Website Name</label>
+          <input
+            type="text"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={websiteName}
+            onChange={(e) => setWebsiteName(e.target.value)}
+          />
         </div>
+
+        {/* Logo URL */}
+        <div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">Logo Image Path / URL</label>
+          <input
+            type="text"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={logoUrl}
+            onChange={(e) => setLogoUrl(e.target.value)}
+          />
+        </div>
+
+        {/* WhatsApp Number */}
+        <div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">WhatsApp Number</label>
+          <input
+            type="text"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">Email Address</label>
+          <input
+            type="email"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        {/* Save brand settings button */}
+        <button
+          type="submit"
+          disabled={savingBrand}
+          className="w-full h-[52px] rounded-xl bg-[#C8851A] active:bg-[#B07414] text-white text-[12px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-md mt-2"
+        >
+          {savingBrand ? <Loader2 size={16} className="animate-spin" /> : <Save size={14} />}
+          Save Brand Info
+        </button>
+      </form>
+
+      {/* 2. Security Change Password Card */}
+      <form onSubmit={handleChangePassword} className="bg-white border border-[#E6C280]/20 rounded-2xl p-5 space-y-4 shadow-sm">
+        <h2 className="text-[16px] font-bold text-[#1C1008] border-b border-[#F0EDE8] pb-2 font-serif flex items-center gap-1.5" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+          <Lock size={16} className="text-[#C8851A]" />
+          Change Password
+        </h2>
+
+        {/* Current Password */}
+        <div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">Current Password</label>
+          <input
+            type="password"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="••••••••"
+          />
+        </div>
+
+        {/* New Password */}
+        <div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">New Password</label>
+          <input
+            type="password"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="••••••••"
+          />
+        </div>
+
+        {/* Confirm New Password */}
+        <div>
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-[#6B5E4C] mb-1.5">Confirm New Password</label>
+          <input
+            type="password"
+            className="w-full h-12 px-4 rounded-xl border border-[#E8E2D9] text-[13px] bg-[#FAFAF8] outline-none focus:bg-white focus:border-[#C8851A]"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+          />
+        </div>
+
+        {/* Change password button */}
+        <button
+          type="submit"
+          disabled={changingPass}
+          className="w-full h-[52px] rounded-xl bg-[#C8851A] active:bg-[#B07414] text-white text-[12px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-md mt-2"
+        >
+          {changingPass ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={14} />}
+          Update Password
+        </button>
+      </form>
+
+      {/* 3. Logout Card */}
+      <div className="pt-2">
+        <button
+          onClick={handleLogout}
+          className="w-full h-[52px] rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-100/50 text-[13px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <LogOut size={14} />
+          Log Out of Studio
+        </button>
       </div>
+
     </div>
   );
 }
