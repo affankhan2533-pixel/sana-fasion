@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ProductCatalog from "@/components/ProductCatalog";
-import { generateProductsFromImages } from "@/data/image_analyzer";
+import { getPublicProducts } from "@/lib/publicApi";
 
 // Collection slug to category mapping
 const SLUG_TO_CATEGORY: Record<string, string> = {
@@ -29,7 +29,7 @@ const SLUG_TO_CATEGORY: Record<string, string> = {
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
-
+  
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const category = SLUG_TO_CATEGORY[slug.toLowerCase()] || 
@@ -49,7 +49,7 @@ export default async function CollectionPage({ params }: PageProps) {
   const category = SLUG_TO_CATEGORY[normalizedSlug] || 
     slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
-  const products = generateProductsFromImages();
+  const products = await getPublicProducts();
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#FFFBF4] flex items-center justify-center font-accent text-xs tracking-widest text-[#c8851a] uppercase animate-pulse">Loading Collection...</div>}>

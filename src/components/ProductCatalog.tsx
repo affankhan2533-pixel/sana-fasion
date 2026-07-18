@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, MessageCircle, ArrowRight, X, ChevronLeft, ChevronRight, Eye, SlidersHorizontal, Check } from "lucide-react";
 import { type Product } from "@/data/image_analyzer";
+import { cartState } from "@/data/cart";
 
 /* ─── Constants ───────────────────────────────────────── */
 const FABRIC_OPTIONS  = ["All Fabrics","Raw Silk","Organza","Chiffon","Banarasi Silk","Velvet","Cotton","Rayon","Lawn Cotton","Georgette"];
@@ -422,6 +423,22 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
                   </p>
 
                   <div className="qv-modal-btns">
+                    <button
+                      onClick={() => {
+                        cartState.add({
+                          id: quickView.id,
+                          title: quickView.title,
+                          price: quickView.price,
+                          thumbnail: quickView.thumbnail,
+                          productCode: quickView.productCode
+                        });
+                        setQuickView(null);
+                      }}
+                      className="qv-btn-add-to-bag"
+                      style={{ height:"52px", borderRadius:"12px", background:"#C8851A", color:"#FFFFFF", fontFamily:"'Josefin Sans', sans-serif", fontSize:"12px", letterSpacing:"0.15em", textTransform:"uppercase", fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", cursor:"pointer", border:"none" }}
+                    >
+                      Add to Bag
+                    </button>
                     <Link href={`/products/${quickView.slug}`}
                       className="qv-btn-primary"
                       style={{ height:"52px", borderRadius:"12px", background:"#1A0F0A", color:"#FFFFFF", fontFamily:"'Josefin Sans', sans-serif", fontSize:"12px", letterSpacing:"0.15em", textTransform:"uppercase", fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", textDecoration:"none", transition:"background 0.25s" }}
@@ -599,8 +616,8 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         /* ─ Grid columns ─ */
         .catalog-products-grid {
           display: grid;
-          grid-template-columns: 1fr;
-          gap: 16px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
         }
         @media(min-width:640px)  { .sm-grid-2 { grid-template-columns:repeat(2,1fr) !important; gap:20px !important; } }
         @media(min-width:900px)  { .md-grid-3 { grid-template-columns:repeat(3,1fr) !important; gap:24px !important; } }
@@ -610,21 +627,18 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         .card-btn-row {
           display: flex;
           flex-direction: row;
-          gap: 12px;
-        }
-        @media(min-width:600px) {
-          .card-btn-row { gap: 6px; }
+          gap: 6px;
         }
 
         .card-btn-primary {
           flex: 1;
-          height: 48px;
-          border-radius: 10px;
+          height: 40px;
+          border-radius: 6px;
           background: #1A0F0A;
           color: #FFFFFF;
           font-family: 'Josefin Sans', sans-serif;
-          font-size: 10px;
-          letter-spacing: 0.1em;
+          font-size: 9px;
+          letter-spacing: 0.05em;
           text-transform: uppercase;
           font-weight: 700;
           display: flex;
@@ -638,7 +652,7 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           overflow: hidden;
         }
         @media(min-width:600px) {
-          .card-btn-primary { height: 40px; }
+          .card-btn-primary { height: 40px; font-size: 10px; letter-spacing: 0.1em; border-radius: 10px; }
         }
         .card-btn-primary:hover {
           background: #C8851A;
@@ -647,9 +661,9 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         }
 
         .card-btn-wa {
-          width: 48px;
-          height: 48px;
-          border-radius: 10px;
+          width: 40px;
+          height: 40px;
+          border-radius: 6px;
           background: #1B5E35;
           color: #FFFFFF;
           display: flex;
@@ -660,14 +674,14 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
           flex-shrink: 0;
           font-family: 'Josefin Sans', sans-serif;
-          font-size: 10px;
-          letter-spacing: 0.1em;
+          font-size: 9px;
+          letter-spacing: 0.05em;
           text-transform: uppercase;
           font-weight: 700;
           white-space: nowrap;
         }
         @media(min-width:600px) {
-          .card-btn-wa { width: 40px; height: 40px; }
+          .card-btn-wa { width: 40px; height: 40px; border-radius: 10px; }
         }
         .card-btn-wa:hover {
           background: #123C21;
@@ -677,14 +691,14 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
         .card-btn-wa-text { display: none; }
 
         /* ─ Card metadata ─ */
-        .card-meta { padding: 16px 16px 18px; }
+        .card-meta { padding: 10px 10px 12px; }
         @media(min-width:600px) { .card-meta { padding: 16px 16px 18px; } }
 
         /* ─ Card name font ─ */
         .card-name {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 15px;
-          font-weight: 400;
+          font-size: 13px;
+          font-weight: 500;
           color: #1A0F0A;
           line-height: 1.2;
           margin-bottom: 4px;
@@ -693,18 +707,30 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
         }
-        @media(min-width:600px) { .card-name { font-size: clamp(16px,2vw,20px); line-height: 1.25; margin-bottom: 5px; } }
+        @media(min-width:600px) { .card-name { font-size: clamp(16px,2vw,20px); font-weight: 400; line-height: 1.25; margin-bottom: 5px; } }
 
         /* ─ Price ─ */
         .card-price {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 17px;
+          font-size: 14px;
           font-weight: 500;
           color: #1A0F0A;
           margin-bottom: 10px;
           white-space: nowrap;
         }
         @media(min-width:600px) { .card-price { font-size: clamp(18px,2.2vw,22px); margin-bottom: 12px; } }
+
+        .card-original-price {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 10px;
+          color: #B0A090;
+          font-weight: 300;
+          margin-left: 6px;
+          text-decoration: line-through;
+        }
+        @media(min-width:600px) {
+          .card-original-price { font-size: 12px; margin-left: 8px; }
+        }
 
         /* Scrollbar */
         *::-webkit-scrollbar { display:none; }
@@ -845,6 +871,89 @@ export default function ProductCatalog({ initialCategory = "All", products }: Pr
             font-size: 15px !important;
           }
         }
+
+        /* ─── Premium Luxury Pagination ─── */
+        .pagination-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 64px;
+          padding-top: 40px;
+          border-top: 1px solid #E8E0D0;
+          width: 100%;
+        }
+
+        .pagination-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          border-radius: 12px;
+          font-family: 'Josefin Sans', sans-serif;
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          cursor: pointer;
+          transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
+          border: 1px solid #E0D8CC;
+          background: #FFFFFF;
+          color: #1A0F0A;
+          user-select: none;
+          outline: none;
+        }
+
+        @media (min-width: 768px) {
+          .pagination-btn {
+            width: 48px;
+            height: 48px;
+            font-size: 14px;
+          }
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+          border-color: #1A0F0A;
+          background: #FAFAF7;
+          transform: translateY(-1px);
+        }
+
+        .pagination-btn-active {
+          background: #1A0F0A !important;
+          border-color: #1A0F0A !important;
+          color: #FFFFFF !important;
+          box-shadow: 0 8px 20px rgba(26, 15, 10, 0.15);
+          transform: scale(1.05) !important;
+          cursor: default;
+        }
+
+        .pagination-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+
+        .pagination-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          color: #9A8070;
+          font-family: 'Josefin Sans', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          user-select: none;
+        }
+
+        @media (min-width: 768px) {
+          .pagination-dots {
+            width: 48px;
+            height: 48px;
+            font-size: 16px;
+          }
+        }
       `}</style>
     </>
   );
@@ -879,7 +988,7 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
       }}
     >
       {/* ── Image ── */}
-      <div style={{ position:"relative", aspectRatio:"3/4", overflow:"hidden", background:"#F5EFE6", borderRadius:"2px 2px 0 0", flexShrink:0 }}>
+      <Link href={`/products/${p.slug}`} style={{ display:"block", position:"relative", aspectRatio:"3/4", overflow:"hidden", background:"#F5EFE6", borderRadius:"2px 2px 0 0", flexShrink:0 }}>
         <Image
           src={p.thumbnail}
           alt={p.title}
@@ -895,102 +1004,111 @@ function ProductCard({ product: p, priority, wishlisted, onWishlist, onQuickView
           {p.bestSeller  && <Badge label="Bestseller"   bg="#1A0F0A" />}
           {p.comingSoon  && <Badge label="Coming Soon"  bg="#7A6458" />}
         </div>
+      </Link>
 
-        {/* Wishlist */}
-        <button
-          onClick={e => { e.preventDefault(); onWishlist(); }}
-          style={{
-            position:"absolute", top:"12px", right:"12px", zIndex:2,
-            width:"36px", height:"36px", borderRadius:"50%",
-            background: wishlisted ? "#C8851A" : "rgba(255,255,255,0.88)",
-            border:"1px solid " + (wishlisted ? "#C8851A" : "#E0D8CC"),
-            display:"flex", alignItems:"center", justifyContent:"center",
-            cursor:"pointer", transition:"all 0.2s ease",
-            color: wishlisted ? "#FFFFFF" : "#C8851A"
-          }}
-          aria-label="Wishlist"
-        >
-          <Heart size={14} fill={wishlisted ? "currentColor" : "none"} />
-        </button>
+      {/* Wishlist */}
+      <button
+        onClick={e => { e.preventDefault(); e.stopPropagation(); onWishlist(); }}
+        style={{
+          position:"absolute", top:"12px", right:"12px", zIndex:2,
+          width:"36px", height:"36px", borderRadius:"50%",
+          background: wishlisted ? "#C8851A" : "rgba(255,255,255,0.88)",
+          border:"1px solid " + (wishlisted ? "#C8851A" : "#E0D8CC"),
+          display:"flex", alignItems:"center", justifyContent:"center",
+          cursor:"pointer", transition:"all 0.2s ease",
+          color: wishlisted ? "#FFFFFF" : "#C8851A"
+        }}
+        aria-label="Wishlist"
+      >
+        <Heart size={14} fill={wishlisted ? "currentColor" : "none"} />
+      </button>
 
-        {/* Desktop Quick View — appears on hover */}
-        <AnimatePresence>
-          {hovered && (
-            <motion.button
-              initial={{ opacity:0, y:8 }}
-              animate={{ opacity:1, y:0 }}
-              exit={{ opacity:0, y:8 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration:0.18 }}
-              onClick={e => { e.preventDefault(); onQuickView(); }}
-              style={{
-                position:"absolute", bottom:"12px", left:"50%", transform:"translateX(-50%)",
-                height:"36px", padding:"0 16px", borderRadius:"999px",
-                background:"rgba(255,255,255,0.95)", border:"1px solid #E0D8CC",
-                display:"flex", alignItems:"center", gap:"6px",
-                fontFamily:"'Josefin Sans', sans-serif", fontSize:"10px",
-                letterSpacing:"0.12em", textTransform:"uppercase", fontWeight:700,
-                color:"#1A0F0A", cursor:"pointer", zIndex:3, whiteSpace:"nowrap",
-                backdropFilter:"blur(8px)",
-                boxShadow:"0 4px 12px rgba(26, 15, 10, 0.15)"
-              }}
-              className="qv-btn"
-              aria-label="Quick View"
-            >
-              <Eye size={12} /> Quick View
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* Desktop Quick View — appears on hover */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.button
+            initial={{ opacity:0, y:8 }}
+            animate={{ opacity:1, y:0 }}
+            exit={{ opacity:0, y:8 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration:0.18 }}
+            onClick={e => { e.preventDefault(); e.stopPropagation(); onQuickView(); }}
+            style={{
+              position:"absolute", bottom:"12px", left:"50%", transform:"translateX(-50%)",
+              height:"36px", padding:"0 16px", borderRadius:"999px",
+              background:"rgba(255,255,255,0.95)", border:"1px solid #E0D8CC",
+              display:"flex", alignItems:"center", gap:"6px",
+              fontFamily:"'Josefin Sans', sans-serif", fontSize:"10px",
+              letterSpacing:"0.12em", textTransform:"uppercase", fontWeight:700,
+              color:"#1A0F0A", cursor:"pointer", zIndex:3, whiteSpace:"nowrap",
+              backdropFilter:"blur(8px)",
+              boxShadow:"0 4px 12px rgba(26, 15, 10, 0.15)"
+            }}
+            className="qv-btn"
+            aria-label="Quick View"
+          >
+            <Eye size={12} /> Quick View
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* ── Metadata ── */}
       <div className="card-meta" style={{ display:"flex", flexDirection:"column", flex:1 }}>
-        {/* Code */}
-        <span style={{ fontFamily:"'Josefin Sans', sans-serif", fontSize:"10px", letterSpacing:"0.18em", textTransform:"uppercase", color:"#C8851A", fontWeight:700, marginBottom:"4px" }}>
-          {p.productCode}
-        </span>
+        <Link href={`/products/${p.slug}`} style={{ textDecoration:"none", color:"inherit", display:"flex", flexDirection:"column", flex:1 }}>
+          {/* Code */}
+          <span style={{ fontFamily:"'Josefin Sans', sans-serif", fontSize:"10px", letterSpacing:"0.18em", textTransform:"uppercase", color:"#C8851A", fontWeight:700, marginBottom:"4px" }}>
+            {p.productCode}
+          </span>
 
-        {/* Name */}
-        <h3 className="card-name">
-          {p.title.length > 30 ? p.title.slice(0, 28) + "..." : p.title}
-        </h3>
+          {/* Name */}
+          <h3 className="card-name">
+            {p.title.length > 30 ? p.title.slice(0, 28) + "..." : p.title}
+          </h3>
 
-        {/* Collection + Fabric */}
-        <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"1px" }}>
-          {p.collection}
-        </p>
-        <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"8px" }}>
-          {p.fabric}
-        </p>
+          {/* Collection + Fabric */}
+          <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"1px" }}>
+            {p.collection}
+          </p>
+          <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"11px", color:"#9A8070", fontWeight:300, marginBottom:"8px" }}>
+            {p.fabric}
+          </p>
 
-        {/* Price */}
-        <p className="card-price">
-          ₹{p.price.toLocaleString("en-IN")}
-          {p.originalPrice && (
-            <span style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"12px", color:"#B0A090", fontWeight:300, marginLeft:"8px", textDecoration:"line-through" }}>
-              ₹{p.originalPrice.toLocaleString("en-IN")}
-            </span>
-          )}
-        </p>
+          {/* Price */}
+          <p className="card-price">
+            ₹{p.price.toLocaleString("en-IN")}
+            {p.originalPrice && (
+              <span style={{ fontFamily:"'DM Sans', sans-serif", fontSize:"12px", color:"#B0A090", fontWeight:300, marginLeft:"8px", textDecoration:"line-through" }}>
+                ₹{p.originalPrice.toLocaleString("en-IN")}
+              </span>
+            )}
+          </p>
+        </Link>
 
         {/* Buttons */}
-        <div className="card-btn-row" style={{ marginTop:"auto" }}>
-          <Link
-            href={`/products/${p.slug}`}
+        <div className="card-btn-row" style={{ marginTop:"auto", zIndex:2 }}>
+          <button
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              cartState.add({
+                id: p.id,
+                title: p.title,
+                price: p.price,
+                thumbnail: p.thumbnail,
+                productCode: p.productCode
+              });
+            }}
             className="card-btn-primary"
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#C8851A"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#1A0F0A"; }}
+            style={{ border: "none", cursor: "pointer" }}
           >
-            View Details <ArrowRight size={12} />
-          </Link>
+            Add to Bag
+          </button>
 
           <a
             href={`https://wa.me/919022591620?text=Hi! I want to enquire about "${p.title}" (${p.productCode}).`}
             target="_blank"
             rel="noopener noreferrer"
             className="card-btn-wa"
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#C8851A"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#1B5E35"; }}
             aria-label="WhatsApp Enquiry"
           >
             <MessageCircle size={16} />
@@ -1062,26 +1180,27 @@ function Pagination({ current, total, onPageChange }: { current: number; total: 
   });
 
   return (
-    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", marginTop:"64px", paddingTop:"40px", borderTop:"1px solid #E8E0D0" }}>
-      <NavBtn label="←" disabled={current === 1} onClick={() => onPageChange(current - 1)} />
+    <div className="pagination-container">
+      <button
+        disabled={current === 1}
+        onClick={() => onPageChange(current - 1)}
+        className="pagination-btn"
+        aria-label="Previous Page"
+      >
+        <ChevronLeft size={16} />
+      </button>
 
       {pages.map((p, i) => {
         const prev = pages[i - 1];
         const showDots = prev && p - prev > 1;
         return (
           <React.Fragment key={p}>
-            {showDots && <span style={{ color:"#9A8070", fontFamily:"'DM Sans', sans-serif", fontSize:"14px", padding:"0 4px" }}>…</span>}
+            {showDots && <span className="pagination-dots">…</span>}
             <button
               onClick={() => onPageChange(p)}
-              style={{
-                width:"44px", height:"44px", borderRadius:"10px",
-                border: p === current ? "1.5px solid #1A0F0A" : "1.5px solid #E0D8CC",
-                background: p === current ? "#1A0F0A" : "#FFFFFF",
-                color: p === current ? "#FFFFFF" : "#5A4035",
-                fontFamily:"'Josefin Sans', sans-serif", fontSize:"12px",
-                letterSpacing:"0.05em", fontWeight:700,
-                cursor:"pointer", transition:"all 0.2s ease"
-              }}
+              className={`pagination-btn ${p === current ? "pagination-btn-active" : ""}`}
+              aria-label={`Page ${p}`}
+              aria-current={p === current ? "page" : undefined}
             >
               {p}
             </button>
@@ -1089,28 +1208,15 @@ function Pagination({ current, total, onPageChange }: { current: number; total: 
         );
       })}
 
-      <NavBtn label="→" disabled={current === total} onClick={() => onPageChange(current + 1)} />
+      <button
+        disabled={current === total}
+        onClick={() => onPageChange(current + 1)}
+        className="pagination-btn"
+        aria-label="Next Page"
+      >
+        <ChevronRight size={16} />
+      </button>
     </div>
-  );
-}
-
-function NavBtn({ label, disabled, onClick }: { label: string; disabled: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        height:"44px", padding:"0 18px", borderRadius:"10px",
-        border:"1.5px solid #E0D8CC", background:"#FFFFFF",
-        color: disabled ? "#D0C8BC" : "#1A0F0A",
-        fontFamily:"'Josefin Sans', sans-serif", fontSize:"12px",
-        letterSpacing:"0.1em", textTransform:"uppercase", fontWeight:700,
-        cursor: disabled ? "not-allowed" : "pointer",
-        transition:"all 0.2s ease"
-      }}
-    >
-      {label}
-    </button>
   );
 }
 

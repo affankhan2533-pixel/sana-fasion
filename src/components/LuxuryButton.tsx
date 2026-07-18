@@ -30,14 +30,14 @@ export default function LuxuryButton({
       className={`
         group
         relative inline-flex items-center justify-center gap-2.5 
-        font-accent text-[15px] tracking-[0.08em] uppercase font-medium
-        h-[50px] px-6 rounded-[14px] overflow-hidden
-        transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer
+        font-accent text-[14px] md:text-[15px] tracking-[0.12em] uppercase font-medium
+        h-[52px] md:h-[56px] px-6 md:px-8 rounded-full overflow-hidden
+        transition-all duration-[400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] cursor-pointer
         ${isPrimary 
-          ? "bg-gradient-to-r from-[#E6C280] to-[#DFBA73] text-[#121213] shadow-md hover:shadow-[0_8px_20px_rgba(230,194,128,0.35)] hover:brightness-105 border border-transparent"
+          ? "bg-[#E6C280] text-[#121213] shadow-[0_4px_12px_rgba(230,194,128,0.15)] hover:shadow-[0_8px_25px_rgba(230,194,128,0.35)] border border-transparent"
           : themeType === "dark"
-            ? "bg-transparent text-[#E6C280] border border-[#E6C280]/60 backdrop-blur-[10px] hover:bg-[#E6C280] hover:text-[#121213] hover:border-transparent hover:shadow-[0_8px_20px_rgba(230,194,128,0.25)]"
-            : "bg-transparent text-[#1C0E05] border border-[#C8851A]/40 backdrop-blur-[10px] hover:bg-[#C8851A] hover:text-[#FFFBF4] hover:border-transparent hover:shadow-[0_8px_20px_rgba(200,133,26,0.15)]"
+            ? "bg-transparent text-[#E6C280] border border-[#E6C280] hover:bg-[#E6C280] hover:text-[#121213] hover:shadow-[0_8px_25px_rgba(230,194,128,0.25)]"
+            : "bg-transparent text-[#1C0E05] border border-[#C8851A] hover:bg-[#C8851A] hover:text-[#FFFBF4] hover:shadow-[0_8px_25px_rgba(200,133,26,0.2)]"
         }
         ${className}
       `}

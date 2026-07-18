@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,13 +25,22 @@ export const metadata: Metadata = {
     description: "Premium bridal and festive fashion with generational craftsmanship.",
     type: "website",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+  const isAdmin = pathname.startsWith("/admin");
+
+  if (isAdmin) {
+    return (
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en" className="scroll-smooth">
       <body>

@@ -16,6 +16,9 @@ import {
   Check,
   ArrowRight,
   Calendar,
+  Sparkles,
+  Scissors,
+  Flower2,
 } from "lucide-react";
 
 if (typeof window !== "undefined") {
@@ -35,30 +38,33 @@ const InstagramIcon = () => (
 const consultationTypes = [
   {
     id: "bridal",
-    emoji: "💍",
+    icon: <Sparkles size={20} className="text-[#C8851A]" />,
     label: "Most Requested",
     title: "Bridal Trousseau Styling",
     duration: "90 min",
     tagline: "The Complete Bridal Experience",
     desc: "A private showroom session exclusively for the bride and her circle — featuring custom zardozi consultations, fabric curation, fitting sessions, and colour charting.",
+    perks: ["Private Showroom Consultation", "Fabric Selection", "Master Tailor Fitting"],
   },
   {
     id: "festive",
-    emoji: "🌸",
-    label: "",
+    icon: <Flower2 size={20} className="text-[#C8851A]" />,
+    label: "Custom Design",
     title: "Festive Couture Consult",
     duration: "60 min",
     tagline: "Ceremony-Ready, Effortlessly",
     desc: "Curated styling for bridesmaids, family ceremonies, and customised festival anarkalis, lehengas, and designer suit pairings.",
+    perks: ["Curated Styling Suggestions", "Silhouette Personalisation", "Design Layouts"],
   },
   {
     id: "measurements",
-    emoji: "✦",
-    label: "",
+    icon: <Scissors size={20} className="text-[#C8851A]" />,
+    label: "Perfect Drape",
     title: "Bespoke Measurement & Fitting",
     duration: "45 min",
     tagline: "Tailored to Your Exact Silhouette",
     desc: "Our master tailor reviews your posture, structure, and hemlines to ensure your custom luxury pieces drape flawlessly.",
+    perks: ["Master Tailor Fit Assessment", "Postural Hemline Adjustments", "Premium Finish"],
   },
 ];
 
@@ -87,64 +93,66 @@ const atelier = {
 /* ─── Gold Divider ───────────────────────────────── */
 const GoldDivider = ({ className = "" }: { className?: string }) => (
   <div className={`flex items-center justify-center gap-4 ${className}`}>
-    <span style={{ display: "block", width: 48, height: 1, background: "linear-gradient(to right, transparent, #C8A56A)" }} />
-    <span style={{ color: "#C8A56A", fontSize: 10 }}>✦</span>
-    <span style={{ display: "block", width: 48, height: 1, background: "linear-gradient(to left, transparent, #C8A56A)" }} />
+    <span style={{ display: "block", width: 48, height: 1, background: "linear-gradient(to right, transparent, #C8851A)" }} />
+    <span style={{ color: "#C8851A", fontSize: 10 }}>✦</span>
+    <span style={{ display: "block", width: 48, height: 1, background: "linear-gradient(to left, transparent, #C8851A)" }} />
   </div>
 );
 
 /* ─── Step Indicator ─────────────────────────────── */
 function StepIndicator({ step }: { step: number }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, marginBottom: 56 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, marginBottom: 64 }}>
       {STEPS.map((name, idx) => {
         const num = idx + 1;
         const done = step > num;
         const active = step === num;
         return (
           <React.Fragment key={name}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {/* Numbered circle */}
               <div
                 style={{
-                  width: 44,
-                  height: 44,
+                  width: 32,
+                  height: 32,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: done ? "#C8A56A" : active ? "#1A1A1A" : "transparent",
-                  border: `1.5px solid ${done || active ? (done ? "#C8A56A" : "#1A1A1A") : "rgba(26,26,26,0.2)"}`,
-                  transition: "all 0.5s cubic-bezier(0.76,0,0.24,1)",
+                  background: done ? "#C8851A" : active ? "#1A0F0A" : "transparent",
+                  border: `1.5px solid ${done ? "#C8851A" : active ? "#1A0F0A" : "rgba(200, 133, 26, 0.25)"}`,
+                  transition: "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
                   flexShrink: 0,
                 }}
               >
                 {done ? (
-                  <Check size={16} color="#fff" />
+                  <Check size={12} color="#fff" />
                 ) : (
                   <span style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontSize: 15,
-                    color: active ? "#fff" : "rgba(26,26,26,0.35)",
+                    fontFamily: "var(--font-serif)",
+                    fontSize: 13,
+                    color: active ? "#fff" : "#C8851A",
                     fontWeight: 400,
                   }}>{num}</span>
                 )}
               </div>
+              {/* Label text */}
               <span style={{
-                fontFamily: "Inter, sans-serif",
-                fontSize: 9,
-                letterSpacing: "0.2em",
+                fontFamily: "var(--font-accent)",
+                fontSize: 10,
+                letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: active ? "#1A1A1A" : done ? "#C8A56A" : "rgba(26,26,26,0.35)",
+                color: active ? "#1A0F0A" : done ? "#C8851A" : "rgba(28, 14, 5, 0.35)",
                 whiteSpace: "nowrap",
               }}>{name}</span>
             </div>
             {idx < STEPS.length - 1 && (
               <div style={{
                 height: 1,
-                width: "clamp(40px,6vw,80px)",
-                background: done ? "#C8A56A" : "rgba(26,26,26,0.12)",
-                marginBottom: 24,
-                transition: "background 0.5s",
+                width: "clamp(30px, 5vw, 60px)",
+                background: done ? "#C8851A" : "rgba(200, 133, 26, 0.15)",
+                margin: "0 16px",
+                transition: "background 0.4s",
                 flexShrink: 0,
               }} />
             )}
@@ -158,50 +166,50 @@ function StepIndicator({ step }: { step: number }) {
 /* ─── Sidebar ────────────────────────────────────── */
 function LuxurySidebar() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Experience Card */}
       <div
         style={{
-          background: "linear-gradient(145deg, #1A1A1A 0%, #2D2D2D 100%)",
-          border: "1px solid rgba(200,165,106,0.25)",
-          borderRadius: 20,
+          background: "linear-gradient(135deg, #2E0D1A 0%, #1C0E05 100%)",
+          border: "1px solid rgba(200, 133, 26, 0.25)",
+          borderRadius: 16,
           padding: "36px 32px",
           position: "relative",
           overflow: "hidden",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.15)"
         }}
       >
-        {/* Subtle gold glow */}
         <div style={{
           position: "absolute", top: -40, right: -40,
           width: 160, height: 160, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(200,165,106,0.12) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(200, 133, 26, 0.12) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
 
-        <p style={{ fontFamily: "Inter", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8A56A", marginBottom: 16 }}>
+        <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#E6C280", marginBottom: 16 }}>
           The Sana Experience
         </p>
-        <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: 22, fontWeight: 400, color: "#fff", lineHeight: 1.3, marginBottom: 8 }}>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 24, fontWeight: 300, color: "#fff", lineHeight: 1.3, marginBottom: 6 }}>
           Crafted for You,
         </h3>
-        <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: 22, fontWeight: 400, color: "#C8A56A", lineHeight: 1.3, marginBottom: 24, fontStyle: "italic" }}>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 24, fontWeight: 300, color: "#E6C280", lineHeight: 1.3, marginBottom: 24, fontStyle: "italic" }}>
           Not Off the Rack
         </h3>
-        <p style={{ fontFamily: "Inter", fontSize: 12, color: "rgba(255,251,244,0.55)", lineHeight: 1.9, marginBottom: 28 }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "rgba(255,251,244,0.6)", lineHeight: 1.8, marginBottom: 28, fontWeight: 300 }}>
           Every appointment is a curated moment — from chai served at the lounge to master craftspeople fitting your silhouette by hand.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {atelier.perks.map((perk) => (
             <div key={perk} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
               <div style={{
-                width: 18, height: 18, borderRadius: "50%", flexShrink: 0, marginTop: 1,
+                width: 18, height: 18, borderRadius: "50%", flexShrink: 0, marginTop: 2,
                 background: "rgba(200,165,106,0.15)",
                 border: "1px solid rgba(200,165,106,0.4)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <Check size={9} color="#C8A56A" />
+                <Check size={9} color="#E6C280" />
               </div>
-              <span style={{ fontFamily: "Inter", fontSize: 12, color: "rgba(255,251,244,0.7)", lineHeight: 1.6 }}>{perk}</span>
+              <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "rgba(255,251,244,0.85)", lineHeight: 1.5, fontWeight: 300 }}>{perk}</span>
             </div>
           ))}
         </div>
@@ -209,48 +217,49 @@ function LuxurySidebar() {
 
       {/* Contact Card */}
       <div style={{
-        background: "#fff",
-        border: "1px solid rgba(200,165,106,0.15)",
-        borderRadius: 20,
-        padding: "28px 28px",
+        background: "#FFFFFF",
+        border: "1px solid rgba(200, 133, 26, 0.15)",
+        borderRadius: 16,
+        padding: "32px",
+        boxShadow: "0 8px 30px rgba(28, 14, 5, 0.02)"
       }}>
-        <p style={{ fontFamily: "Inter", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8A56A", marginBottom: 22 }}>
+        <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8851A", marginBottom: 24 }}>
           Reach Us
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           {[
-            { icon: <Phone size={13} />, label: "Call", value: atelier.phone },
-            { icon: <Mail size={13} />, label: "Email", value: atelier.email },
+            { icon: <Phone size={14} />, label: "Call", value: atelier.phone },
+            { icon: <Mail size={14} />, label: "Email", value: atelier.email },
             { icon: <InstagramIcon />, label: "Instagram", value: atelier.instagram },
           ].map(({ icon, label, value }) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div style={{
-                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                background: "#F8F5F0",
-                border: "1px solid rgba(200,165,106,0.18)",
+                width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+                background: "#FFFBF4",
+                border: "1px solid rgba(200, 133, 26, 0.15)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "#C8A56A",
+                color: "#C8851A",
               }}>
                 {icon}
               </div>
               <div>
-                <p style={{ fontFamily: "Inter", fontSize: 8, letterSpacing: "0.18em", textTransform: "uppercase", color: "#9B8B7A", marginBottom: 2 }}>{label}</p>
-                <p style={{ fontFamily: "Inter", fontSize: 13, color: "#1A1A1A" }}>{value}</p>
+                <p style={{ fontFamily: "var(--font-accent)", fontSize: 8, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A6040", marginBottom: 2 }}>{label}</p>
+                <p style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "#1C0E05", fontWeight: 400 }}>{value}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div style={{ height: 1, background: "rgba(200,165,106,0.12)", margin: "22px 0" }} />
+        <div style={{ height: 1, background: "rgba(200, 133, 26, 0.1)", margin: "24px 0" }} />
 
-        <p style={{ fontFamily: "Inter", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8A56A", marginBottom: 16 }}>
+        <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8851A", marginBottom: 18 }}>
           Our Ateliers
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {atelier.stores.map((s) => (
             <div key={s} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-              <MapPin size={12} color="#C8A56A" style={{ marginTop: 2, flexShrink: 0 }} />
-              <p style={{ fontFamily: "Inter", fontSize: 12, color: "#4A3D33", lineHeight: 1.6 }}>{s}</p>
+              <MapPin size={13} color="#C8A56A" style={{ marginTop: 2, flexShrink: 0 }} />
+              <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#5C3820", lineHeight: 1.6, fontWeight: 300 }}>{s}</p>
             </div>
           ))}
         </div>
@@ -258,19 +267,20 @@ function LuxurySidebar() {
 
       {/* Hours Card */}
       <div style={{
-        background: "#fff",
-        border: "1px solid rgba(200,165,106,0.15)",
-        borderRadius: 20,
-        padding: "28px 28px",
+        background: "#FFFFFF",
+        border: "1px solid rgba(200, 133, 26, 0.15)",
+        borderRadius: 16,
+        padding: "32px",
+        boxShadow: "0 8px 30px rgba(28, 14, 5, 0.02)"
       }}>
-        <p style={{ fontFamily: "Inter", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8A56A", marginBottom: 22 }}>
+        <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8851A", marginBottom: 24 }}>
           Atelier Hours
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {atelier.hours.map(({ day, time }) => (
             <div key={day} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-              <span style={{ fontFamily: "Inter", fontSize: 12, color: "#9B8B7A" }}>{day}</span>
-              <span style={{ fontFamily: "Inter", fontSize: 12, color: "#1A1A1A", fontWeight: 500 }}>{time}</span>
+              <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#8A6040", fontWeight: 300 }}>{day}</span>
+              <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#1C0E05", fontWeight: 500 }}>{time}</span>
             </div>
           ))}
         </div>
@@ -344,38 +354,38 @@ export default function AtelierBooking() {
   };
 
   return (
-    <div style={{ background: "#F8F5F0", minHeight: "100vh" }}>
+    <div style={{ background: "#FFFBF4", minHeight: "100vh" }}>
 
       {/* ── Hero ───────────────────────────────────── */}
       <div
         ref={heroRef}
         style={{
-          paddingTop: "clamp(100px,14vw,160px)",
-          paddingBottom: "clamp(56px,8vw,96px)",
+          paddingTop: "clamp(120px,16vw,180px)",
+          paddingBottom: "clamp(64px,10vw,110px)",
           textAlign: "center",
         }}
       >
         <div className="atelier-hero-content">
           <p style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "var(--font-accent)",
             fontSize: 10,
-            letterSpacing: "0.35em",
+            letterSpacing: "0.4em",
             textTransform: "uppercase",
-            color: "#C8A56A",
-            marginBottom: 20,
+            color: "#C8851A",
+            marginBottom: 24,
           }}>
             Private Reservation
           </p>
 
           <h1 style={{
-            fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(38px, 6vw, 76px)",
-            fontWeight: 400,
-            color: "#1A1A1A",
-            lineHeight: 1.05,
-            letterSpacing: "-0.01em",
-            margin: "0 auto 24px",
-            maxWidth: 680,
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(36px, 5.5vw, 68px)",
+            fontWeight: 300,
+            color: "#1C0E05",
+            lineHeight: 1.15,
+            letterSpacing: "-0.012em",
+            margin: "0 auto 28px",
+            maxWidth: 800,
             padding: "0 24px",
           }}>
             Book an Appointment
@@ -384,13 +394,14 @@ export default function AtelierBooking() {
           <GoldDivider />
 
           <p style={{
-            fontFamily: "Inter, sans-serif",
-            fontSize: "clamp(13px,1.5vw,15px)",
-            color: "#6B5B4E",
+            fontFamily: "var(--font-body)",
+            fontSize: "clamp(13px,1.4vw,15px)",
+            color: "#7A6458",
             lineHeight: 1.85,
-            maxWidth: 480,
-            margin: "24px auto 0",
+            maxWidth: 520,
+            margin: "28px auto 0",
             padding: "0 24px",
+            fontWeight: 300,
           }}>
             Every session is a curated journey — from moodboard creation to a private atelier fitting in our flagship boutiques.
           </p>
@@ -404,7 +415,7 @@ export default function AtelierBooking() {
         padding: "0 clamp(20px,5vw,80px) clamp(80px,10vw,140px)",
         display: "grid",
         gridTemplateColumns: "minmax(0,1fr)",
-        gap: 32,
+        gap: 40,
       }}
         className="contact-grid"
       >
@@ -424,13 +435,13 @@ export default function AtelierBooking() {
                     exit={{ opacity: 0, y: -16 }}
                     transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
                   >
-                    <div style={{ textAlign: "center", marginBottom: 40 }}>
-                      <p style={{ fontFamily: "Inter", fontSize: 13, color: "#9B8B7A", lineHeight: 1.7 }}>
+                    <div style={{ textAlign: "center", marginBottom: 48 }}>
+                      <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#8A6040", lineHeight: 1.7, fontWeight: 300 }}>
                         Choose the experience that best fits your couture journey.
                       </p>
                     </div>
 
-                    <div ref={cardsRef} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                    <div ref={cardsRef} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
                       {consultationTypes.map((c) => {
                         const isSelected = type === c.id;
                         return (
@@ -441,94 +452,99 @@ export default function AtelierBooking() {
                             onMouseEnter={(e) => handleCardEnter(c.id, e.currentTarget as HTMLElement)}
                             onMouseLeave={(e) => handleCardLeave(e.currentTarget as HTMLElement)}
                             style={{
-                              background: "#fff",
-                              borderRadius: 20,
-                              padding: "clamp(24px,3vw,36px) clamp(24px,3vw,40px)",
-                              border: `1.5px solid ${isSelected ? "#C8A56A" : "rgba(200,165,106,0.18)"}`,
+                              background: "#FFFFFF",
+                              borderRadius: 16,
+                              padding: "32px",
+                              border: `1px solid ${isSelected ? "#C8851A" : "rgba(200, 133, 26, 0.12)"}`,
                               cursor: "pointer",
                               position: "relative",
                               overflow: "hidden",
                               boxShadow: isSelected
-                                ? "0 12px 48px rgba(200,165,106,0.18)"
-                                : "0 2px 16px rgba(26,26,26,0.05)",
-                              transition: "border-color 0.3s, box-shadow 0.3s",
-                              minHeight: 180,
+                                ? "0 12px 30px rgba(200, 133, 26, 0.06)"
+                                : "0 4px 20px rgba(28, 14, 5, 0.015)",
+                              transition: "border-color 0.35s, box-shadow 0.35s, transform 0.35s",
                               display: "flex",
-                              alignItems: "center",
-                              gap: 28,
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                              gap: 20,
                             }}
                           >
-                            {/* Subtle gold shine on selected */}
-                            {isSelected && (
-                              <div style={{
-                                position: "absolute", inset: 0, pointerEvents: "none",
-                                background: "linear-gradient(135deg, rgba(200,165,106,0.05) 0%, transparent 60%)",
-                              }} />
-                            )}
-
-                            {/* Duration badge */}
+                            {/* Duration Badge in top-right */}
                             <div style={{
-                              position: "absolute", top: 20, right: 20,
-                              background: isSelected ? "#C8A56A" : "#F8F5F0",
-                              borderRadius: 100,
-                              padding: "5px 14px",
-                              fontFamily: "Inter", fontSize: 9,
-                              letterSpacing: "0.18em", textTransform: "uppercase",
-                              color: isSelected ? "#fff" : "#9B8B7A",
+                              position: "absolute", top: 32, right: 32,
+                              background: isSelected ? "#C8851A" : "#FFFBF4",
+                              borderRadius: 9999,
+                              padding: "4px 12px",
+                              fontFamily: "var(--font-accent)", fontSize: 9,
+                              letterSpacing: "0.15em", textTransform: "uppercase",
+                              color: isSelected ? "#FFFFFF" : "#C8851A",
                               transition: "all 0.3s",
+                              border: "1px solid rgba(200, 133, 26, 0.15)",
                             }}>
                               {c.duration}
                             </div>
 
-                            {/* Label badge */}
-                            {c.label && (
-                              <div style={{
-                                position: "absolute", top: 20, left: 20,
-                                background: "#1A1A1A",
-                                borderRadius: 100,
-                                padding: "4px 12px",
-                                fontFamily: "Inter", fontSize: 8,
-                                letterSpacing: "0.2em", textTransform: "uppercase",
-                                color: "#C8A56A",
-                              }}>
-                                {c.label}
-                              </div>
-                            )}
-
-                            {/* Emoji */}
+                            {/* Minimal Ivory Circle for icon */}
                             <div style={{
-                              fontSize: 32, flexShrink: 0,
-                              width: 64, height: 64, borderRadius: 16,
-                              background: "#F8F5F0",
+                              width: 48, height: 48, borderRadius: "50%",
+                              background: "#FFFBF4",
                               display: "flex", alignItems: "center", justifyContent: "center",
+                              border: "1px solid rgba(200, 133, 26, 0.15)",
+                              flexShrink: 0,
                             }}>
-                              {c.emoji}
+                              {c.icon}
                             </div>
 
-                            {/* Text */}
-                            <div style={{ flex: 1, paddingRight: 80 }}>
-                              <p style={{ fontFamily: "Inter", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#C8A56A", marginBottom: 6 }}>
+                            {/* Info Block */}
+                            <div style={{ width: "100%" }}>
+                              <span style={{
+                                fontFamily: "var(--font-accent)",
+                                fontSize: 9,
+                                letterSpacing: "0.2em",
+                                textTransform: "uppercase",
+                                color: "#C8851A",
+                                display: "block",
+                                marginBottom: 6
+                              }}>
                                 {c.tagline}
-                              </p>
-                              <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(18px,2.5vw,24px)", fontWeight: 400, color: "#1A1A1A", marginBottom: 10, lineHeight: 1.2 }}>
+                              </span>
+                              <h3 style={{
+                                fontFamily: "var(--font-serif)",
+                                fontSize: "22px",
+                                fontWeight: 400,
+                                color: "#1C0E05",
+                                marginBottom: 8,
+                                lineHeight: 1.3
+                              }}>
                                 {c.title}
                               </h3>
-                              <p style={{ fontFamily: "Inter", fontSize: 13, color: "#6B5B4E", lineHeight: 1.75 }}>
+                              <p style={{
+                                fontFamily: "var(--font-body)",
+                                fontSize: "14px",
+                                color: "#7A6458",
+                                lineHeight: 1.7,
+                                marginBottom: 16,
+                                fontWeight: 300
+                              }}>
                                 {c.desc}
                               </p>
-                            </div>
 
-                            {/* Selected check */}
-                            <div style={{
-                              position: "absolute", bottom: 20, right: 24,
-                              opacity: isSelected ? 1 : 0,
-                              transition: "opacity 0.3s",
-                            }}>
-                              <div style={{
-                                width: 24, height: 24, borderRadius: "50%",
-                                background: "#C8A56A", display: "flex", alignItems: "center", justifyContent: "center",
-                              }}>
-                                <Check size={12} color="#fff" />
+                              {/* Features / Perks */}
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                                {c.perks.map(perk => (
+                                  <span key={perk} style={{
+                                    fontFamily: "var(--font-body)",
+                                    fontSize: "11px",
+                                    color: "#5C3820",
+                                    background: "#FFFBF4",
+                                    padding: "4px 12px",
+                                    borderRadius: "9999px",
+                                    border: "1px solid rgba(200, 133, 26, 0.08)",
+                                    fontWeight: 300
+                                  }}>
+                                    ✓ {perk}
+                                  </span>
+                                ))}
                               </div>
                             </div>
                           </div>
@@ -551,28 +567,36 @@ export default function AtelierBooking() {
                     {getSelected() && (
                       <div style={{
                         display: "flex", alignItems: "center", gap: 14,
-                        background: "#fff", borderRadius: 100,
+                        background: "#ffffff", borderRadius: 12,
                         padding: "12px 24px",
-                        border: "1px solid rgba(200,165,106,0.2)",
+                        border: "1px solid rgba(200, 133, 26, 0.15)",
                         marginBottom: 40,
                         width: "fit-content",
+                        boxShadow: "0 4px 16px rgba(28, 14, 5, 0.015)",
                       }}>
-                        <span style={{ fontSize: 18 }}>{getSelected()?.emoji}</span>
+                        <div style={{
+                          width: 32, height: 32, borderRadius: "50%",
+                          background: "#FFFBF4",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          border: "1px solid rgba(200, 133, 26, 0.1)",
+                        }}>
+                          {getSelected()?.icon}
+                        </div>
                         <div>
-                          <p style={{ fontFamily: "Playfair Display, serif", fontSize: 15, color: "#1A1A1A" }}>{getSelected()?.title}</p>
-                          <p style={{ fontFamily: "Inter", fontSize: 10, color: "#C8A56A", letterSpacing: "0.2em", textTransform: "uppercase" }}>{getSelected()?.duration} session</p>
+                          <p style={{ fontFamily: "var(--font-serif)", fontSize: 16, color: "#1C0E05" }}>{getSelected()?.title}</p>
+                          <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, color: "#C8851A", letterSpacing: "0.2em", textTransform: "uppercase" }}>{getSelected()?.duration} session</p>
                         </div>
                       </div>
                     )}
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 32 }} className="date-grid">
                       {/* Date */}
-                      <div style={{ background: "#fff", borderRadius: 20, padding: 32, border: "1px solid rgba(200,165,106,0.15)", boxShadow: "0 2px 16px rgba(26,26,26,0.04)" }}>
+                      <div style={{ background: "#FFFFFF", borderRadius: 16, padding: 32, border: "1px solid rgba(200, 133, 26, 0.12)", boxShadow: "0 8px 30px rgba(28, 14, 5, 0.02)" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-                          <div style={{ width: 32, height: 32, borderRadius: 10, background: "#F8F5F0", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Calendar size={14} color="#C8A56A" />
+                          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#FFFBF4", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(200, 133, 26, 0.1)" }}>
+                            <Calendar size={14} color="#C8851A" />
                           </div>
-                          <p style={{ fontFamily: "Inter", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "#9B8B7A" }}>Select Date</p>
+                          <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "#8A6040" }}>Select Date</p>
                         </div>
                         <input
                           type="date"
@@ -581,9 +605,9 @@ export default function AtelierBooking() {
                           onChange={(e) => setDate(e.target.value)}
                           style={{
                             width: "100%", padding: "14px 16px",
-                            border: `1.5px solid ${date ? "#C8A56A" : "rgba(200,165,106,0.25)"}`,
-                            borderRadius: 12, background: "#F8F5F0",
-                            fontFamily: "Inter", fontSize: 14, color: "#1A1A1A",
+                            border: `1.5px solid ${date ? "#C8851A" : "rgba(200, 133, 26, 0.15)"}`,
+                            borderRadius: 12, background: "#FFFBF4",
+                            fontFamily: "var(--font-body)", fontSize: 14, color: "#1C0E05",
                             outline: "none", colorScheme: "light",
                             transition: "border-color 0.3s",
                           }}
@@ -591,15 +615,15 @@ export default function AtelierBooking() {
                       </div>
 
                       {/* Time */}
-                      <div style={{ background: "#fff", borderRadius: 20, padding: 32, border: "1px solid rgba(200,165,106,0.15)", boxShadow: "0 2px 16px rgba(26,26,26,0.04)" }}>
+                      <div style={{ background: "#FFFFFF", borderRadius: 16, padding: 32, border: "1px solid rgba(200, 133, 26, 0.12)", boxShadow: "0 8px 30px rgba(28, 14, 5, 0.02)" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-                          <div style={{ width: 32, height: 32, borderRadius: 10, background: "#F8F5F0", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Clock size={14} color="#C8A56A" />
+                          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#FFFBF4", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(200, 133, 26, 0.1)" }}>
+                            <Clock size={14} color="#C8851A" />
                           </div>
-                          <p style={{ fontFamily: "Inter", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "#9B8B7A" }}>Preferred Slot</p>
+                          <p style={{ fontFamily: "var(--font-accent)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "#8A6040" }}>Preferred Slot</p>
                         </div>
                         {date ? (
-                          <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 10 }} className="slots-grid">
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 12 }} className="slots-grid">
                             {timeSlots.map((slot) => {
                               const active = timeSlot === slot;
                               return (
@@ -607,15 +631,16 @@ export default function AtelierBooking() {
                                   key={slot}
                                   onClick={() => setTimeSlot(slot)}
                                   style={{
-                                    padding: "13px 8px",
-                                    borderRadius: 12,
-                                    border: `1.5px solid ${active ? "#C8A56A" : "rgba(200,165,106,0.2)"}`,
-                                    background: active ? "#C8A56A" : "#F8F5F0",
-                                    color: active ? "#fff" : "#6B5B4E",
-                                    fontFamily: "Inter", fontSize: 12,
-                                    letterSpacing: "0.05em",
+                                    padding: "14px 10px",
+                                    borderRadius: 9999,
+                                    border: `1px solid ${active ? "#C8851A" : "rgba(200, 133, 26, 0.15)"}`,
+                                    background: active ? "#C8851A" : "#FFFBF4",
+                                    color: active ? "#FFFFFF" : "#5C3820",
+                                    fontFamily: "var(--font-accent)", fontSize: 11,
+                                    letterSpacing: "0.08em",
                                     cursor: "pointer",
-                                    transition: "all 0.25s",
+                                    transition: "all 300ms cubic-bezier(0.22, 1, 0.36, 1)",
+                                    boxShadow: active ? "0 4px 12px rgba(200, 133, 26, 0.12)" : "none",
                                   }}
                                 >
                                   {slot}
@@ -626,9 +651,9 @@ export default function AtelierBooking() {
                         ) : (
                           <div style={{
                             height: 120, display: "flex", alignItems: "center", justifyContent: "center",
-                            border: "1.5px dashed rgba(200,165,106,0.2)", borderRadius: 12,
+                            border: "1px dashed rgba(200, 133, 26, 0.2)", borderRadius: 12,
                           }}>
-                            <p style={{ fontFamily: "Inter", fontSize: 12, color: "#9B8B7A", textAlign: "center", padding: "0 16px" }}>
+                            <p style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "#8A6040", textAlign: "center", padding: "0 16px", fontWeight: 300 }}>
                               Choose a date first to see available slots
                             </p>
                           </div>
@@ -647,13 +672,19 @@ export default function AtelierBooking() {
                     exit={{ opacity: 0, y: -16 }}
                     transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
                   >
-                    <div style={{ textAlign: "center", marginBottom: 40 }}>
-                      <p style={{ fontFamily: "Inter", fontSize: 13, color: "#9B8B7A" }}>
+                    <div style={{ textAlign: "center", marginBottom: 48 }}>
+                      <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#8A6040", fontWeight: 300 }}>
                         A few details so we can personalise your atelier experience.
                       </p>
                     </div>
 
-                    <div style={{ background: "#fff", borderRadius: 24, padding: "clamp(28px,4vw,48px)", border: "1px solid rgba(200,165,106,0.15)", boxShadow: "0 2px 24px rgba(26,26,26,0.05)" }}>
+                    <div style={{
+                      background: "#FFFFFF",
+                      borderRadius: 16,
+                      padding: "36px",
+                      border: "1px solid rgba(200, 133, 26, 0.12)",
+                      boxShadow: "0 8px 30px rgba(28, 14, 5, 0.02)"
+                    }}>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }} className="details-grid">
                         <LuxuryField label="Full Name" value={name} onChange={setName} type="text" />
                         <LuxuryField label="Email Address" value={email} onChange={setEmail} type="email" />
@@ -666,18 +697,18 @@ export default function AtelierBooking() {
               </AnimatePresence>
 
               {/* ── Navigation ── */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: "1px solid rgba(200,165,106,0.15)", flexWrap: "wrap", gap: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: "1px solid rgba(200, 133, 26, 0.12)", flexWrap: "wrap", gap: 16 }}>
                 {step > 1 ? (
                   <button
                     onClick={() => setStep((s) => s - 1)}
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
-                      fontFamily: "Inter", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase",
-                      color: "#9B8B7A", background: "none", border: "none", cursor: "pointer",
+                      fontFamily: "var(--font-accent)", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase",
+                      color: "#8A6040", background: "none", border: "none", cursor: "pointer",
                       padding: "12px 0", transition: "color 0.3s",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#1A1A1A")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#9B8B7A")}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#C8851A")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#8A6040")}
                   >
                     <ChevronLeft size={14} /> Back
                   </button>
@@ -716,23 +747,23 @@ export default function AtelierBooking() {
                 transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
                 style={{ marginBottom: 32 }}
               >
-                <CheckCircle2 size={64} color="#C8A56A" style={{ margin: "0 auto" }} />
+                <CheckCircle2 size={64} color="#C8851A" style={{ margin: "0 auto" }} />
               </motion.div>
-              <h2 style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(28px,4vw,44px)", fontWeight: 400, color: "#1A1A1A", marginBottom: 12 }}>
+              <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(28px,4vw,44px)", fontWeight: 300, color: "#1C0E05", marginBottom: 12 }}>
                 Reservation Confirmed
               </h2>
               <GoldDivider className="my-5" />
-              <p style={{ fontFamily: "Inter", fontSize: 14, color: "#6B5B4E", maxWidth: 400, margin: "20px auto 48px", lineHeight: 1.8 }}>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "#7A6458", maxWidth: 400, margin: "20px auto 48px", lineHeight: 1.8, fontWeight: 300 }}>
                 Your consultation has been registered. A confirmation voucher will be sent to your email shortly.
               </p>
 
               {/* Receipt */}
               <div style={{
-                background: "#fff", borderRadius: 20, padding: 32, border: "1px solid rgba(200,165,106,0.18)",
+                background: "#FFFFFF", borderRadius: 16, padding: 32, border: "1px solid rgba(200, 133, 26, 0.15)",
                 maxWidth: 440, margin: "0 auto 40px", textAlign: "left",
-                boxShadow: "0 4px 32px rgba(26,26,26,0.06)",
+                boxShadow: "0 8px 30px rgba(28, 14, 5, 0.02)",
               }}>
-                <p style={{ fontFamily: "Inter", fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8A56A", marginBottom: 24 }}>Consultation Receipt</p>
+                <p style={{ fontFamily: "var(--font-accent)", fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8851A", marginBottom: 24 }}>Consultation Receipt</p>
                 {[
                   { k: "Service", v: getSelected()?.title },
                   { k: "Date", v: date },
@@ -740,26 +771,26 @@ export default function AtelierBooking() {
                   { k: "Name", v: name },
                   { k: "Contact", v: phone },
                 ].map(({ k, v }) => (
-                  <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid rgba(200,165,106,0.1)" }}>
-                    <span style={{ fontFamily: "Inter", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#9B8B7A" }}>{k}</span>
-                    <span style={{ fontFamily: "Inter", fontSize: 13, color: "#1A1A1A" }}>{v}</span>
+                  <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid rgba(200,133,26,0.08)" }}>
+                    <span style={{ fontFamily: "var(--font-accent)", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#8A6040" }}>{k}</span>
+                    <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#1C0E05" }}>{v}</span>
                   </div>
                 ))}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16 }}>
-                  <MapPin size={11} color="#C8A56A" />
-                  <span style={{ fontFamily: "Inter", fontSize: 11, color: "#C8A56A", letterSpacing: "0.15em", textTransform: "uppercase" }}>Delhi & Mumbai Flagships</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 20 }}>
+                  <MapPin size={11} color="#C8851A" />
+                  <span style={{ fontFamily: "var(--font-accent)", fontSize: 11, color: "#C8851A", letterSpacing: "0.15em", textTransform: "uppercase" }}>Delhi & Mumbai Flagships</span>
                 </div>
               </div>
 
               <button
                 onClick={handleReset}
                 style={{
-                  fontFamily: "Inter", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase",
-                  color: "#9B8B7A", background: "none", border: "1.5px solid rgba(200,165,106,0.3)",
-                  borderRadius: 100, padding: "14px 32px", cursor: "pointer", transition: "all 0.3s",
+                  fontFamily: "var(--font-accent)", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase",
+                  color: "#C8851A", background: "none", border: "1.5px solid #C8851A",
+                  borderRadius: 100, padding: "16px 36px", cursor: "pointer", transition: "all 0.3s",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.color = "#1A1A1A"; e.currentTarget.style.borderColor = "#C8A56A"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = "#9B8B7A"; e.currentTarget.style.borderColor = "rgba(200,165,106,0.3)"; }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = "#FFFFFF"; e.currentTarget.style.backgroundColor = "#C8851A"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = "#C8851A"; e.currentTarget.style.backgroundColor = "transparent"; }}
               >
                 Schedule Another Reservation
               </button>
@@ -797,12 +828,12 @@ export default function AtelierBooking() {
         @media (min-width: 1024px) {
           .contact-grid {
             grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
-            gap: 48px;
+            gap: 56px;
             align-items: start;
           }
           .contact-sidebar {
             position: sticky;
-            top: 96px;
+            top: 120px;
           }
         }
 
@@ -824,10 +855,11 @@ export default function AtelierBooking() {
             position: fixed;
             bottom: 0; left: 0; right: 0;
             padding: 16px 20px;
-            background: rgba(248,245,240,0.95);
-            backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(200,165,106,0.2);
+            background: rgba(255, 251, 244, 0.96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(200, 133, 26, 0.15);
             z-index: 100;
+            box-shadow: 0 -8px 30px rgba(28, 14, 5, 0.05);
           }
           .mobile-sticky-cta > * {
             width: 100%;
@@ -836,11 +868,8 @@ export default function AtelierBooking() {
         }
 
         .consultation-card:focus-visible {
-          outline: 2px solid #C8A56A;
+          outline: 2px solid #C8851A;
           outline-offset: 2px;
-        }
-        .luxury-input:focus {
-          border-color: #C8A56A !important;
         }
       `}</style>
     </div>
@@ -856,28 +885,32 @@ function LuxuryField({
   onChange: (v: string) => void;
   type: string;
 }) {
+  const [focused, setFocused] = useState(false);
   const isTextarea = type === "textarea";
+  const isFilled = value !== undefined && value !== null && value.length > 0;
+
   return (
-    <div style={{ marginBottom: 24 }}>
-      <label style={{
-        fontFamily: "Inter", fontSize: 9, letterSpacing: "0.22em",
-        textTransform: "uppercase", color: "#9B8B7A", display: "block", marginBottom: 10,
-      }}>
-        {label}
-      </label>
+    <div style={{ position: "relative", marginBottom: 28 }}>
       {isTextarea ? (
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          rows={3}
-          className="luxury-input"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          rows={4}
           style={{
-            width: "100%", padding: "14px 16px",
-            border: "1.5px solid rgba(200,165,106,0.25)",
-            borderRadius: 12, background: "#F8F5F0",
-            fontFamily: "Inter", fontSize: 14, color: "#1A1A1A",
-            outline: "none", resize: "none",
-            transition: "border-color 0.3s",
+            width: "100%",
+            height: 140,
+            padding: "20px 20px 12px 20px",
+            border: `1.5px solid ${focused ? "#C8851A" : isFilled ? "#C8851A" : "rgba(200, 133, 26, 0.15)"}`,
+            borderRadius: 12,
+            background: "#FFFBF4",
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            color: "#1C0E05",
+            outline: "none",
+            resize: "none",
+            transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
             lineHeight: 1.6,
           }}
         />
@@ -886,17 +919,39 @@ function LuxuryField({
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="luxury-input"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           style={{
-            width: "100%", padding: "14px 16px",
-            border: `1.5px solid ${value ? "#C8A56A" : "rgba(200,165,106,0.25)"}`,
-            borderRadius: 12, background: "#F8F5F0",
-            fontFamily: "Inter", fontSize: 14, color: "#1A1A1A",
+            width: "100%",
+            height: 56,
+            padding: "20px 20px 0 20px",
+            border: `1.5px solid ${focused ? "#C8851A" : isFilled ? "#C8851A" : "rgba(200, 133, 26, 0.15)"}`,
+            borderRadius: 12,
+            background: "#FFFBF4",
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            color: "#1C0E05",
             outline: "none",
-            transition: "border-color 0.3s",
+            transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         />
       )}
+      <label
+        style={{
+          position: "absolute",
+          left: 20,
+          top: focused || isFilled ? 6 : 18,
+          fontSize: focused || isFilled ? 9 : 12,
+          fontFamily: "var(--font-accent)",
+          letterSpacing: "0.15em",
+          textTransform: "uppercase",
+          color: focused ? "#C8851A" : "#8A6040",
+          pointerEvents: "none",
+          transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
+      >
+        {label}
+      </label>
     </div>
   );
 }
@@ -917,9 +972,13 @@ function LuxuryButton({
       themeType="light"
       onClick={onClick}
       disabled={disabled}
-      className="!h-[50px] !px-8 !rounded-[14px]"
+      className={`!h-[56px] !px-10 !rounded-full transition-all duration-400 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+        dark
+          ? "!bg-[#C8851A] !text-[#1C0E05] hover:!bg-[#B07212] hover:translate-y-[-2px] hover:shadow-lg"
+          : "!bg-transparent !border-[#C8851A] !text-[#C8851A] hover:!bg-[#C8851A] hover:!text-[#FFFFFF] hover:translate-y-[-2px]"
+      }`}
     >
-      <span>{label}</span>
+      <span className="flex items-center gap-2 font-accent text-xs tracking-[0.15em] uppercase font-medium">{label}</span>
       {icon}
     </CustomLuxuryButton>
   );

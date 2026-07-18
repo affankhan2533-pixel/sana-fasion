@@ -1391,3 +1391,537 @@ textarea:focus-visible,
 }
 
 
+/* ═══════════════════════════════════════════════════════════════════════
+   LUXURY NAVBAR — COMPONENT STYLES
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Nav Link ─────────────────────────────────────────────────────────── */
+.nav-link-luxury {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.nav-link-luxury:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ── Nav Icon Button ──────────────────────────────────────────────────── */
+.nav-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: opacity 0.22s ease, background 0.22s ease, transform 0.22s ease;
+  outline: none;
+}
+
+.nav-icon-btn:hover {
+  opacity: 0.72;
+}
+
+.nav-icon-btn:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.nav-icon-btn:active {
+  transform: scale(0.93);
+}
+
+/* ── Equalizer Bars (animated) ────────────────────────────────────────── */
+@keyframes eq-dance-1 {
+  0%, 100% { height: 4px; }
+  25%       { height: 14px; }
+  50%       { height: 7px; }
+  75%       { height: 12px; }
+}
+@keyframes eq-dance-2 {
+  0%, 100% { height: 9px; }
+  20%       { height: 4px; }
+  55%       { height: 14px; }
+  80%       { height: 6px; }
+}
+@keyframes eq-dance-3 {
+  0%, 100% { height: 12px; }
+  30%       { height: 5px; }
+  60%       { height: 14px; }
+  85%       { height: 8px; }
+}
+@keyframes eq-dance-4 {
+  0%, 100% { height: 6px; }
+  35%       { height: 13px; }
+  65%       { height: 4px; }
+  90%       { height: 10px; }
+}
+
+.equalizer-bar {
+  width: 2.5px;
+  border-radius: 2px;
+  display: block;
+}
+.equalizer-bar.eq-1 { animation: eq-dance-1 1.1s ease-in-out infinite; }
+.equalizer-bar.eq-2 { animation: eq-dance-2 0.9s ease-in-out infinite; }
+.equalizer-bar.eq-3 { animation: eq-dance-3 1.3s ease-in-out infinite; }
+.equalizer-bar.eq-4 { animation: eq-dance-4 0.95s ease-in-out infinite; }
+
+/* Small variant for playlist items */
+.equalizer-bar-sm {
+  width: 2px;
+  border-radius: 1px;
+  display: block;
+}
+.equalizer-bar-sm.eq-1 { animation: eq-dance-1 1.1s ease-in-out infinite; height: 3px; }
+.equalizer-bar-sm.eq-2 { animation: eq-dance-2 0.9s ease-in-out infinite; height: 3px; }
+.equalizer-bar-sm.eq-3 { animation: eq-dance-3 1.3s ease-in-out infinite; height: 3px; }
+
+/* ── Boutique Experience Panel ───────────────────────────────────────── */
+.boutique-exp-panel {
+  width: 320px;
+  background: rgba(255, 251, 244, 0.99);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(200, 133, 26, 0.2);
+  border-radius: 8px;
+  box-shadow:
+    0 4px 6px rgba(28, 14, 5, 0.04),
+    0 20px 60px rgba(28, 14, 5, 0.15),
+    0 0 0 0.5px rgba(200, 133, 26, 0.12);
+  overflow: hidden;
+}
+
+/* Header */
+.boutique-exp-header {
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid rgba(200, 133, 26, 0.12);
+}
+
+.boutique-exp-now-playing {
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: rgba(200, 133, 26, 0.07);
+  border: 1px solid rgba(200, 133, 26, 0.15);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+/* Close & mute buttons */
+.boutique-exp-close-btn,
+.boutique-exp-mute-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 133, 26, 0.2);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.boutique-exp-close-btn:hover,
+.boutique-exp-mute-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(200, 133, 26, 0.06);
+}
+
+.boutique-exp-close-btn:focus-visible,
+.boutique-exp-mute-btn:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Mode list container */
+.boutique-exp-modes {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Individual mode card */
+.boutique-exp-mode-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.22s ease;
+  text-align: left;
+  outline: none;
+  position: relative;
+}
+
+.boutique-exp-mode-card:hover {
+  background: rgba(200, 133, 26, 0.04);
+  border-color: rgba(200, 133, 26, 0.12);
+}
+
+.boutique-exp-mode-card.active {
+  background: rgba(200, 133, 26, 0.07);
+  border-color: rgba(200, 133, 26, 0.22);
+}
+
+.boutique-exp-mode-card.playing {
+  background: rgba(200, 133, 26, 0.09);
+  border-color: rgba(200, 133, 26, 0.28);
+}
+
+.boutique-exp-mode-card:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.boutique-exp-mode-card:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Radio circle */
+.boutique-exp-radio {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(200, 133, 26, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: border-color 0.2s ease;
+}
+
+.boutique-exp-mode-card.active .boutique-exp-radio,
+.boutique-exp-mode-card.playing .boutique-exp-radio {
+  border-color: var(--gold);
+}
+
+.boutique-exp-radio-fill {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: block;
+  animation: radio-pop 0.2s ease;
+}
+
+@keyframes radio-pop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Mode text */
+.boutique-exp-mode-name {
+  font-family: var(--font-accent, 'Cormorant SC', serif);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.boutique-exp-mode-card:not(.active):not(.playing) .boutique-exp-mode-name {
+  color: var(--text-secondary);
+}
+
+.boutique-exp-mode-tagline {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.boutique-exp-mode-details {
+  margin-top: 5px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.boutique-exp-mode-details li {
+  font-family: var(--font-body, sans-serif);
+  font-size: 10px;
+  color: var(--text-muted);
+  padding-left: 12px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.boutique-exp-mode-details li::before {
+  content: "·";
+  position: absolute;
+  left: 3px;
+  color: var(--gold);
+  font-weight: bold;
+}
+
+/* Default badge */
+.boutique-exp-default-badge {
+  font-family: var(--font-accent, 'Cormorant SC', serif);
+  font-size: 7.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(200, 133, 26, 0.08);
+  border: 1px solid rgba(200, 133, 26, 0.15);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* Separator between modes (top 3) */
+.boutique-exp-mode-card:not(:last-child) {
+  border-bottom-color: transparent;
+}
+
+.boutique-exp-modes > .boutique-exp-mode-card + .boutique-exp-mode-card {
+  border-top: 1px solid rgba(200, 133, 26, 0.06);
+  margin-top: 0;
+}
+
+/* Keep the old ambient volume slider CSS for potential reuse */
+.ambient-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--gold) 0%,
+    var(--gold) 45%,
+    rgba(200, 133, 26, 0.2) 45%,
+    rgba(200, 133, 26, 0.2) 100%
+  );
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: height 0.2s ease;
+}
+
+.ambient-volume-slider:hover {
+  height: 3px;
+}
+
+.ambient-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid var(--cream);
+  box-shadow: 0 1px 4px rgba(200, 133, 26, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ambient-volume-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(200, 133, 26, 0.5);
+}
+
+.ambient-volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid var(--cream);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(200, 133, 26, 0.4);
+}
+
+/* ── Book Appointment Button ──────────────────────────────────────────── */
+.book-appointment-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 133, 26, 0.65);
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    background 0.35s ease,
+    color 0.35s ease;
+  white-space: nowrap;
+  outline: none;
+  color: var(--text-primary);
+}
+
+.book-appointment-btn:hover {
+  border-color: var(--gold);
+  background: rgba(200, 133, 26, 0.05);
+  box-shadow: 0 0 0 3px rgba(200, 133, 26, 0.08), 0 4px 20px rgba(200, 133, 26, 0.18);
+  color: var(--gold-dark);
+}
+
+.book-appointment-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.book-appointment-btn:active {
+  transform: scale(0.975);
+}
+
+/* Shine sweep */
+.book-btn-shine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 20%, rgba(200, 133, 26, 0.12) 50%, transparent 80%);
+  transform: translateX(-130%);
+  transition: transform 0s;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.book-appointment-btn:hover .book-btn-shine {
+  transform: translateX(130%);
+  transition: transform 0.8s ease;
+}
+
+/* ── Mobile Nav Link ──────────────────────────────────────────────────── */
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 400;
+  color: var(--text-primary);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(200, 133, 26, 0.08);
+  text-decoration: none;
+  transition: color 0.25s ease, padding-left 0.25s ease;
+  outline: none;
+}
+
+.mobile-nav-link:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav-link:hover {
+  color: var(--gold);
+  padding-left: 4px;
+}
+
+.mobile-nav-link.active {
+  color: var(--gold);
+}
+
+.mobile-nav-link:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ── Search Overlay ───────────────────────────────────────────────────── */
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.18s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.search-suggestion-item:hover,
+.search-suggestion-item:focus-visible {
+  background: rgba(200, 133, 26, 0.06);
+  border-color: rgba(200, 133, 26, 0.12);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.search-suggestion-item.active {
+  background: rgba(200, 133, 26, 0.1);
+  border-color: rgba(200, 133, 26, 0.2);
+  color: var(--gold-dark);
+}
+
+.search-product-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(200, 133, 26, 0.1);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all 0.22s ease;
+  background: transparent;
+  outline: none;
+}
+
+.search-product-card:hover {
+  border-color: rgba(200, 133, 26, 0.3);
+  background: rgba(200, 133, 26, 0.04);
+}
+
+.search-product-card:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.search-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border: 1px solid rgba(200, 133, 26, 0.22);
+  border-radius: 2px;
+  font-family: var(--font-accent);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-decoration: none;
+  background: transparent;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.search-tag:hover {
+  border-color: var(--gold);
+  background: rgba(200, 133, 26, 0.07);
+  color: var(--gold-dark);
+}
+
+.search-tag:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 2px;
+}

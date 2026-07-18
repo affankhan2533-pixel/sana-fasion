@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,7 @@ const products = [
     reviews: 42,
     desc: "Hand-embroidered crimson lehenga with 14-karat gold zardozi work. Crafted over 300 hours by master artisans.",
     craftsmanship: "300 Hours Artisan Zardozi",
+    slug: "royal-crimson-bridal-lehenga",
   },
   {
     id: 2,
@@ -33,6 +34,7 @@ const products = [
     reviews: 67,
     desc: "Floor-length emerald anarkali with mirror work and threadwork detailing. Perfect for Diwali celebrations.",
     craftsmanship: "Generational Mirrorwork Heritage",
+    slug: "emerald-festive-anarkali",
   },
   {
     id: 3,
@@ -46,6 +48,7 @@ const products = [
     reviews: 28,
     desc: "Ivory organza sharara set with pearl and crystal embellishments. Timeless bridal elegance.",
     craftsmanship: "Hand-Sewn Pearl Embellishments",
+    slug: "ivory-pearl-wedding-sharara",
   },
   {
     id: 4,
@@ -59,6 +62,7 @@ const products = [
     reviews: 34,
     desc: "Structured midnight blue suit with handwoven gold border. Modern power dressing with an ethnic soul.",
     craftsmanship: "Handwoven Antique Zari Border",
+    slug: "midnight-blue-power-suit",
   },
 ];
 
@@ -76,11 +80,42 @@ const cardReveal = {
 };
 
 export default function BestSellers() {
-  const [wishlist, setWishlist] = useState<number[]>([]);
-  const [quickView, setQuickView] = useState<(typeof products)[0] | null>(null);
+  const [wishlist, setWishlist] = useState<any[]>([]);
+  const [quickView, setQuickView] = useState<any | null>(null);
+  const [productList, setProductList] = useState<any[]>(products);
 
-  const toggleWish = (id: number) =>
+  const toggleWish = (id: any) =>
     setWishlist(w => w.includes(id) ? w.filter(i => i !== id) : [...w, id]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/products?limit=20")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.products?.length > 0) {
+          const mapped = data.products
+            .filter((p: any) => p.featured || p.bestSeller)
+            .slice(0, 4)
+            .map((p: any) => ({
+              id: p._id,
+              name: p.name,
+              price: p.price,
+              original: p.originalPrice || p.price * 1.2,
+              image: p.images?.[0] || "/images/placeholder.png",
+              category: p.category,
+              badge: p.featured ? "Featured" : p.bestSeller ? "Best Seller" : "Atelier",
+              rating: p.rating || 5,
+              reviews: p.reviewCount || 10,
+              desc: p.description,
+              craftsmanship: p.workType || "Generational Artisan Handcraft",
+              slug: p.slug
+            }));
+          if (mapped.length > 0) {
+            setProductList(mapped);
+          }
+        }
+      })
+      .catch(err => console.warn("BestSellers dynamic load failed, using fallback:", err));
+  }, []);
 
   return (
     <section className="section-spacing relative overflow-hidden bg-[#FFF5E6]">
@@ -107,7 +142,7 @@ export default function BestSellers() {
 
         {/* Mobile: Horizontal scroll, Desktop: Grid Layout */}
         <div className="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 w-full items-start snap-x snap-mandatory scrollbar-hide pb-6 -mx-6 px-6 md:mx-0 md:px-0">
-          {products.map((p, idx) => (
+          {productList.map((p, idx) => (
             <motion.div
               key={p.id}
               custom={idx}
