@@ -60,13 +60,15 @@ export default function EditProductPage() {
   }
 
   return (
-    <PageLayout maxWidth="form">
-      <PageHeader
-        title="Edit Garment"
-        subtitle="Refine pricing, images, and description details."
-      />
+    <PageLayout maxWidth="desktop">
+      <div className="max-w-4xl mx-auto">
+        <PageHeader
+          title="Edit Garment"
+          subtitle="Refine pricing, images, and description details."
+        />
 
-      <ProductForm initialData={product} onSubmit={handleUpdate} />
+        <ProductForm initialData={product} onSubmit={handleUpdate} />
+      </div>
     </PageLayout>
   );
 }

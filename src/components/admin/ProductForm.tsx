@@ -261,7 +261,7 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
 
               <div className="space-y-2 pt-1">
                 <label className="block text-[10px] font-bold text-[#6B5E4C] uppercase tracking-wider">Quick Category Select</label>
-                <div className="flex flex-wrap gap-2">
+                <div className="scroll-pills flex items-center gap-2 overflow-x-auto pb-1 -mx-2 px-2">
                   {categories.map((cat) => {
                     const selected = formValues.category === cat;
                     return (
@@ -269,7 +269,7 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
                         key={cat}
                         type="button"
                         onClick={() => setValue('category', cat)}
-                        className={`h-10 px-5 rounded-[8px] text-[11px] font-bold border transition-all cursor-pointer active:scale-95 ${
+                        className={`h-9 px-4 rounded-[8px] text-[11px] font-bold border whitespace-nowrap flex-shrink-0 transition-all cursor-pointer active:scale-95 ${
                           selected
                             ? 'bg-[#C8851A] text-white border-[#C8851A] shadow-sm'
                             : 'bg-white border-[#E8E2D9] text-[#6B5E4C] hover:bg-gray-50'
@@ -565,15 +565,15 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
           </div>
         )}
 
-        {/* ================= BUTTON ACTION FOOTERS (Global Component system: 52px tall, 12px rounded-xl) ================= */}
-        <div className="flex gap-3 pt-4 mt-4">
+        {/* ================= BUTTON ACTION FOOTERS ================= */}
+        <div className="flex items-center gap-3 pt-6 border-t border-[#E6C280]/20">
           {step > 1 && (
             <Button
               type="button"
               variant="secondary"
               onClick={handlePrevStep}
-              icon={<ArrowLeft size={14} />}
-              className="w-32"
+              icon={<ArrowLeft size={15} />}
+              className="w-32 !h-12 !rounded-[12px] font-bold"
             >
               Back
             </Button>
@@ -584,10 +584,10 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
               type="button"
               variant="primary"
               onClick={handleNextStep}
-              icon={<ArrowRight size={14} />}
-              className="flex-1"
+              icon={<ArrowRight size={15} />}
+              className="flex-1 !h-12 !rounded-[12px] font-bold text-[13px] uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
             >
-              Continue
+              Continue to {step === 1 ? 'Images' : step === 2 ? 'Pricing' : 'Review'}
             </Button>
           ) : (
             <div className="flex-1 flex flex-col sm:flex-row gap-3">
@@ -596,9 +596,9 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
                 variant="secondary"
                 onClick={() => setSubmitStatus('draft')}
                 loading={loading && submitStatus === 'draft'}
-                className="flex-1"
+                className="flex-1 !h-12 !rounded-[12px] font-bold"
               >
-                Save Draft
+                Save as Draft
               </Button>
 
               <Button
@@ -606,9 +606,9 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
                 variant="primary"
                 onClick={() => setSubmitStatus('published')}
                 loading={loading && submitStatus === 'published'}
-                className="flex-1"
+                className="flex-1 !h-12 !rounded-[12px] font-bold shadow-md hover:shadow-lg transition-all"
               >
-                Publish Live
+                Publish Garment
               </Button>
             </div>
           )}
@@ -619,9 +619,9 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
             <button
               type="button"
               onClick={() => router.push('/admin/products')}
-              className="text-[12px] font-bold text-[#9B8E7E] uppercase tracking-wider hover:text-[#1C1008] transition-colors cursor-pointer"
+              className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider hover:text-[#1C1008] transition-colors cursor-pointer"
             >
-              Cancel & Exit Form
+              ← Cancel & Exit Form
             </button>
           </div>
         )}

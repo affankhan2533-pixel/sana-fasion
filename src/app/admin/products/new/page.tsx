@@ -25,13 +25,15 @@ export default function NewProductPage() {
   };
 
   return (
-    <PageLayout maxWidth="form">
-      <PageHeader
-        title="Create New Garment"
-        subtitle="Formulate new premium bridal collections & apparel."
-      />
+    <PageLayout maxWidth="desktop">
+      <div className="max-w-4xl mx-auto">
+        <PageHeader
+          title="Create New Garment"
+          subtitle="Formulate new premium bridal collections & apparel."
+        />
 
-      <ProductForm onSubmit={handleCreate} />
+        <ProductForm onSubmit={handleCreate} />
+      </div>
     </PageLayout>
   );
 }
