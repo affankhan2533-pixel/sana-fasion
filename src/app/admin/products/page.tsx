@@ -137,14 +137,13 @@ export default function ProductsPage() {
       />
 
       {/* Search & Filter Row */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <form onSubmit={handleSearchSubmit} className="relative flex-1">
           <Input
             label="Search catalog..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             icon={<Search size={15} />}
-            className="!h-13"
           />
         </form>
 
@@ -158,15 +157,15 @@ export default function ProductsPage() {
             { value: 'draft', label: 'Draft' },
             { value: 'archived', label: 'Archived' }
           ]}
-          className="w-40 !h-13"
+          containerClassName="w-full sm:w-56"
         />
       </div>
 
       {/* Category scrollable row */}
-      <div className="scroll-pills flex items-center">
+      <div className="scroll-pills flex items-center mb-6">
         <button
           onClick={() => { setCategory(''); setPage(1); }}
-          className={`h-10 px-6 rounded-[8px] text-[12px] font-bold border whitespace-nowrap flex-shrink-0 transition-colors cursor-pointer ${
+          className={`h-9 px-4 rounded-[8px] text-[12px] font-bold border whitespace-nowrap flex-shrink-0 transition-colors cursor-pointer ${
             category === '' ? 'bg-[#C8851A] text-white border-[#C8851A]' : 'bg-white border-[#E8E2D9] text-[#6B5E4C] hover:bg-gray-50'
           }`}
         >
@@ -176,7 +175,7 @@ export default function ProductsPage() {
           <button
             key={c._id}
             onClick={() => { setCategory(c.name); setPage(1); }}
-            className={`h-10 px-6 rounded-[8px] text-[12px] font-bold border whitespace-nowrap flex-shrink-0 transition-colors cursor-pointer ${
+            className={`h-9 px-4 rounded-[8px] text-[12px] font-bold border whitespace-nowrap flex-shrink-0 transition-colors cursor-pointer ${
               category === c.name ? 'bg-[#C8851A] text-white border-[#C8851A]' : 'bg-white border-[#E8E2D9] text-[#6B5E4C] hover:bg-gray-50'
             }`}
           >
@@ -252,7 +251,7 @@ export default function ProductsPage() {
       <BottomSheet isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)}>
         {selectedProduct && (
           <div className="px-4 pt-2 pb-6 space-y-5">
-            <div className="aspect-[4/3] rounded-[12px] bg-gray-50 border border-[#E6C280]/20 overflow-hidden relative">
+            <div className="aspect-[16/10] max-h-[260px] rounded-[12px] bg-gray-50 border border-[#E6C280]/20 overflow-hidden relative">
               {selectedProduct.images?.[0] ? (
                 <img src={selectedProduct.images[0]} alt={selectedProduct.name} className="w-full h-full object-cover object-top" />
               ) : (

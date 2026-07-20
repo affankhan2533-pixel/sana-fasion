@@ -57,46 +57,61 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FAF6F0] text-[#1C1008] font-sans pb-16 md:pb-0">
+    <div className="flex h-screen bg-[#FAF6F0] text-[#1C1008] font-sans overflow-hidden">
       
-      {/* Sidebar (Desktop & Tablet) */}
+      {/* Sidebar — desktop/tablet, fixed left column */}
       <AdminSidebar />
-      
+
+      {/* Right column: topbar + scrollable page content */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        {/* Top Header Bar */}
+        {/* Top Header Bar (desktop only) */}
         <AdminTopbar />
-        
-        {/* Child Pages Shell */}
-        <main className="flex-1 overflow-y-auto">
+
+        {/* Page content — scrollable, padded for mobile bottom nav */}
+        <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
           {children}
         </main>
       </div>
 
-      {/* 📱 Premium Bottom Navigation (Mobile Viewports Only) */}
-      <div className="md:hidden fixed bottom-0 inset-x-0 h-18 bg-[#FAF6F0] border-t border-[#E6C280]/20 flex items-center justify-around z-40 px-2 shadow-lg">
-        {navItems.map((item) => {
-          const active = isActive(item.href, item.exact);
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex flex-col items-center justify-center w-20 h-16 transition-all"
-            >
-              <div className={`px-4.5 py-1.5 rounded-full transition-all duration-200 flex items-center justify-center active:scale-95 ${
-                active ? 'text-[#C8851A] bg-[rgba(200,133,26,0.12)] border border-[#E6C280]/15' : 'text-[#9B8E7E]'
-              }`}>
-                <Icon size={24} />
-              </div>
-              <span className={`text-[9px] tracking-wider font-bold transition-all mt-0.5 ${
-                active ? 'text-[#C8851A]' : 'text-[#9B8E7E]'
-              }`}>
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
+      {/* ── Mobile Bottom Navigation ── */}
+      <nav
+        className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-[#E6C280]/20 z-50"
+        style={{ height: '64px', boxShadow: '0 -1px 0 rgba(200,133,26,0.08), 0 -4px 20px rgba(0,0,0,0.06)' }}
+      >
+        <div className="flex items-center justify-around h-full px-2">
+          {navItems.map((item) => {
+            const active = isActive(item.href, item.exact);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col items-center justify-center gap-1 flex-1 h-full"
+              >
+                <div
+                  className={`flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200 active:scale-90 ${
+                    active
+                      ? 'bg-[rgba(200,133,26,0.12)]'
+                      : ''
+                  }`}
+                >
+                  <Icon
+                    size={22}
+                    className={active ? 'text-[#C8851A]' : 'text-[#9B8E7E]'}
+                  />
+                </div>
+                <span
+                  className={`text-[9px] font-bold tracking-wide leading-none ${
+                    active ? 'text-[#C8851A]' : 'text-[#9B8E7E]'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
 
       <ToastContainer />
       <GlobalSearch />

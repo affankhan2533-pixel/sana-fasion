@@ -23,7 +23,8 @@ export default function ProductCard({ product, onSelect, onToggleStock, onDelete
         {/* Fixed Aspect ratio cover image */}
         <div 
           onClick={onSelect}
-          className="relative aspect-[4/5] w-full rounded-[8px] overflow-hidden bg-gray-50 border border-[#E6C280]/10 flex-shrink-0 cursor-pointer"
+          className="relative w-full rounded-[8px] overflow-hidden bg-gray-50 border border-[#E6C280]/10 flex-shrink-0 cursor-pointer"
+          style={{ aspectRatio: '3/4', maxHeight: '320px' }}
         >
           {product.images?.[0] ? (
             <img 

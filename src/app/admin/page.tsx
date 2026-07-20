@@ -115,16 +115,18 @@ export default function AdminDashboard() {
       <div className="md:hidden space-y-7">
         {/* 👑 Brand & Greeting Header */}
         <div className="flex justify-between items-center">
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <p className="text-[10px] tracking-[0.15em] text-[#C8851A] uppercase font-bold">
               {new Date().toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric' })}
             </p>
-            <h1 className="text-[26px] font-semibold text-[#1C1008] font-serif leading-tight animate-fade-in" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+            <h1 className="text-[26px] font-semibold text-[#1C1008] font-serif leading-tight" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
               {getGreeting()}, Admin
             </h1>
             <p className="text-[12px] text-[#9B8E7E] font-medium">Boutique Overview</p>
           </div>
-          <Avatar name="Admin" size="lg" />
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-[15px] font-bold flex-shrink-0" style={{ background: 'rgba(200,133,26,0.12)', color: '#C8851A' }}>
+            A
+          </div>
         </div>
 
         {/* 📊 Today's Summary (2x2 Grid) */}
@@ -316,58 +318,50 @@ export default function AdminDashboard() {
         />
 
         {/* 📊 Summary Cards Row (4 Equal-sized cards) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Card 1: Total Products */}
-          <Card className="flex items-center justify-between">
+          <Link href="/admin/products" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">Total Products</span>
-              <span className="text-[32px] font-semibold text-[#1C1008] font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                {totalProducts}
-              </span>
+              <span className="text-[36px] font-semibold text-[#1C1008] font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{totalProducts}</span>
             </div>
-            <div className="p-3.5 rounded-xl bg-amber-50 text-[#C8851A]">
-              <Package size={24} />
+            <div className="p-3 rounded-xl bg-amber-50 text-[#C8851A] flex-shrink-0">
+              <Package size={22} />
             </div>
-          </Card>
+          </Link>
 
           {/* Card 2: In Stock */}
-          <Card className="flex items-center justify-between">
+          <Link href="/admin/products" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">In Stock</span>
-              <span className="text-[32px] font-semibold text-emerald-700 font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                {inStock}
-              </span>
+              <span className="text-[36px] font-semibold text-emerald-700 font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{inStock}</span>
             </div>
-            <div className="p-3.5 rounded-xl bg-emerald-50 text-emerald-600">
-              <CheckCircle2 size={24} />
+            <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 flex-shrink-0">
+              <CheckCircle2 size={22} />
             </div>
-          </Card>
+          </Link>
 
           {/* Card 3: Out Of Stock */}
-          <Card className="flex items-center justify-between">
+          <Link href="/admin/products?filter=out_of_stock" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">Out of Stock</span>
-              <span className={`text-[32px] font-semibold font-serif leading-none block ${outOfStock > 0 ? 'text-red-600' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                {outOfStock}
-              </span>
+              <span className={`text-[36px] font-semibold font-serif leading-none block ${outOfStock > 0 ? 'text-red-600' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>{outOfStock}</span>
             </div>
-            <div className={`p-3.5 rounded-xl ${outOfStock > 0 ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'}`}>
-              <AlertCircle size={24} />
+            <div className={`p-3 rounded-xl flex-shrink-0 ${outOfStock > 0 ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'}`}>
+              <AlertCircle size={22} />
             </div>
-          </Card>
+          </Link>
 
           {/* Card 4: New Enquiries */}
-          <Card className="flex items-center justify-between">
+          <Link href="/admin/inquiries" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">New Enquiries</span>
-              <span className={`text-[32px] font-semibold font-serif leading-none block ${newInquiries > 0 ? 'text-[#C8851A]' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                {newInquiries}
-              </span>
+              <span className={`text-[36px] font-semibold font-serif leading-none block ${newInquiries > 0 ? 'text-[#C8851A]' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>{newInquiries}</span>
             </div>
-            <div className={`p-3.5 rounded-xl ${newInquiries > 0 ? 'bg-amber-50 text-[#C8851A]' : 'bg-gray-50 text-gray-400'}`}>
-              <MessageSquare size={24} />
+            <div className={`p-3 rounded-xl flex-shrink-0 ${newInquiries > 0 ? 'bg-amber-50 text-[#C8851A]' : 'bg-gray-50 text-gray-400'}`}>
+              <MessageSquare size={22} />
             </div>
-          </Card>
+          </Link>
         </div>
 
         {/* 🏢 Content Grid (10-Column Responsive Layout: Left 70%, Right 30%) */}
@@ -522,7 +516,7 @@ export default function AdminDashboard() {
       <BottomSheet isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)}>
         {selectedProduct && (
           <div className="px-4 pt-2 pb-6 space-y-5">
-            <div className="aspect-[4/3] rounded-[12px] bg-gray-50 border border-[#E6C280]/20 overflow-hidden relative">
+            <div className="aspect-[16/10] max-h-[260px] rounded-[12px] bg-gray-50 border border-[#E6C280]/20 overflow-hidden relative">
               {selectedProduct.images?.[0] ? (
                 <img src={selectedProduct.images[0]} alt={selectedProduct.name} className="w-full h-full object-cover object-top" />
               ) : (

@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
+import { X } from 'lucide-react';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -8,7 +9,6 @@ interface BottomSheetProps {
 }
 
 export default function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
-  // Prevent background scrolling when sheet is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -26,18 +26,32 @@ export default function BottomSheet({ isOpen, onClose, children }: BottomSheetPr
     <>
       {/* Backdrop overlay */}
       <div 
-        className="fixed inset-0 bg-black/35 backdrop-blur-[2px] z-50 transition-opacity duration-300"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs z-[9990] transition-opacity duration-300 animate-fade-in"
         onClick={onClose}
       />
       
-      {/* Bottom Sheet container */}
-      <div className="fixed bottom-0 inset-x-0 bg-[#FAF6F0] border-t border-[#E6C280]/20 rounded-t-[24px] shadow-[0_-8px_32px_rgba(0,0,0,0.12)] max-h-[90vh] overflow-y-auto z-50 pb-8 animate-slide-up">
-        {/* Drag handle */}
-        <div className="h-7 flex items-center justify-center cursor-pointer select-none" onClick={onClose}>
-          <div className="w-11 h-1 bg-[#E6DCCF] rounded-full" />
+      {/* Container: Bottom Sheet on Mobile, Centered Modal on Desktop */}
+      <div 
+        className="fixed z-[9991] bg-[#FAF6F0] border-t md:border border-[#E6C280]/30 shadow-[0_-8px_32px_rgba(0,0,0,0.18)] transition-all duration-300 animate-slide-up
+          bottom-0 inset-x-0 rounded-t-[28px] max-h-[85vh] overflow-y-auto pb-24 px-1
+          md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-lg md:w-full md:rounded-2xl md:max-h-[85vh] md:pb-6 md:px-0"
+      >
+        {/* Header bar / Drag handle & Close Button */}
+        <div className="sticky top-0 bg-[#FAF6F0] pt-3 pb-2 px-4 flex items-center justify-between z-20 border-b border-[#E6C280]/10 rounded-t-[28px] md:rounded-t-2xl">
+          <div className="w-7" />
+          <div className="w-12 h-1 bg-[#E6DCCF] rounded-full cursor-pointer" onClick={onClose} />
+          <button 
+            onClick={onClose} 
+            className="w-7 h-7 rounded-full bg-white border border-[#E6C280]/20 flex items-center justify-center text-[#6B5E4C] hover:bg-[#FAF6F0] hover:text-[#1C1008] transition-colors cursor-pointer shadow-xs active:scale-95"
+            title="Close"
+          >
+            <X size={14} />
+          </button>
         </div>
         
-        {children}
+        <div className="p-4 sm:p-5">
+          {children}
+        </div>
       </div>
     </>
   );
