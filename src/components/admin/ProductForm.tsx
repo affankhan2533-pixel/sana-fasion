@@ -196,8 +196,10 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
   const handleFormSubmit = async (data: any) => {
     setLoading(true);
     try {
+      const slug = data.slug || (data.name ? data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4) : `garment-${Date.now()}`);
       const payload = {
         ...data,
+        slug,
         images,
         status: submitStatus,
       };

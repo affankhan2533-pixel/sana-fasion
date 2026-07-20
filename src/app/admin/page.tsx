@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getDashboardStats, getAdminProducts, getInquiries, quickEditProduct, deleteProduct } from '@/lib/adminApi';
-import { Package, CheckCircle2, AlertCircle, MessageSquare, Phone, ArrowRight, Loader2, Plus } from 'lucide-react';
+import { Package, CheckCircle2, AlertCircle, MessageSquare, Phone, ArrowRight, Loader2, Plus, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useAdminStore } from '@/lib/adminStore';
 
@@ -105,6 +105,8 @@ export default function AdminDashboard() {
   const outOfStock = stats?.inventory?.outOfStock || 0;
   const inStock = Math.max(0, totalProducts - outOfStock);
   const newInquiries = stats?.inquiries?.new || 0;
+  const websiteViews = stats?.views?.total || stats?.views?.unique || 0;
+  const todayViews = stats?.views?.today || 0;
 
   return (
     <PageLayout maxWidth="desktop">
@@ -129,7 +131,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* 📊 Today's Summary (2x2 Grid) */}
+        {/* 📊 Today's Summary (Grid) */}
         <div className="space-y-3">
           <h2 className="text-[10px] tracking-wider uppercase font-bold text-[#6B5E4C]">Today's Summary</h2>
           <div className="grid grid-cols-2 gap-3">
@@ -184,6 +186,24 @@ export default function AdminDashboard() {
                 </span>
               </div>
             </Link>
+
+            {/* Website Visitors */}
+            <div className="col-span-2 bg-white border border-[#E6C280]/15 rounded-xl p-4 flex items-center justify-between shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
+                  <Eye size={18} />
+                </div>
+                <div className="space-y-0.5 min-w-0">
+                  <span className="text-[10px] font-bold text-[#9B8E7E] uppercase block truncate">Website Traffic</span>
+                  <span className="text-[18px] font-bold text-[#1C1008] leading-none block font-serif" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    {websiteViews} Total Visits
+                  </span>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full uppercase">
+                {todayViews} Today
+              </span>
+            </div>
           </div>
         </div>
 
@@ -317,51 +337,63 @@ export default function AdminDashboard() {
           subtitle="Realtime Boutique Overview & Collections Studio"
         />
 
-        {/* 📊 Summary Cards Row (4 Equal-sized cards) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* 📊 Summary Cards Row (5 Equal-sized cards) */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Card 1: Total Products */}
-          <Link href="/admin/products" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">Total Products</span>
-              <span className="text-[36px] font-semibold text-[#1C1008] font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{totalProducts}</span>
+          <Link href="/admin/products" className="bg-white border border-[#E8E2D9] rounded-2xl p-4 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
+            <div className="space-y-1.5 min-w-0">
+              <span className="text-[10px] font-bold text-[#9B8E7E] uppercase tracking-wider block truncate">Total Products</span>
+              <span className="text-[32px] font-semibold text-[#1C1008] font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{totalProducts}</span>
             </div>
-            <div className="p-3 rounded-xl bg-amber-50 text-[#C8851A] flex-shrink-0">
-              <Package size={22} />
+            <div className="p-2.5 rounded-xl bg-amber-50 text-[#C8851A] flex-shrink-0">
+              <Package size={20} />
             </div>
           </Link>
 
           {/* Card 2: In Stock */}
-          <Link href="/admin/products" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">In Stock</span>
-              <span className="text-[36px] font-semibold text-emerald-700 font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{inStock}</span>
+          <Link href="/admin/products" className="bg-white border border-[#E8E2D9] rounded-2xl p-4 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
+            <div className="space-y-1.5 min-w-0">
+              <span className="text-[10px] font-bold text-[#9B8E7E] uppercase tracking-wider block truncate">In Stock</span>
+              <span className="text-[32px] font-semibold text-emerald-700 font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{inStock}</span>
             </div>
-            <div className="p-3 rounded-xl bg-emerald-50 text-emerald-600 flex-shrink-0">
-              <CheckCircle2 size={22} />
+            <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 flex-shrink-0">
+              <CheckCircle2 size={20} />
             </div>
           </Link>
 
           {/* Card 3: Out Of Stock */}
-          <Link href="/admin/products?filter=out_of_stock" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">Out of Stock</span>
-              <span className={`text-[36px] font-semibold font-serif leading-none block ${outOfStock > 0 ? 'text-red-600' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>{outOfStock}</span>
+          <Link href="/admin/products?filter=out_of_stock" className="bg-white border border-[#E8E2D9] rounded-2xl p-4 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
+            <div className="space-y-1.5 min-w-0">
+              <span className="text-[10px] font-bold text-[#9B8E7E] uppercase tracking-wider block truncate">Out of Stock</span>
+              <span className={`text-[32px] font-semibold font-serif leading-none block ${outOfStock > 0 ? 'text-red-600' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>{outOfStock}</span>
             </div>
-            <div className={`p-3 rounded-xl flex-shrink-0 ${outOfStock > 0 ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'}`}>
-              <AlertCircle size={22} />
+            <div className={`p-2.5 rounded-xl flex-shrink-0 ${outOfStock > 0 ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'}`}>
+              <AlertCircle size={20} />
             </div>
           </Link>
 
           {/* Card 4: New Enquiries */}
-          <Link href="/admin/inquiries" className="bg-white border border-[#E8E2D9] rounded-2xl p-5 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-[#9B8E7E] uppercase tracking-wider block">New Enquiries</span>
-              <span className={`text-[36px] font-semibold font-serif leading-none block ${newInquiries > 0 ? 'text-[#C8851A]' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>{newInquiries}</span>
+          <Link href="/admin/inquiries" className="bg-white border border-[#E8E2D9] rounded-2xl p-4 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
+            <div className="space-y-1.5 min-w-0">
+              <span className="text-[10px] font-bold text-[#9B8E7E] uppercase tracking-wider block truncate">New Enquiries</span>
+              <span className={`text-[32px] font-semibold font-serif leading-none block ${newInquiries > 0 ? 'text-[#C8851A]' : 'text-[#1C1008]'}`} style={{ fontFamily: 'Cormorant Garamond, serif' }}>{newInquiries}</span>
             </div>
-            <div className={`p-3 rounded-xl flex-shrink-0 ${newInquiries > 0 ? 'bg-amber-50 text-[#C8851A]' : 'bg-gray-50 text-gray-400'}`}>
-              <MessageSquare size={22} />
+            <div className={`p-2.5 rounded-xl flex-shrink-0 ${newInquiries > 0 ? 'bg-amber-50 text-[#C8851A]' : 'bg-gray-50 text-gray-400'}`}>
+              <MessageSquare size={20} />
             </div>
           </Link>
+
+          {/* Card 5: Website Visitors / Traffic */}
+          <div className="bg-white border border-[#E8E2D9] rounded-2xl p-4 flex items-start justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.03)' }}>
+            <div className="space-y-1.5 min-w-0">
+              <span className="text-[10px] font-bold text-[#9B8E7E] uppercase tracking-wider block truncate">Website Traffic</span>
+              <span className="text-[32px] font-semibold text-[#1C1008] font-serif leading-none block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>{websiteViews}</span>
+              <span className="text-[9px] text-emerald-600 font-bold uppercase block">{todayViews} today</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0">
+              <Eye size={20} />
+            </div>
+          </div>
         </div>
 
         {/* 🏢 Content Grid (10-Column Responsive Layout: Left 70%, Right 30%) */}

@@ -28,6 +28,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+import AnalyticsTracker from "@/components/AnalyticsTracker";
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
@@ -44,6 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className="scroll-smooth">
       <body>
+        <AnalyticsTracker />
         <LenisProvider>
           <ScrollProgress />
           <Navbar />

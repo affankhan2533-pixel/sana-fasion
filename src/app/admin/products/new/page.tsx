@@ -15,12 +15,15 @@ export default function NewProductPage() {
   const handleCreate = async (payload: any) => {
     try {
       const data = await createProduct(payload);
-      if (data.success) {
-        addToast({ type: 'success', message: 'Product created successfully.' });
+      if (data.success || data.product) {
+        addToast({ type: 'success', message: 'Garment created and added to boutique catalog!' });
         router.push('/admin/products');
+      } else {
+        addToast({ type: 'error', message: data.message || 'Failed to create product.' });
       }
-    } catch {
-      addToast({ type: 'error', message: 'Failed to create product.' });
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Failed to create product.';
+      addToast({ type: 'error', message: msg });
     }
   };
 
