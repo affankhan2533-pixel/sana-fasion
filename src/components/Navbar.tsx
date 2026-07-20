@@ -407,7 +407,7 @@ export default function Navbar() {
           </nav>
 
           {/* Column 3: Right Actions */}
-          <div className="flex items-center justify-end gap-[20px]">
+          <div className="flex items-center justify-end gap-[14px] lg:gap-[20px]">
 
             {/* Search — always visible */}
             <button
@@ -458,8 +458,8 @@ export default function Navbar() {
               <InstagramIcon />
             </a>
 
-            {/* ── Boutique Experience ── */}
-            <div className="relative block" ref={ambientPanelRef}>
+            {/* ── Boutique Experience ── desktop only; accessible from mobile drawer */}
+            <div className="relative hidden lg:block" ref={ambientPanelRef}>
               <button
                 id="navbar-boutique-experience-btn"
                 onClick={() => setAmbientOpen(o => !o)}
@@ -628,7 +628,7 @@ export default function Navbar() {
             <button
               id="navbar-hamburger"
               onClick={() => setMobileOpen(true)}
-              className="flex flex-col items-end justify-center gap-[5px] p-2 cursor-pointer lg:hidden group"
+              className="flex flex-col items-end justify-center gap-[5px] p-2 cursor-pointer lg:hidden group flex-shrink-0 min-w-[36px] min-h-[36px]"
               aria-label="Open navigation menu"
               aria-expanded={mobileOpen}
             >
