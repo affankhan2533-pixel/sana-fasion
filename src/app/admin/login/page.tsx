@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminStore } from '@/lib/adminStore';
 import { login, seedAdmin } from '@/lib/adminApi';
-import { Eye, EyeOff, Loader2, Mail, Lock, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Mail, Lock, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('admin@sana.in');
@@ -12,6 +12,7 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [seeding, setSeeding] = useState(false);
+  const [seedSuccess, setSeedSuccess] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const { setAuth, token, addToast } = useAdminStore();
   const router = useRouter();
@@ -19,6 +20,23 @@ export default function AdminLoginPage() {
   useEffect(() => {
     if (token) router.replace('/admin');
   }, [token, router]);
+
+  const handleSeedAdmin = async () => {
+    setSeeding(true);
+    try {
+      const res = await seedAdmin();
+      if (res.credentials) {
+        setEmail(res.credentials.email);
+        setPassword(res.credentials.password);
+        setSeedSuccess(true);
+        addToast({ type: 'success', message: 'Account created! Credentials pre-filled — click Sign In.' });
+      }
+    } catch {
+      addToast({ type: 'error', message: 'Failed to create account. Is the backend running on port 5000?' });
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,227 +48,246 @@ export default function AdminLoginPage() {
       router.replace('/admin');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setError(msg || 'Authentication failed. Please verify your credentials.');
+      const isInvalidCreds = msg?.toLowerCase().includes('invalid') || msg?.toLowerCase().includes('credentials');
+      setError(
+        isInvalidCreds
+          ? 'Invalid credentials. If this is your first time, click "Create Account" below to initialize the system.'
+          : msg || 'Authentication failed. Please verify your credentials or click "Create Account" below.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSeedAdmin = async () => {
-    setSeeding(true);
-    try {
-      const res = await seedAdmin();
-      if (res.credentials) {
-        setEmail(res.credentials.email);
-        setPassword(res.credentials.password);
-        addToast({ type: 'success', message: 'Credentials generated and pre-filled!' });
-      }
-    } catch {
-      addToast({ type: 'error', message: 'Failed to update credentials.' });
-    } finally {
-      setSeeding(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex font-sans" style={{ background: '#FAFAF8' }}>
-      
-      {/* ── LEFT PANEL (40%): Luxury Editorial ── */}
-      <div className="hidden lg:flex lg:w-[40%] relative flex-col justify-between p-12 overflow-hidden border-r border-[#E8E2D9]">
-        {/* Editorial Cinematic Image Background */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-[1500ms] hover:scale-105"
-          style={{ 
-            backgroundImage: `url('https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200&auto=format&fit=crop')` 
-          }}
-        />
-        {/* Dark Luxury Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/60 to-black/90 mix-blend-multiply" />
-        
-        {/* Top Branding Section */}
-        <div className="relative z-10">
-          <span className="text-[26px] font-medium tracking-[0.25em] text-[#FFF8F0] block" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-            SANA
-          </span>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="h-[1px] w-6 bg-[#C8851A]" />
-            <span className="text-[9px] tracking-[0.35em] uppercase text-[#9B8E7E] font-semibold">
-              Admin Studio
-            </span>
+    <>
+      <style>{`
+        .login-root {
+          display: flex;
+          min-height: 100vh;
+          width: 100%;
+          font-family: 'Inter', system-ui, sans-serif;
+          background: #FAFAF8;
+        }
+        .login-left {
+          display: none;
+          position: relative;
+          width: 42%;
+          flex-shrink: 0;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 48px;
+          overflow: hidden;
+          border-right: 1px solid #E8E2D9;
+        }
+        @media (min-width: 1024px) { .login-left { display: flex; } }
+        .login-left-bg {
+          position: absolute; inset: 0;
+          background-image: url('https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200&auto=format&fit=crop');
+          background-size: cover; background-position: center;
+          transition: transform 2s ease;
+        }
+        .login-left:hover .login-left-bg { transform: scale(1.04); }
+        .login-left-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to bottom, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.48) 50%, rgba(0,0,0,0.92) 100%);
+        }
+        .login-right {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 32px 20px;
+          min-height: 100vh;
+          overflow-y: auto;
+          background: radial-gradient(circle at 60% 40%, #FFFDFB 0%, #FAF6EE 100%);
+        }
+        .login-right-inner { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 16px; }
+        .mobile-brand { text-align: center; }
+        @media (min-width: 1024px) { .mobile-brand { display: none; } }
+        .login-card {
+          background: #fff;
+          border-radius: 20px;
+          padding: 36px 32px;
+          border: 1px solid #E8E2D9;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 8px 40px rgba(0,0,0,0.06);
+        }
+        @media (max-width: 480px) { .login-card { padding: 28px 20px; } }
+        .field-wrap { position: relative; }
+        .field-input {
+          width: 100%; height: 52px;
+          padding: 0 16px 0 44px;
+          border-radius: 12px;
+          border: 1.5px solid #E8E2D9;
+          background: #FAFAF8;
+          font-size: 14px; color: #1C1008;
+          outline: none;
+          font-family: inherit;
+          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+          box-sizing: border-box;
+        }
+        .field-input:focus { border-color: #C8851A; box-shadow: 0 0 0 3px rgba(200,133,26,0.12); background: #fff; }
+        .field-input-pr { padding-right: 48px; }
+        .field-icon-left { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9B8E7E; display: flex; pointer-events: none; }
+        .field-icon-right { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #9B8E7E; background: none; border: none; cursor: pointer; display: flex; padding: 4px; }
+        .btn-signin {
+          width: 100%; height: 52px; border-radius: 12px;
+          background: linear-gradient(135deg, #D4AF37 0%, #C8851A 55%, #B87333 100%);
+          color: #fff; font-weight: 700; font-size: 12px;
+          letter-spacing: 0.18em; text-transform: uppercase;
+          border: none; cursor: pointer;
+          box-shadow: 0 4px 18px rgba(200,133,26,0.35);
+          transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          font-family: inherit;
+        }
+        .btn-signin:hover:not(:disabled) { box-shadow: 0 6px 24px rgba(200,133,26,0.45); transform: translateY(-1px); }
+        .btn-signin:disabled { opacity: 0.72; cursor: not-allowed; }
+        .setup-card {
+          background: #fff; border-radius: 14px; padding: 16px 20px;
+          border: 1px solid #E8E2D9; box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 12px; flex-wrap: wrap;
+        }
+        .btn-create {
+          flex-shrink: 0; padding: 9px 18px; font-size: 12px; font-weight: 600;
+          border-radius: 9px; border: 1.5px solid #C8851A; color: #C8851A;
+          background: transparent; cursor: pointer; white-space: nowrap;
+          display: flex; align-items: center; gap: 6px;
+          transition: background 0.2s; font-family: inherit;
+        }
+        .btn-create:hover:not(:disabled) { background: rgba(200,133,26,0.05); }
+        .btn-create:disabled { opacity: 0.6; cursor: not-allowed; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+      `}</style>
+
+      <div className="login-root">
+
+        {/* LEFT PANEL — editorial, desktop only */}
+        <div className="login-left">
+          <div className="login-left-bg" />
+          <div className="login-left-overlay" />
+          <div style={{ position: 'relative', zIndex: 10 }}>
+            <span style={{ fontSize: '26px', fontWeight: 500, letterSpacing: '0.25em', color: '#FFF8F0', fontFamily: 'Cormorant Garamond, serif', display: 'block' }}>SANA</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+              <span style={{ height: '1px', width: '24px', background: '#C8851A', display: 'block' }} />
+              <span style={{ fontSize: '9px', letterSpacing: '0.35em', textTransform: 'uppercase', color: '#9B8E7E', fontWeight: 600 }}>Admin Studio</span>
+            </div>
+          </div>
+          <div style={{ position: 'relative', zIndex: 10, marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '38px', fontWeight: 300, lineHeight: 1.2, color: '#FFF8F0', fontFamily: 'Cormorant Garamond, serif', margin: '0 0 16px' }}>
+              Generational <br /><em style={{ color: '#D4AF37' }}>Craftsmanship</em>
+            </h2>
+            <p style={{ fontSize: '13px', color: '#9B8E7E', lineHeight: 1.7, maxWidth: '290px' }}>
+              Manage products, appointments, and homepage aesthetics in a bespoke digital atelier built for SANA Fashion.
+            </p>
           </div>
         </div>
 
-        {/* Center Editorial Text */}
-        <div className="relative z-10 mb-20 space-y-4">
-          <h2 className="text-[36px] font-light leading-tight text-[#FFF8F0] tracking-wide" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-            Generational <br />
-            <span className="italic text-[#D4AF37]">Craftsmanship</span>
-          </h2>
-          <p className="text-[13px] text-[#9B8E7E] leading-relaxed max-w-[320px]">
-            Manage products, appointments, and homepage aesthetics in a bespoke digital atelier built for SANA Fashion.
-          </p>
-        </div>
+        {/* RIGHT PANEL — login form */}
+        <div className="login-right">
+          <div className="login-right-inner">
 
-        {/* Faint luxury pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(#C8851A 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}
-        />
-      </div>
-
-      {/* ── RIGHT PANEL (60%): Centered Login Card ── */}
-      <div 
-        className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 relative"
-        style={{ 
-          background: 'radial-gradient(circle at 60% 40%, #FFFDFB 0%, #FAF6EE 100%)' 
-        }}
-      >
-        {/* Subtle fabric/linen SVG pattern overlay for texture */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23C8851A' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E")`
-          }}
-        />
-
-        {/* Container for Login & Onboarding */}
-        <div className="w-full max-w-[480px] space-y-8 z-10 animate-slide-up">
-          
-          {/* SANA Main Login Card */}
-          <div className="bg-white rounded-[20px] p-8 sm:p-10 border border-[#E8E2D9] shadow-card hover:shadow-card-hover transition-shadow duration-300">
-            
-            {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-[32px] font-normal text-[#1C1008]" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
-                Welcome back
-              </h1>
-              <p className="text-[13px] text-[#6B5E4C] mt-2 font-medium tracking-wide">
-                Sign in to manage your digital studio.
-              </p>
+            {/* Mobile branding */}
+            <div className="mobile-brand" style={{ marginBottom: '8px' }}>
+              <span style={{ fontSize: '22px', fontWeight: 500, letterSpacing: '0.25em', color: '#1C1008', fontFamily: 'Cormorant Garamond, serif', display: 'block' }}>SANA</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '4px' }}>
+                <span style={{ height: '1px', width: '20px', background: '#C8851A', display: 'block' }} />
+                <span style={{ fontSize: '9px', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#9B8E7E', fontWeight: 600 }}>Admin Studio</span>
+                <span style={{ height: '1px', width: '20px', background: '#C8851A', display: 'block' }} />
+              </div>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleLogin} className="space-y-5">
-              
-              {/* Email Address */}
-              <div>
-                <label htmlFor="email" className="block text-[11px] font-semibold tracking-[0.2em] uppercase text-[#6B5E4C] mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    className="w-full h-[56px] pl-12 pr-4 rounded-[14px] border border-[#E8E2D9] bg-white text-[14px] text-[#1C1008] placeholder-[#9B8E7E] outline-none transition-all duration-300 focus:border-[#C8851A] focus:ring-1 focus:ring-[#C8851A] font-sans"
-                    placeholder="e.g. admin@sana.in"
-                    required
-                    autoComplete="email"
-                  />
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9B8E7E] transition-colors duration-300">
-                    <Mail size={16} strokeWidth={1.5} />
+            {/* Seed success */}
+            {seedSuccess && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', borderRadius: '12px', background: '#F0FDF4', border: '1px solid #BBF7D0', fontSize: '13px', color: '#16A34A', fontWeight: 500 }}>
+                <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
+                Account created! Credentials pre-filled — click Sign In to Studio.
+              </div>
+            )}
+
+            {/* Login card */}
+            <div className="login-card">
+              <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+                <h1 style={{ fontSize: '30px', fontWeight: 400, color: '#1C1008', fontFamily: 'Cormorant Garamond, serif', margin: '0 0 8px' }}>Welcome back</h1>
+                <p style={{ fontSize: '13px', color: '#6B5E4C', fontWeight: 500, letterSpacing: '0.02em' }}>Sign in to manage your digital studio.</p>
+              </div>
+
+              <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                {/* Email */}
+                <div>
+                  <label htmlFor="admin-email" style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6B5E4C', marginBottom: '8px' }}>Email Address</label>
+                  <div className="field-wrap">
+                    <input type="email" id="admin-email" value={email} onChange={e => setEmail(e.target.value)} className="field-input" placeholder="admin@sana.in" required autoComplete="email" />
+                    <div className="field-icon-left"><Mail size={16} strokeWidth={1.5} /></div>
                   </div>
                 </div>
-              </div>
 
-              {/* Password */}
-              <div>
-                <label htmlFor="password" className="block text-[11px] font-semibold tracking-[0.2em] uppercase text-[#6B5E4C] mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPass ? 'text' : 'password'}
-                    id="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    className="w-full h-[56px] pl-12 pr-12 rounded-[14px] border border-[#E8E2D9] bg-white text-[14px] text-[#1C1008] placeholder-[#9B8E7E] outline-none transition-all duration-300 focus:border-[#C8851A] focus:ring-1 focus:ring-[#C8851A] font-sans"
-                    placeholder="••••••••"
-                    required
-                    autoComplete="current-password"
-                  />
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9B8E7E] transition-colors duration-300">
-                    <Lock size={16} strokeWidth={1.5} />
+                {/* Password */}
+                <div>
+                  <label htmlFor="admin-password" style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6B5E4C', marginBottom: '8px' }}>Password</label>
+                  <div className="field-wrap">
+                    <input type={showPass ? 'text' : 'password'} id="admin-password" value={password} onChange={e => setPassword(e.target.value)} className="field-input field-input-pr" placeholder="••••••••" required autoComplete="current-password" />
+                    <div className="field-icon-left"><Lock size={16} strokeWidth={1.5} /></div>
+                    <button type="button" onClick={() => setShowPass(!showPass)} className="field-icon-right" aria-label={showPass ? 'Hide password' : 'Show password'}>
+                      {showPass ? <EyeOff size={16} strokeWidth={1.5} /> : <Eye size={16} strokeWidth={1.5} />}
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowPass(!showPass)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9B8E7E] hover:text-[#C8851A] transition-colors duration-200 cursor-pointer"
-                  >
-                    {showPass ? <EyeOff size={16} strokeWidth={1.5} /> : <Eye size={16} strokeWidth={1.5} />}
-                  </button>
+                </div>
+
+                {/* Remember / Forgot */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: '#6B5E4C', fontWeight: 500, userSelect: 'none' }}>
+                    <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} style={{ accentColor: '#C8851A', width: '15px', height: '15px', cursor: 'pointer' }} />
+                    Remember me
+                  </label>
+                  <a href="#" onClick={(e) => { e.preventDefault(); addToast({ type: 'info', message: 'Please contact super admin to recover password.' }); }} style={{ color: '#C8851A', textDecoration: 'none', fontWeight: 500 }}>
+                    Forgot Password?
+                  </a>
+                </div>
+
+                {/* Error */}
+                {error && (
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px 14px', borderRadius: '10px', background: '#FEF2F2', border: '1px solid #FECACA', fontSize: '13px', color: '#DC2626', lineHeight: 1.5 }}>
+                    <AlertCircle size={15} style={{ flexShrink: 0, marginTop: '1px' }} />
+                    {error}
+                  </div>
+                )}
+
+                {/* Submit */}
+                <button type="submit" disabled={loading} className="btn-signin">
+                  {loading ? <><Loader2 size={16} className="spin" /> Authenticating...</> : 'Sign In to Studio'}
+                </button>
+              </form>
+            </div>
+
+            {/* Setup card */}
+            <div className="setup-card">
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(200,133,26,0.07)', color: '#C8851A', flexShrink: 0 }}>
+                  <Sparkles size={15} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#1C1008', marginBottom: '3px' }}>First Time Setup</h3>
+                  <p style={{ fontSize: '11px', color: '#9B8E7E', lineHeight: 1.5 }}>Generate or sync credentials from the active project configuration.</p>
                 </div>
               </div>
-
-              {/* Remember Me / Forgot Pass */}
-              <div className="flex items-center justify-between text-[13px] font-medium pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-[#6B5E4C] hover:text-[#1C1008] transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={e => setRememberMe(e.target.checked)}
-                    className="rounded border-[#E8E2D9] text-[#C8851A] focus:ring-[#C8851A]"
-                  />
-                  Remember me
-                </label>
-                <a href="#" onClick={(e) => { e.preventDefault(); addToast({ type: 'info', message: 'Please contact super admin to recover password.' }); }} className="text-[#C8851A] hover:underline">
-                  Forgot Password?
-                </a>
-              </div>
-
-              {/* Error message */}
-              {error && (
-                <div className="p-4 rounded-[12px] bg-red-50 border border-red-100 text-[13px] text-red-600 leading-snug">
-                  {error}
-                </div>
-              )}
-
-              {/* Login Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="relative w-full h-[56px] rounded-[14px] bg-gradient-to-r from-[#D4AF37] via-[#C8851A] to-[#B87333] text-white font-semibold text-[13px] uppercase tracking-[0.2em] shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px] active:translate-y-0 disabled:opacity-75 disabled:cursor-not-allowed overflow-hidden group cursor-pointer"
-              >
-                {/* Shine effect animation */}
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shine" />
-                <span className="relative flex items-center justify-center gap-2">
-                  {loading ? (
-                    <><Loader2 size={16} className="animate-spin" /> Authenticating...</>
-                  ) : (
-                    'Sign In to Studio'
-                  )}
-                </span>
+              <button onClick={handleSeedAdmin} disabled={seeding} className="btn-create">
+                {seeding ? <Loader2 size={12} className="spin" /> : null}
+                {seeding ? 'Creating...' : 'Create Account'}
               </button>
-            </form>
-          </div>
-
-          {/* ── FIRST TIME SETUP: Onboarding Card ── */}
-          <div className="bg-white rounded-[16px] p-5 border border-[#E8E2D9] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex gap-3">
-              <div className="mt-0.5 p-2 rounded-lg bg-[rgba(200,133,26,0.06)] text-[#C8851A] h-fit">
-                <Sparkles size={16} />
-              </div>
-              <div className="text-left">
-                <h3 className="text-[13px] font-semibold text-[#1C1008]">First Time Setup</h3>
-                <p className="text-[11px] text-[#9B8E7E] mt-0.5">
-                  Generate or sync credentials from the active project configuration.
-                </p>
-              </div>
             </div>
-            <button
-              onClick={handleSeedAdmin}
-              disabled={seeding}
-              className="w-full sm:w-auto px-4 py-2.5 text-[12px] font-semibold rounded-lg border border-[#C8851A] text-[#C8851A] hover:bg-[rgba(200,133,26,0.05)] transition-colors cursor-pointer whitespace-nowrap"
-            >
-              {seeding ? <Loader2 size={12} className="animate-spin" /> : 'Create Account'}
-            </button>
-          </div>
 
-          {/* Helper Credentials Hint */}
-          <p className="text-center text-[11px] text-[#9B8E7E] font-medium tracking-wide">
-            Active Studio configuration: <span className="text-[#6B5E4C]">admin@sana.in</span> / <span className="text-[#6B5E4C]">Sana@2025</span>
-          </p>
+            {/* Hint */}
+            <p style={{ textAlign: 'center', fontSize: '11px', color: '#9B8E7E', fontWeight: 500, letterSpacing: '0.03em' }}>
+              Active Studio configuration: <span style={{ color: '#6B5E4C' }}>admin@sana.in</span> / <span style={{ color: '#6B5E4C' }}>Sana@2025</span>
+            </p>
+
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
