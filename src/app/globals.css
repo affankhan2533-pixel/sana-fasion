@@ -2060,3 +2060,65 @@ textarea:focus-visible,
   outline: 1.5px solid var(--gold);
   outline-offset: 2px;
 }
+
+/* ==================================================
+   NAVBAR RESPONSIVE — Media-query based (reliable)
+   ================================================== */
+
+/* Hamburger: show on mobile, hide on desktop */
+#navbar-hamburger {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  cursor: pointer;
+  min-width: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+}
+
+/* Desktop nav links: hidden on mobile */
+.navbar-desktop-links {
+  display: none !important;
+}
+
+/* Cart, Instagram: hidden on mobile */
+#navbar-cart-btn,
+#navbar-instagram-link,
+.navbar-boutique-experience,
+#navbar-book-btn {
+  display: none !important;
+}
+
+@media (min-width: 1024px) {
+  /* Hide hamburger on desktop */
+  #navbar-hamburger {
+    display: none !important;
+  }
+
+  /* Show desktop nav links */
+  .navbar-desktop-links {
+    display: flex !important;
+  }
+
+  /* Show desktop-only items */
+  #navbar-cart-btn {
+    display: flex !important;
+  }
+
+  #navbar-instagram-link {
+    display: flex !important;
+  }
+
+  .navbar-boutique-experience {
+    display: block !important;
+  }
+
+  #navbar-book-btn {
+    display: block !important;
+  }
+}
