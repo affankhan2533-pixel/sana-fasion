@@ -1,8 +1,10 @@
 import { generateProductsFromImages, type Product } from '@/data/image_analyzer';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
 export async function getPublicProducts(): Promise<Product[]> {
   try {
-    const res = await fetch('http://localhost:5000/api/products?limit=200', {
+    const res = await fetch(`${API_BASE}/products?limit=200`, {
       cache: 'no-store'
     });
     const data = await res.json();
@@ -34,7 +36,7 @@ export async function getPublicProducts(): Promise<Product[]> {
       }));
     }
   } catch (err) {
-    console.warn('Failed to fetch products from MongoDB API, falling back to local files:', err);
+    console.warn('Failed to fetch products from API, falling back to local files:', err);
   }
 
   // Fallback to local files
@@ -43,7 +45,7 @@ export async function getPublicProducts(): Promise<Product[]> {
 
 export async function getPublicProduct(slug: string): Promise<Product | null> {
   try {
-    const res = await fetch(`http://localhost:5000/api/products/${slug}`, {
+    const res = await fetch(`${API_BASE}/products/${slug}`, {
       cache: 'no-store'
     });
     const data = await res.json();

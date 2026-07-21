@@ -18,7 +18,8 @@ export default function LuxuryCTA() {
     e.preventDefault();
     setLoading(true);
     try {
-      await fetch("http://localhost:5000/api/inquiries", {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      await fetch(`${apiBase}/inquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: form.name, email: form.email, phone: form.phone, subject: form.service || "Inquiry", message: form.message }),

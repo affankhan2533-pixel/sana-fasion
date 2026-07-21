@@ -37,39 +37,45 @@ interface ProductFormProps {
 const compressImage = (file: File): Promise<File> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
+    reader.onerror = () => resolve(file);
     reader.onload = (event) => {
       const img = new Image();
+      img.onerror = () => resolve(file);
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        
-        const MAX_WIDTH = 1200;
-        if (width > MAX_WIDTH) {
-          height = Math.round((height * MAX_WIDTH) / width);
-          width = MAX_WIDTH;
+        try {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_WIDTH = 1200;
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            'image/jpeg',
+            0.85 // 85% high quality compression
+          );
+        } catch {
+          resolve(file);
         }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
-                type: 'image/jpeg',
-                lastModified: Date.now(),
-              });
-              resolve(compressedFile);
-            } else {
-              resolve(file);
-            }
-          },
-          'image/jpeg',
-          0.85 // 85% high quality compression
-        );
       };
       img.src = event.target?.result as string;
     };
@@ -129,7 +135,7 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
     setStep(s => Math.max(s - 1, 1));
   };
 
-  // Natively support Camera & Gallery upload via Native Browser APIs
+  // Upload image to Cloudinary endpoint
   const handleImageSelection = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
     setUploading(true);
@@ -138,38 +144,28 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
     try {
       // Compress each image file on client side first
       const compressedFiles = await Promise.all(files.map(f => compressImage(f)));
+      const fd = new FormData();
+      compressedFiles.forEach(f => fd.append('files', f));
+      fd.append('folder', 'products');
 
-      try {
-        const fd = new FormData();
-        compressedFiles.forEach(f => fd.append('files', f));
-        fd.append('folder', 'products');
-
-        const res = await uploadMedia(fd);
-        if (res && res.success && res.assets?.length) {
-          const uploadedUrls = res.assets.map((a: any) => a.url);
-          setImages(prev => [...prev, ...uploadedUrls]);
-          addToast({ type: 'success', message: `${uploadedUrls.length} image(s) uploaded successfully!` });
-          return;
-        }
-      } catch (backendErr) {
-        console.warn('Backend image upload endpoint failed, falling back to local compressed previews:', backendErr);
+      const res = await uploadMedia(fd);
+      if (res && res.success && res.assets?.length) {
+        const uploadedUrls = res.assets.map((a: any) => a.url);
+        setImages(prev => [...prev, ...uploadedUrls]);
+        addToast({ type: 'success', message: `${uploadedUrls.length} image(s) uploaded to Cloudinary successfully!` });
+      } else {
+        const errMsg = res?.message || 'Failed to upload images to Cloudinary.';
+        console.error('[PRODUCTION UPLOAD FAILURE]', res);
+        addToast({ type: 'error', message: errMsg });
       }
-
-      // Local Fallback: Convert compressed files to Data URLs so admin is never blocked
-      const localDataUrls = await Promise.all(
-        compressedFiles.map(f => new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(f);
-        }))
-      );
-
-      setImages(prev => [...prev, ...localDataUrls]);
-      addToast({ type: 'success', message: `${localDataUrls.length} image(s) processed and added!` });
-
-    } catch (err) {
-      console.error('Image selection error:', err);
-      addToast({ type: 'error', message: 'Failed to process images.' });
+    } catch (err: any) {
+      const serverMsg = err.response?.data?.message || err.message || 'Image upload error.';
+      console.error('[PRODUCTION UPLOAD ERROR]', {
+        timestamp: new Date().toISOString(),
+        error: err,
+        response: err.response?.data,
+      });
+      addToast({ type: 'error', message: serverMsg });
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -181,37 +177,25 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
     setUploading(true);
     try {
       const compressed = await compressImage(e.target.files[0]);
-      let newUrl = '';
+      const fd = new FormData();
+      fd.append('files', compressed);
+      fd.append('folder', 'products');
 
-      try {
-        const fd = new FormData();
-        fd.append('files', compressed);
-        fd.append('folder', 'products');
-
-        const res = await uploadMedia(fd);
-        if (res && res.success && res.assets?.[0]?.url) {
-          newUrl = res.assets[0].url;
-        }
-      } catch (backendErr) {
-        console.warn('Backend image replace failed, using local fallback:', backendErr);
-      }
-
-      if (!newUrl) {
-        newUrl = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(compressed);
+      const res = await uploadMedia(fd);
+      if (res && res.success && res.assets?.[0]?.url) {
+        const newUrl = res.assets[0].url;
+        setImages(prev => {
+          const list = [...prev];
+          list[idx] = newUrl;
+          return list;
         });
+        addToast({ type: 'success', message: 'Image replaced successfully on Cloudinary.' });
+      } else {
+        addToast({ type: 'error', message: res?.message || 'Failed to replace image.' });
       }
-
-      setImages(prev => {
-        const list = [...prev];
-        list[idx] = newUrl;
-        return list;
-      });
-      addToast({ type: 'success', message: 'Image replaced.' });
-    } catch {
-      addToast({ type: 'error', message: 'Failed to replace image.' });
+    } catch (err: any) {
+      console.error('[PRODUCTION IMAGE REPLACE ERROR]', err);
+      addToast({ type: 'error', message: err.response?.data?.message || 'Failed to replace image on server.' });
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -426,7 +410,7 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {images.map((url, idx) => (
                       <div
-                        key={url}
+                        key={`${url}-${idx}`}
                         className="bg-[#FAFAF8] border border-[#E6C280]/20 rounded-[12px] p-3 flex gap-3 relative"
                       >
                         <div className="w-16 h-20 rounded-lg bg-gray-50 border border-[#E6C280]/15 overflow-hidden flex-shrink-0 relative">

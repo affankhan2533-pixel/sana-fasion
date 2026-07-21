@@ -88,7 +88,8 @@ export default function BestSellers() {
     setWishlist(w => w.includes(id) ? w.filter(i => i !== id) : [...w, id]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products?limit=20")
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    fetch(`${apiBase}/products?limit=20`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.products?.length > 0) {
