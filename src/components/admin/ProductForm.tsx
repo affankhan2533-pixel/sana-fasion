@@ -19,10 +19,10 @@ import Badge from '@/design-system/components/Badge';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
-  price: z.number().min(0, 'Price must be positive'),
+  price: z.coerce.number().min(0, 'Price must be 0 or greater'),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
-  stock: z.number().min(0, 'Stock must be positive'),
+  stock: z.coerce.number().min(0, 'Stock must be 0 or greater'),
   stockStatus: z.string().default('in_stock'),
   featured: z.boolean().default(false),
   status: z.string().default('draft'),
@@ -193,22 +193,55 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
     setImages(list);
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: any, targetStatus?: any) => {
     setLoading(true);
+    const finalStatus = typeof targetStatus === 'string' ? targetStatus : submitStatus;
+    setSubmitStatus(finalStatus);
+
     try {
+      if (images.length === 0) {
+        addToast({ type: 'warning', message: 'Warning: No images uploaded for this garment.' });
+      }
+
       const slug = data.slug || (data.name ? data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4) : `garment-${Date.now()}`);
       const payload = {
         ...data,
         slug,
         images,
-        status: submitStatus,
+        status: finalStatus,
       };
+
+      if (!payload.collection) delete payload.collection;
+      if (!payload.subcategory) delete payload.subcategory;
+
       await onSubmit(payload);
-    } catch {
-      addToast({ type: 'error', message: 'Failed to save product listing.' });
+    } catch (err: any) {
+      console.error('Submit product error:', err);
+      addToast({
+        type: 'error',
+        message: err?.response?.data?.message || err?.message || 'Failed to save product listing.'
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const onFormError = (errors: any) => {
+    console.error('Form validation errors:', errors);
+    const errorKeys = Object.keys(errors);
+    if (errorKeys.length > 0) {
+      const firstField = errorKeys[0];
+      const message = errors[firstField]?.message;
+      addToast({
+        type: 'error',
+        message: message ? `Validation Error: ${message}` : 'Please fill in all required fields.'
+      });
+    }
+  };
+
+  const submitWithStatus = (statusType: string) => (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    handleSubmit((data) => handleFormSubmit(data, statusType), onFormError)(e);
   };
 
   const categories = [
@@ -223,7 +256,7 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
         <Stepper currentStep={step} steps={['Basic', 'Images', 'Pricing', 'Publish']} />
       </Card>
 
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+      <form onSubmit={(e) => submitWithStatus(submitStatus)(e)} className="space-y-6">
         
         {/* ================= STEP 1: Basic details & Category ================= */}
         {step === 1 && (
@@ -535,7 +568,7 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
                         {formValues.name || 'Untitled Garment'}
                       </h4>
                       <span className="text-[15px] font-bold text-[#C8851A]">
-                        ₹{formValues.price?.toLocaleString('en-IN') || '0'}
+                        ₹{Number(formValues.price || 0).toLocaleString()}
                       </span>
                     </div>
                     <p className="text-[10px] text-[#9B8E7E] uppercase font-bold tracking-wider">{formValues.category}</p>
@@ -554,11 +587,11 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
                   <div className="grid grid-cols-2 gap-4 border-t border-[#FAF6F0] pt-4">
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#9B8E7E] block">Primary Category</span>
-                      <span className="text-[13px] text-[#1C1008] font-semibold block mt-0.5">{formValues.category}</span>
+                      <span className="text-[13px] text-[#1C1008] font-semibold block mt-0.5">{String(formValues.category || '')}</span>
                     </div>
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#9B8E7E] block">Stock Inventory</span>
-                      <span className="text-[13px] text-[#1C1008] font-semibold block mt-0.5">{formValues.stock} units</span>
+                      <span className="text-[13px] text-[#1C1008] font-semibold block mt-0.5">{String(formValues.stock ?? 0)} units</span>
                     </div>
                   </div>
                 </div>
@@ -594,21 +627,21 @@ export default function ProductForm({ initialData, onSubmit }: ProductFormProps)
           ) : (
             <div className="flex-1 flex flex-col sm:flex-row gap-3">
               <Button
-                type="submit"
+                type="button"
                 variant="secondary"
-                onClick={() => setSubmitStatus('draft')}
+                onClick={submitWithStatus('draft')}
                 loading={loading && submitStatus === 'draft'}
-                className="flex-1 !h-12 !rounded-[12px] font-bold"
+                className="flex-1 !h-12 !rounded-[12px] font-bold cursor-pointer"
               >
                 Save as Draft
               </Button>
 
               <Button
-                type="submit"
+                type="button"
                 variant="primary"
-                onClick={() => setSubmitStatus('published')}
+                onClick={submitWithStatus('published')}
                 loading={loading && submitStatus === 'published'}
-                className="flex-1 !h-12 !rounded-[12px] font-bold shadow-md hover:shadow-lg transition-all"
+                className="flex-1 !h-12 !rounded-[12px] font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
               >
                 Publish Garment
               </Button>
