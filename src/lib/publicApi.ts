@@ -36,7 +36,8 @@ export async function getPublicProducts(): Promise<Product[]> {
         description: p.description,
       }));
     }
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
     console.warn('Failed to fetch products from API, falling back to local files:', err);
   }
 
@@ -78,7 +79,8 @@ export async function getPublicProduct(slug: string): Promise<Product | null> {
         description: p.description,
       };
     }
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
     console.warn(`Failed to fetch product with slug "${slug}" from MongoDB API, falling back:`, err);
   }
 

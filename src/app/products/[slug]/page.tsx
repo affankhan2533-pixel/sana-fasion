@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import ProductDetails from "@/components/ProductDetails";
 import { getPublicProduct, getPublicProducts } from "@/lib/publicApi";
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

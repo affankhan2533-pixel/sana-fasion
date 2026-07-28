@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import ProductCatalog from "@/components/ProductCatalog";
 import { getPublicProducts } from "@/lib/publicApi";
 
+export const dynamic = 'force-dynamic';
+
 // Collection slug to category mapping
 const SLUG_TO_CATEGORY: Record<string, string> = {
   "bridal": "Bridal",

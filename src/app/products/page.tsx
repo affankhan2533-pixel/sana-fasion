@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import ProductCatalog from "@/components/ProductCatalog";
 import { getPublicProducts } from "@/lib/publicApi";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Atelier Collections — Sana Fashion",
   description: "Browse our complete catalog of luxury Indian ethnic creations — handcrafted bridal lehengas, festive anarkalis, and designer kurtas. Designed Mobile-First.",
