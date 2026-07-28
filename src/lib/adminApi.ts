@@ -1,11 +1,11 @@
 import axios from 'axios';
+import { getApiBaseUrl } from './apiConfig';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const api = axios.create({ baseURL: getApiBaseUrl(), timeout: 30000 });
 
-export const api = axios.create({ baseURL: API_BASE, timeout: 30000 });
-
-// Attach token from localStorage on each request
+// Attach token from localStorage on each request & update baseURL dynamically
 api.interceptors.request.use((config) => {
+  config.baseURL = getApiBaseUrl();
   if (typeof window !== 'undefined') {
     try {
       const stored = JSON.parse(localStorage.getItem('sana-admin-store') || '{}');

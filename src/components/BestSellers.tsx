@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Star, X, ArrowRight, Eye } from "lucide-react";
 import LuxuryButton from "@/components/LuxuryButton";
+import { getApiBaseUrl } from "@/lib/apiConfig";
 
 const products = [
   {
@@ -88,7 +89,7 @@ export default function BestSellers() {
     setWishlist(w => w.includes(id) ? w.filter(i => i !== id) : [...w, id]);
 
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const apiBase = getApiBaseUrl();
     fetch(`${apiBase}/products?limit=20`)
       .then(res => res.json())
       .then(data => {

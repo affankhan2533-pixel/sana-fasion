@@ -1,10 +1,11 @@
 import { generateProductsFromImages, type Product } from '@/data/image_analyzer';
+import { getApiBaseUrl } from './apiConfig';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const getAPI_BASE = () => getApiBaseUrl();
 
 export async function getPublicProducts(): Promise<Product[]> {
   try {
-    const res = await fetch(`${API_BASE}/products?limit=200`, {
+    const res = await fetch(`${getAPI_BASE()}/products?limit=200`, {
       cache: 'no-store'
     });
     const data = await res.json();
@@ -45,7 +46,7 @@ export async function getPublicProducts(): Promise<Product[]> {
 
 export async function getPublicProduct(slug: string): Promise<Product | null> {
   try {
-    const res = await fetch(`${API_BASE}/products/${slug}`, {
+    const res = await fetch(`${getAPI_BASE()}/products/${slug}`, {
       cache: 'no-store'
     });
     const data = await res.json();

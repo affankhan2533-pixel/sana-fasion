@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { Send, CheckCircle } from "lucide-react";
 import LuxuryButton from "@/components/LuxuryButton";
+import { getApiBaseUrl } from "@/lib/apiConfig";
 
 export default function LuxuryCTA() {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,7 +19,7 @@ export default function LuxuryCTA() {
     e.preventDefault();
     setLoading(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const apiBase = getApiBaseUrl();
       await fetch(`${apiBase}/inquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
